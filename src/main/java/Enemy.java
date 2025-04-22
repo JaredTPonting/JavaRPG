@@ -33,6 +33,7 @@ public class Enemy {
         hp -= amount;
         if (hp <= 0) {
             // Enemy dies Logic
+            System.out.println("Enemy defeated");
         }
     }
 

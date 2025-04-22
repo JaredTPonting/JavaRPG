@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Bullet {
     private double x, y;
-    private double speed = 5;
+    private double speed = 10;
     private double dx, dy;
     private boolean isActive = true;  // Bullet disappears when it's inactive
 
