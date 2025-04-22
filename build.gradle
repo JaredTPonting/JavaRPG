@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.javarpggame'
+version = '1.0'
+
+application {
+    mainClass = 'Game'
+}
+
+java {
+    sourceCompatibility  = JavaVersion.VERSION_17
+    targetCompatibility  = JavaVersion.VERSION_17
+}
+
