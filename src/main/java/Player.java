@@ -1,14 +1,17 @@
 // Player.java
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Player {
     private int x, y;
     private int speed = 4;
     private boolean up, down, left, right;
+    private BufferedImage playerSprite;
 
     public Player(int x, int y) {
         this.x = x;
         this.y = y;
+        playerSprite = SpriteLoader.load("/sprites/chicken_front_idle-removebg.png");
     }
 
     public int getX() {
@@ -34,8 +37,7 @@ public class Player {
     }
 
     public void render(Graphics g) {
-        g.setColor(Color.GREEN);
-        g.fillRect(x, y, 32, 32);
+        g.drawImage(playerSprite, x, y, 64, 64, null);
     }
 
     // Movement flags

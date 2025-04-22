@@ -198,7 +198,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
             for (int y = 0; y < TILE_SCREEN_HEIGHT; y++) {
                 int screenX = x * SCALED_TILE_SIZE;
                 int screenY = y * SCALED_TILE_SIZE;
-
                 g.drawImage(grassLayout[x][y], screenX, screenY, SCALED_TILE_SIZE, SCALED_TILE_SIZE, null);
             }
         }
