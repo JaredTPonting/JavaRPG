@@ -1,5 +1,6 @@
 // Enemy.java
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Enemy {
     private double x, y;
@@ -7,6 +8,7 @@ public class Enemy {
     private int hp = 2;
     private double speed = 2;
     private boolean dead = false;
+    private BufferedImage enemySprite;
 
     private Player target;
 
@@ -14,6 +16,8 @@ public class Enemy {
         this.x = x;
         this.y = y;
         this.target = target;
+
+        enemySprite = SpriteLoader.load("/sprites/fox_front_idle-removebg.png");
     }
 
     public void update() {
@@ -60,7 +64,6 @@ public class Enemy {
         if (dead) {
             return;
         }
-        g.setColor(Color.RED);
-        g.fillRect((int)x,(int) y, size, size);
+        g.drawImage(enemySprite, (int)x, (int) y, 64, 64, null);
     }
 }
