@@ -6,6 +6,7 @@ public class Enemy {
     private int size = 32;
     private int hp = 2;
     private double speed = 2;
+    private boolean dead = false;
 
     private Player target;
 
@@ -16,6 +17,9 @@ public class Enemy {
     }
 
     public void update() {
+        if (dead) {
+            return;
+        }
         int targetX = target.getX();
         int targetY = target.getY();
 
@@ -30,11 +34,22 @@ public class Enemy {
     }
 
     public void damage(int amount) {
-        hp -= amount;
-        if (hp <= 0) {
-            // Enemy dies Logic
-            System.out.println("Enemy defeated");
+        if (!dead) {
+            hp -= amount;
+            if (hp <= 0) {
+                // Enemy dies Logic
+                System.out.println("Enemy defeated");
+                die();
+            }
         }
+    }
+
+    private void die() {
+        dead = true;
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 
     public Rectangle getBounds() {
@@ -42,6 +57,9 @@ public class Enemy {
     }
 
     public void render(Graphics g) {
+        if (dead) {
+            return;
+        }
         g.setColor(Color.RED);
         g.fillRect((int)x,(int) y, size, size);
     }

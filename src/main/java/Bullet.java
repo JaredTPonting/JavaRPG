@@ -42,4 +42,12 @@ public class Bullet {
     public Rectangle getBounds() {
         return new Rectangle((int) x, (int) y, 5, 5);
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
 }
