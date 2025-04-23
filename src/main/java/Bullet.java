@@ -33,7 +33,7 @@ public class Bullet {
         dy = Math.sin(angle) * speed;
 
         bulletSpriteSheet = SpriteLoader.load("/sprites/bulletSpriteSheet.png");
-        bulletSprites = new BufferedImage[30];
+        bulletSprites = new BufferedImage[numberEggs];
         int i = 0;
         for (int t = 0; t < spriteWidth; t++) {
             for (int k = 0; k < spriteHeight; k++) {

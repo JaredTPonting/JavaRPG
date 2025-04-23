@@ -98,8 +98,4 @@ public class EnemySpawner {
         return new Point(x, y);
     }
 
-
-
-
-
 }

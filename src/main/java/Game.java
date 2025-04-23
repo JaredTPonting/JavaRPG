@@ -1,5 +1,5 @@
-// Game.java
 import enemies.Enemy;
+import envviroment.Grass;
 import player.Player;
 import enemies.EnemySpawner;
 import utils.SpriteLoader;
@@ -23,41 +23,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private int SCREEN_WIDTH = 1200;
     private int SCREEN_HEIGHT = 900;
     private Player player;
+    private Grass grass;
 
     private List<Bullet> bullets = new ArrayList<>();
 
-    int[][] grassCoords = {
-            {1, 1},
-            {0, 5},
-            {0, 6},
-            {1, 5},
-            {1, 6},
-            {2, 5},
-            {2, 6},
-            {3, 5},
-            {3, 6},
-            {4, 5},
-            {4, 6},
-            {5, 5},
-            {5, 6}
-    };
-
-    private final int TILE_SIZE = 16;
-    private final int SCALED_TILE_SIZE = 64;
-    private final int MAP_WIDTH = 11;
-    private final int MAP_HEIGHT = 5;
-    private BufferedImage grassTileset;
-    private BufferedImage grassTile;
-    private BufferedImage[] grassTiles;
-    private BufferedImage[][] grassLayout;
-    private int TILE_SCREEN_WIDTH = (int) ceil(SCREEN_WIDTH / SCALED_TILE_SIZE);
-    private int TILE_SCREEN_HEIGHT = (int) ceil(SCREEN_HEIGHT / SCALED_TILE_SIZE);
-
     // wave logic variables
     private EnemySpawner spawner;
-
-
-
 
     public Game() {
         JFrame frame = new JFrame("Chicken Run");
@@ -82,30 +53,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
         player = new Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT); // Start in the middle
         spawner = new EnemySpawner(player, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        grassTileset = SpriteLoader.load("/sprites/Grass.png");
-        grassTile = grassTileset.getSubimage(1 * TILE_SIZE, 1 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-        grassTiles = new BufferedImage[grassCoords.length];
-
-        for (int i = 0; i < grassCoords.length; i++) {
-            int col = grassCoords[i][0];
-            int row = grassCoords[i][1];
-
-            int x  = col * TILE_SIZE;
-            int y  = row * TILE_SIZE;
-
-            grassTiles[i] = grassTileset.getSubimage(x, y, TILE_SIZE, TILE_SIZE);
-        }
-
-        grassLayout = new BufferedImage[TILE_SCREEN_WIDTH][TILE_SCREEN_HEIGHT];
-
-        for (int x = 0; x < TILE_SCREEN_WIDTH; x++) {
-            for (int y = 0; y < TILE_SCREEN_HEIGHT; y++) {
-                grassLayout[x][y] = grassTiles[random.nextInt(grassTiles.length)];
-            }
-        }
-
-
-
+        grass = new Grass(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
     public synchronized void start() {
@@ -177,23 +125,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
         spawner.update(player);
     }
 
-    private void renderGrass(Graphics g) {
-        for (int x = 0; x < TILE_SCREEN_WIDTH; x++){
-            for (int y = 0; y < TILE_SCREEN_HEIGHT; y++) {
-                int screenX = x * SCALED_TILE_SIZE;
-                int screenY = y * SCALED_TILE_SIZE;
-                g.drawImage(grassLayout[x][y], screenX, screenY, SCALED_TILE_SIZE, SCALED_TILE_SIZE, null);
-            }
-        }
-    }
-
     private void render(BufferStrategy bs) {
         Graphics g = bs.getDrawGraphics();
 
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight()); // Clear screen
 
-        renderGrass(g);
+        grass.render(g);
 
         player.render(g);
 
