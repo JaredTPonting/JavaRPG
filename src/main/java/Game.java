@@ -1,10 +1,14 @@
 // Game.java
+import enemies.Enemy;
+import player.Player;
+import enemies.EnemySpawner;
+import utils.SpriteLoader;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
@@ -19,13 +23,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private int SCREEN_WIDTH = 800;
     private int SCREEN_HEIGHT = 600;
     private Player player;
-    private Enemy enemy;
 
     private List<Bullet> bullets = new ArrayList<>();
-    private List<Enemy> enemies = new ArrayList<>();
-
-    private long lastSpawnTime = System.currentTimeMillis();
-    private final long spawnInterval = 2000;
 
     int[][] grassCoords = {
             {1, 1},
@@ -54,10 +53,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private int TILE_SCREEN_WIDTH = (int) ceil(SCREEN_WIDTH / SCALED_TILE_SIZE);
     private int TILE_SCREEN_HEIGHT = (int) ceil(SCREEN_HEIGHT / SCALED_TILE_SIZE);
 
+    // wave logic variables
+    private EnemySpawner spawner;
+
+
 
 
     public Game() {
-        JFrame frame = new JFrame("Monster Escape");
+        JFrame frame = new JFrame("Chicken Run");
         frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
@@ -76,8 +79,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
             }
         });
 
-        player = new Player(400, 300); // Start in the middle
-        spawnEnemy();
+        player = new Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2); // Start in the middle
+        spawner = new EnemySpawner(player);
 
         grassTileset = SpriteLoader.load("/sprites/Grass.png");
         grassTile = grassTileset.getSubimage(1 * TILE_SIZE, 1 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -101,6 +104,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
             }
         }
 
+
+
     }
 
     public synchronized void start() {
@@ -116,11 +121,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    public void spawnEnemy() {
-        Enemy newEnemy = new Enemy(100, 100, player);
-        enemies.add(newEnemy);
     }
 
     public void run() {
@@ -159,11 +159,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
         for (Bullet bullet : bullets) {
             if (!bullet.isActive()) continue;
 
-            for (Enemy enemy : enemies) {
+            for (Enemy enemy : spawner.enemies) {
                 if (!enemy.isDead() && bullet.getBounds().intersects(enemy.getBounds())) {
                     enemy.damage(1);
                     bullet.setActive(false);
-                    break; // Bullet only hits one enemy
+                    break;
                 }
             }
         }
@@ -171,26 +171,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
         bullets.removeIf(bullet -> !bullet.isActive());
     }
 
-    private void updateEnemies() {
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy enemy = enemies.get(i);
-            enemy.update();
-
-            if (enemy.isDead()){
-                enemies.remove(i);
-                i--;
-            }
-        }
-        if (System.currentTimeMillis() - lastSpawnTime >= spawnInterval) {
-            spawnEnemy();
-            lastSpawnTime = System.currentTimeMillis();
-        }
-    }
-
     private void update() {
         player.update();
         updateBullets();
-        updateEnemies();
+        spawner.update(player);
     }
 
     private void renderGrass(Graphics g) {
@@ -216,10 +200,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
         for (Bullet bullet : bullets) {
             bullet.render(g);
         }
-
-        for (Enemy enemy : enemies) {
-            enemy.render(g);
-        }
+        spawner.render(g);
 
         g.dispose();
         bs.show();
