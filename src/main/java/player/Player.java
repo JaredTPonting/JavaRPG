@@ -1,6 +1,7 @@
-// Player.java
+package player;// Player.Player.java
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import utils.SpriteLoader;
 
 public class Player {
     private int x, y;
