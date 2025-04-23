@@ -8,11 +8,19 @@ public class Player {
     private int speed = 4;
     private boolean up, down, left, right;
     private BufferedImage playerSprite;
+    private int SCREEN_WIDTH;
+    private int SCREEN_HEIGHT;
+    private int X_MOVEMENT;
+    private int Y_MOVEMENT;
 
-    public Player(int x, int y) {
+    public Player(int x, int y, int screenWidth, int screenHeight) {
         this.x = x;
         this.y = y;
         playerSprite = SpriteLoader.load("/sprites/chicken_front_idle-removebg.png");
+        SCREEN_HEIGHT = screenHeight;
+        SCREEN_WIDTH = screenWidth;
+        X_MOVEMENT = screenWidth - 32;
+        Y_MOVEMENT = screenHeight - 32;
     }
 
     public int getX() {
@@ -32,9 +40,9 @@ public class Player {
 
         // Optional: Clamp to screen
         if (x < 0) x = 0;
-        if (x > 768) x = 768; // 800 - 32
+        if (x > X_MOVEMENT) x = X_MOVEMENT; // 800 - 32
         if (y < 0) y = 0;
-        if (y > 568) y = 568; // 600 - 32
+        if (y > Y_MOVEMENT) y = Y_MOVEMENT; // 600 - 32
     }
 
     public void render(Graphics g) {
