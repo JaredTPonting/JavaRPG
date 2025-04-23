@@ -20,7 +20,10 @@ public class Bullet {
     private int spriteSize = 32;
     private int numberEggs = 30;
 
-    public Bullet(double x, double y, double targetX, double targetY) {
+    private int SCREEN_WIDTH;
+    private int SCREEN_HEIGHT;
+
+    public Bullet(double x, double y, double targetX, double targetY, int screenWidth, int screenHeight) {
         this.x = x;
         this.y = y;
 
@@ -40,6 +43,9 @@ public class Bullet {
         }
         bulletSprite = bulletSprites[random.nextInt(30)];
 
+        SCREEN_HEIGHT = screenHeight;
+        SCREEN_WIDTH = screenWidth;
+
 
     }
 
@@ -48,7 +54,7 @@ public class Bullet {
         y += dy;
 
         // If the bullet moves out of bounds, deactivate it
-        if (x < 0 || x > 800 || y < 0 || y > 600) { // Assuming 800x600 screen size NEEDS DMADE DYNAMIC
+        if (x < 0 || x > SCREEN_WIDTH || y < 0 || y > SCREEN_HEIGHT) { // Assuming 800x600 screen size NEEDS DMADE DYNAMIC
             isActive = false;
         }
     }
