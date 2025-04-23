@@ -20,8 +20,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private Random random = new Random();
     private boolean running = false;
     private Thread thread;
-    private int SCREEN_WIDTH = 800;
-    private int SCREEN_HEIGHT = 600;
+    private int SCREEN_WIDTH = 1200;
+    private int SCREEN_HEIGHT = 900;
     private Player player;
 
     private List<Bullet> bullets = new ArrayList<>();
@@ -75,12 +75,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
             @Override
             public void mousePressed(MouseEvent e) {
                 // Shoot bullet when left-clicking
-                bullets.add(new Bullet(player.getX(), player.getY(), e.getX(), e.getY()));
+                bullets.add(new Bullet(player.getX(), player.getY(), e.getX(), e.getY(), SCREEN_WIDTH, SCREEN_HEIGHT));
             }
         });
 
-        player = new Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2); // Start in the middle
-        spawner = new EnemySpawner(player);
+        player = new Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT); // Start in the middle
+        spawner = new EnemySpawner(player, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         grassTileset = SpriteLoader.load("/sprites/Grass.png");
         grassTile = grassTileset.getSubimage(1 * TILE_SIZE, 1 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
