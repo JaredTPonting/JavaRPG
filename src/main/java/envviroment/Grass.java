@@ -60,18 +60,18 @@ public class Grass {
             grassTiles[i] = grassTileset.getSubimage(x, y, TILE_SIZE, TILE_SIZE);
         }
 
-        grassLayout = new BufferedImage[TILE_SCREEN_WIDTH][TILE_SCREEN_HEIGHT];
+        grassLayout = new BufferedImage[TILE_SCREEN_WIDTH + 1][TILE_SCREEN_HEIGHT + 1];
 
-        for (int x = 0; x < TILE_SCREEN_WIDTH; x++) {
-            for (int y = 0; y < TILE_SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < TILE_SCREEN_WIDTH + 1; x++) {
+            for (int y = 0; y < TILE_SCREEN_HEIGHT + 1; y++) {
                 grassLayout[x][y] = grassTiles[random.nextInt(grassTiles.length)];
             }
         }
     }
 
     public void render(Graphics g) {
-        for (int x = 0; x < TILE_SCREEN_WIDTH; x++){
-            for (int y = 0; y < TILE_SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < TILE_SCREEN_WIDTH + 1; x++){
+            for (int y = 0; y < TILE_SCREEN_HEIGHT + 1; y++) {
                 int screenX = x * SCALED_TILE_SIZE;
                 int screenY = y * SCALED_TILE_SIZE;
                 g.drawImage(grassLayout[x][y], screenX, screenY, SCALED_TILE_SIZE, SCALED_TILE_SIZE, null);

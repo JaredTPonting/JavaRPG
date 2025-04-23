@@ -14,18 +14,19 @@ public class EnemySpawner {
     public enum EnemyType {
         FOX, WOLF, HUNTER
     }
-    private List<List<EnemySpawner.EnemyType>> waves = new ArrayList<>();
+    private final List<List<EnemySpawner.EnemyType>> waves = new ArrayList<>();
     public List<Enemy> enemies;
 
-    private int SCREEN_WIDTH;
-    private int SCREEN_HEIGHT;
+    private final int SCREEN_WIDTH;
+    private final int SCREEN_HEIGHT;
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public EnemySpawner(Player player, int screenWidth, int screenHeight) {
         waves.add(Arrays.asList(EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX));
         waves.add(Arrays.asList(EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX));
-        waves.add(Arrays.asList(EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX, EnemySpawner.EnemyType.FOX));
+        waves.add(List.of(EnemyType.WOLF));
+        waves.add(Arrays.asList(EnemyType.WOLF, EnemyType.FOX, EnemyType.FOX));
         List<EnemyType> nextWave = waves.get(0);
         enemies = new ArrayList<>();
 
@@ -34,12 +35,11 @@ public class EnemySpawner {
     }
 
     public Enemy createEnemy(EnemyType type, int x, int y, Player player) {
-        switch (type) {
-            case FOX:
-                return new Fox(x, y, player);
-            default:
-                throw new IllegalArgumentException("Unknown enemy type: " + type);
-        }
+        return switch (type) {
+            case FOX -> new Fox(x, y, player);
+            case WOLF -> new Wolf(x, y, player);
+            default -> throw new IllegalArgumentException("Unknown enemy type: " + type);
+        };
     }
 
     public void update(Player player) {
@@ -76,24 +76,25 @@ public class EnemySpawner {
         int side = random.nextInt(4); // 0=top, 1=right, 2=bottom, 3=left
         int x = 0, y = 0;
 
-        switch (side) {
-            case 0: // Top
+        y = switch (side) {
+            case 0 -> {
                 x = random.nextInt(SCREEN_WIDTH);
-                y = -50; // just above the screen
-                break;
-            case 1: // Right
+                yield -50;
+            }
+            case 1 -> {
                 x = SCREEN_WIDTH + 50;
-                y = random.nextInt(SCREEN_HEIGHT);
-                break;
-            case 2: // Bottom
+                yield random.nextInt(SCREEN_HEIGHT);
+            }
+            case 2 -> {
                 x = random.nextInt(SCREEN_WIDTH);
-                y = SCREEN_HEIGHT + 50;
-                break;
-            case 3: // Left
+                yield SCREEN_HEIGHT + 50;
+            }
+            case 3 -> {
                 x = -50;
-                y = random.nextInt(SCREEN_HEIGHT);
-                break;
-        }
+                yield random.nextInt(SCREEN_HEIGHT);
+            }
+            default -> y;
+        };
 
         return new Point(x, y);
     }

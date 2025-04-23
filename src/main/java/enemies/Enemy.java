@@ -2,7 +2,6 @@ package enemies;// enemies.Enemy.java
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import player.Player;
-import utils.SpriteLoader;
 
 public abstract class Enemy {
     protected double x, y;
