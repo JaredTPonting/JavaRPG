@@ -24,31 +24,23 @@ public class Grass {
             {5, 5},
             {5, 6}
     };
-    private int SCREEN_WIDTH;
-    private int SCREEN_HEIGHT;
 
-    private Random random = new Random();
-
-    private final int TILE_SIZE = 16;
     private final int SCALED_TILE_SIZE = 64;
     private final int MAP_WIDTH = 11;
     private final int MAP_HEIGHT = 5;
-    private BufferedImage grassTileset;
-    private BufferedImage grassTile;
-    private BufferedImage[] grassTiles;
-    private BufferedImage[][] grassLayout;
-    private int TILE_SCREEN_WIDTH;
-    private int TILE_SCREEN_HEIGHT;
+    private final BufferedImage[][] grassLayout;
+    private final int TILE_SCREEN_WIDTH;
+    private final int TILE_SCREEN_HEIGHT;
 
     public Grass(int screenWidth, int screenHeight) {
-        SCREEN_HEIGHT = screenHeight;
-        SCREEN_WIDTH = screenWidth;
-        TILE_SCREEN_WIDTH = (int) ceil(SCREEN_WIDTH / SCALED_TILE_SIZE);
-        TILE_SCREEN_HEIGHT = (int) ceil(SCREEN_HEIGHT / SCALED_TILE_SIZE);
+        TILE_SCREEN_WIDTH = (int) ceil((double) screenWidth / SCALED_TILE_SIZE);
+        TILE_SCREEN_HEIGHT = (int) ceil((double) screenHeight / SCALED_TILE_SIZE);
 
-        grassTileset = SpriteLoader.load("/sprites/Grass.png");
-        grassTile = grassTileset.getSubimage(1 * TILE_SIZE, 1 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-        grassTiles = new BufferedImage[grassCoords.length];
+        BufferedImage grassTileset = SpriteLoader.load("/sprites/Grass.png");
+        int TILE_SIZE = 16;
+        assert grassTileset != null;
+        BufferedImage grassTile = grassTileset.getSubimage(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        BufferedImage[] grassTiles = new BufferedImage[grassCoords.length];
 
         for (int i = 0; i < grassCoords.length; i++) {
             int col = grassCoords[i][0];
@@ -64,6 +56,7 @@ public class Grass {
 
         for (int x = 0; x < TILE_SCREEN_WIDTH + 1; x++) {
             for (int y = 0; y < TILE_SCREEN_HEIGHT + 1; y++) {
+                Random random = new Random();
                 grassLayout[x][y] = grassTiles[random.nextInt(grassTiles.length)];
             }
         }
