@@ -6,7 +6,7 @@ import player.Player;
 public abstract class Enemy {
     protected double x, y;
     protected int size = 32;
-    protected int hp;
+    protected double hp;
     protected double speed;
     protected boolean dead = false;
     protected BufferedImage sprite;
