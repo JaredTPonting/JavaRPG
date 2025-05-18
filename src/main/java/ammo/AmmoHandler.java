@@ -1,7 +1,7 @@
 package ammo;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 public class AmmoHandler {
@@ -14,7 +14,7 @@ public class AmmoHandler {
     public AmmoHandler(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        this.projectiles = new ArrayList<>();
+        this.projectiles = new CopyOnWriteArrayList<>();
         this.currentAmmoType = EggProjectile.class; // default
     }
 

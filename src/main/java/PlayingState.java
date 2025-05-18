@@ -46,7 +46,7 @@ public class PlayingState implements GameState {
         for (Projectile p : ammoHandler.getProjectiles()) {
             for (Enemy enemy : spawner.enemies) {
                 if (!enemy.isDead() && p.getBounds().intersects(enemy.getBounds())) {
-                    enemy.damage(1);
+                    enemy.damage(p.getDamage());
                     p.setActive(false);
                     break;
                 }

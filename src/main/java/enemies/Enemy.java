@@ -35,7 +35,7 @@ public abstract class Enemy {
         }
     }
 
-    public void damage(int amount) {
+    public void damage(double amount) {
         if (!dead) {
             hp -= amount;
             if (hp <= 0) {

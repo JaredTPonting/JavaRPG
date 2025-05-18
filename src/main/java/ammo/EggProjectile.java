@@ -10,13 +10,13 @@ public class EggProjectile extends Projectile {
     private static final Random rand = new Random();
 
     public EggProjectile(double x, double y, double targetX, double targetY, int screenWidth, int screenHeight, double speedMultiplier) {
-        super(x, y, targetX, targetY, screenWidth, screenHeight, 5.0 * speedMultiplier); // default egg speed
+        super(x, y, targetX, targetY, screenWidth, screenHeight, 5.0 * speedMultiplier, 50.0); // default egg speed
     }
 
     @Override
     protected void loadSprite() {
         if (!loaded) {
-            BufferedImage sheet = SpriteLoader.load("/sprites/bulletSpriteSheet.png");
+            BufferedImage sheet = SpriteLoader.load("/sprites/eggBulletSpriteSheet.png");
             int i = 0;
             for (int t = 0; t < 5; t++) {
                 for (int k = 0; k < 6; k++) {

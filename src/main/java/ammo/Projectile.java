@@ -8,18 +8,20 @@ public abstract class Projectile {
     protected double dx, dy;
     protected double speed;
     protected boolean active = true;
+    private double damage;
 
     protected BufferedImage sprite;
     protected int spriteSize = 32; // default size
 
     protected int screenWidth, screenHeight;
 
-    public Projectile(double x, double y, double targetX, double targetY, int screenWidth, int screenHeight, double speed) {
+    public Projectile(double x, double y, double targetX, double targetY, int screenWidth, int screenHeight, double speed, double damage) {
         this.x = x;
         this.y = y;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.speed = speed;
+        this.damage = damage;
 
         double angle = Math.atan2(targetY - y, targetX - x);
         this.dx = Math.cos(angle) * speed;
@@ -57,6 +59,8 @@ public abstract class Projectile {
 
     public double getX() { return x; }
     public double getY() { return y; }
+
+    public double getDamage() { return damage; }
 
     protected abstract void loadSprite(); // subclasses implement this
 }
