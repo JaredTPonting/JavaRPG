@@ -28,7 +28,6 @@ public class Grass {
         BufferedImage grassTileset = SpriteLoader.load("/sprites/Grass.png");
         int TILE_SIZE = 16;
         assert grassTileset != null;
-        BufferedImage grassTile = grassTileset.getSubimage(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE);
         BufferedImage[] grassTiles = new BufferedImage[grassCoords.length];
 
         for (int i = 0; i < grassCoords.length; i++) {
