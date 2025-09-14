@@ -9,5 +9,6 @@ public class Fox extends Enemy {
         this.hp = 100.0;
         this.speed = 2;
         this.sprite = SpriteLoader.load("/sprites/fox_front_idle-removebg.png");
+        this.XP = 30;
     }
 }

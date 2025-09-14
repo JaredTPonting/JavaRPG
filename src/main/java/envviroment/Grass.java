@@ -1,6 +1,7 @@
 // Grass.java
 package envviroment;
 
+import utils.Camera;
 import utils.SpriteLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,9 +22,9 @@ public class Grass {
     private final int TILE_SCREEN_WIDTH;
     private final int TILE_SCREEN_HEIGHT;
 
-    public Grass(int screenWidth, int screenHeight) {
-        TILE_SCREEN_WIDTH = (int) ceil((double) screenWidth / SCALED_TILE_SIZE);
-        TILE_SCREEN_HEIGHT = (int) ceil((double) screenHeight / SCALED_TILE_SIZE);
+    public Grass(int mapWidth, int mapHeight) {
+        TILE_SCREEN_WIDTH = (int) ceil((double) mapWidth / SCALED_TILE_SIZE);
+        TILE_SCREEN_HEIGHT = (int) ceil((double) mapHeight / SCALED_TILE_SIZE);
 
         BufferedImage grassTileset = SpriteLoader.load("/sprites/Grass.png");
         int TILE_SIZE = 16;
@@ -48,12 +49,12 @@ public class Grass {
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, Camera camera) {
         for (int x = 0; x < TILE_SCREEN_WIDTH + 1; x++) {
             for (int y = 0; y < TILE_SCREEN_HEIGHT + 1; y++) {
                 int screenX = x * SCALED_TILE_SIZE;
                 int screenY = y * SCALED_TILE_SIZE;
-                g.drawImage(grassLayout[x][y], screenX, screenY, SCALED_TILE_SIZE, SCALED_TILE_SIZE, null);
+                g.drawImage(grassLayout[x][y], screenX - camera.getX(), screenY - camera.getY(), SCALED_TILE_SIZE, SCALED_TILE_SIZE, null);
             }
         }
     }

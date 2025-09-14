@@ -2,7 +2,7 @@ package utils;
 
 import player.Player;
 
-class Camera {
+public class Camera {
     int camX, camY;
 
     public void centerOn(Player player, int screenWidth, int screenHeight, int mapWidth, int mapHeight) {

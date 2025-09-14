@@ -1,11 +1,17 @@
 package player;// Player.Player.java
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import utils.Camera;
 import utils.SpriteLoader;
 
 public class Player {
     private int x, y;
-    private int speed = 4;
+    private int speed = 4; // Can upgrade
+    private int range = 600; // Can Upgrade
+    private int maxHealth = 100; // Can upgrade
+    private int currentHealth = maxHealth;
+    private double healthRegen = 0.5; // Can upgrade
     private boolean up, down, left, right;
     private int SCREEN_WIDTH;
     private int SCREEN_HEIGHT;
@@ -22,6 +28,13 @@ public class Player {
     private enum State { IDLE, WALK, RUN};
     private State currentState = State.IDLE;
     private State previousState = State.IDLE;
+
+
+    // XP System
+    private int xp = 0;
+    private int level = 1;
+    private int xpToNextLevel = 100;
+    private int upgradePoints = 0;
 
 
     private boolean facingLeft = true;
@@ -64,6 +77,10 @@ public class Player {
         return y;
     }
 
+    public int getRange() {
+        return range;
+    }
+
 
     public void update() {
         if (up) y -= speed;
@@ -99,16 +116,67 @@ public class Player {
         if (y > Y_MOVEMENT) y = Y_MOVEMENT; // 600 - 32
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, Camera camera) {
 
         BufferedImage sprite = getCurrentSprites()[currentFrame];
 
         if (facingLeft) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(sprite, x + 48, y, -48, 48, null);
+            g2d.drawImage(sprite, x + 48 - camera.getX(), y - camera.getY(), -48, 48, null);
         } else {
-            g.drawImage(sprite, x, y, 48, 48, null);
+            g.drawImage(sprite, x - camera.getX(), y - camera.getY(), 48, 48, null);
         }
+    }
+
+    public void gainXP(int amount) {
+        xp += amount;
+        System.out.println("Gained " + amount + ". Total XP: " + xp);
+        checkLevelUp();
+    }
+
+    private void checkLevelUp() {
+        while (xp > xpToNextLevel) {
+            xp -= xpToNextLevel;
+            level++;
+            upgradePoints += 3;
+            xpToNextLevel = (int)(xpToNextLevel * 1.2);
+            System.out.println("Leveled Up!: " + level);
+        }
+    }
+
+    public void upgradeStat(String stat) {
+        if (upgradePoints <= 0) {
+            System.out.println("No upgrade points available!");
+            return;
+        }
+
+        switch (stat.toLowerCase()) {
+            case "speed":
+                speed += 1;
+                break;
+            case "health":
+            case "max health":
+                maxHealth += 10;
+                currentHealth += 10;
+                break;
+            case "regen":
+            case "health regen":
+                healthRegen += 0.2;
+                break;
+            default:
+                System.out.println("Unknown stat: " + stat);
+                return;
+        }
+
+        upgradePoints--;
+        System.out.println(stat + " upgraded! Remaining points: " + upgradePoints);
+        printStats();
+    }
+
+    public void printStats() {
+        System.out.println("Level: " + level + ", XP: " + xp + "/" + xpToNextLevel);
+        System.out.println("Speed: " + speed);
+        System.out.println("Max Health: " + maxHealth + ", Health Regen: " + healthRegen);
     }
 
     // Movement flags

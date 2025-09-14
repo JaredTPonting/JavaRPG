@@ -1,5 +1,7 @@
 package ammo;
 
+import utils.Camera;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -13,19 +15,21 @@ public abstract class Projectile {
     protected BufferedImage sprite;
     protected int spriteSize = 32; // default size
 
-    protected int screenWidth, screenHeight;
+    protected int mapWidth, mapHeight;
 
-    public Projectile(double x, double y, double targetX, double targetY, int screenWidth, int screenHeight, double speed, double damage) {
+    public Projectile(double x, double y, double dirX, double dirY, int mapWidth, int mapHeight, double speed, double damage) {
         this.x = x;
         this.y = y;
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
         this.speed = speed;
         this.damage = damage;
 
-        double angle = Math.atan2(targetY - y, targetX - x);
-        this.dx = Math.cos(angle) * speed;
-        this.dy = Math.sin(angle) * speed;
+        double len = Math.sqrt(dirX * dirX + dirY * dirY);
+        if (len == 0) len = 1;
+
+        this.dx = (dirX / len) * speed;
+        this.dy = (dirY / len) * speed;
 
         loadSprite(); // implemented by subclass
     }
@@ -34,14 +38,14 @@ public abstract class Projectile {
         x += dx;
         y += dy;
 
-        if (x < -spriteSize || x > screenWidth + spriteSize || y < -spriteSize || y > screenHeight + spriteSize) {
+        if (x < -spriteSize || x > mapWidth + spriteSize || y < -spriteSize || y > mapHeight + spriteSize) {
             active = false;
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, Camera camera) {
         if (sprite != null) {
-            g.drawImage(sprite, (int) x, (int) y, spriteSize, spriteSize, null);
+            g.drawImage(sprite, (int) x - camera.getX(), (int) y - camera.getY(), spriteSize, spriteSize, null);
         }
     }
 

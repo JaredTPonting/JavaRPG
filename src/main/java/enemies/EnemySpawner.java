@@ -1,6 +1,7 @@
 package enemies;
 
 import player.Player;
+import utils.Camera;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,12 +35,54 @@ public class EnemySpawner {
         SCREEN_WIDTH = screenWidth;
     }
 
+    private List<EnemyType> generateWave(int waveNumber) {
+        List<EnemyType> waveEnemies = new ArrayList<>();
+        int numEnemies = 2 + 2 * waveNumber;
+        Random rand  =new Random();
+
+        for (int i = 0; i< numEnemies; i++) {
+            int chance = rand.nextInt(100);
+
+            if (waveNumber < 5) {
+                waveEnemies.add(EnemyType.FOX);
+            } else if (waveNumber < 10) {
+                if (chance < 80) waveEnemies.add(EnemyType.FOX);
+                else waveEnemies.add(EnemyType.WOLF);
+            } else {
+                if (chance < 40) waveEnemies.add(EnemyType.FOX);
+                else waveEnemies.add(EnemyType.WOLF);
+            }
+        }
+
+        return waveEnemies;
+    }
+
     public Enemy createEnemy(EnemyType type, int x, int y, Player player) {
         return switch (type) {
             case FOX -> new Fox(x, y, player);
             case WOLF -> new Wolf(x, y, player);
             default -> throw new IllegalArgumentException("Unknown enemy type: " + type);
         };
+    }
+
+    public Enemy findNearestEnemy(int x, int y, double range) {
+        Enemy nearest = null;
+        double nearestDistSq = Double.MAX_VALUE;
+
+        for (Enemy e : enemies) {
+            if (e.isDead()) continue;
+
+            double dx = e.getX() - x;
+            double dy = e.getY() - y;
+
+            double distSq = dx * dx + dy * dy;
+
+            if (distSq <= range * range && distSq < nearestDistSq) {
+                nearestDistSq = distSq;
+                nearest = e;
+            }
+        }
+        return nearest;
     }
 
     public void update(Player player) {
@@ -50,25 +93,27 @@ public class EnemySpawner {
 
             if (enemy.isDead()){
                 enemies.remove(i);
+                player.gainXP(enemy.getXP());
                 i--;
             }
         }
     }
-    
+
     private void tryStartNewWave(Player player) {
-        if (enemies.isEmpty() && currentWave < waves.size()) {
-            List<EnemyType> nextWave = waves.get(currentWave);
+        if (enemies.isEmpty()) {
+            List<EnemyType> nextWave = generateWave(currentWave);
             for (EnemyType type : nextWave) {
                 Point spawnPoint = getRandomSpawnPointOutsideScreen();
                 enemies.add(createEnemy(type, spawnPoint.x, spawnPoint.y, player));
             }
-            currentWave += 1;
+            currentWave++;
+            System.out.println("Wave " + currentWave + " started with " + nextWave.size() + " enemies!");
         }
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, Camera camera) {
         for (Enemy enemy : enemies) {
-            enemy.render(g);
+            enemy.render(g, camera);
         }
     }
 
