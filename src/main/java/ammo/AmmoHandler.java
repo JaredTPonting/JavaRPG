@@ -11,7 +11,7 @@ public class AmmoHandler {
     private Class<? extends Projectile> currentAmmoType;
     private final int mapWidth;
     private final int mapHeight;
-    private double speedMultiplier = 2.0; // can upgrade
+    private double bulletSpeedMultiplier = 2.0; // can upgrade
     private long shootCooldown = 500; // can upgrade
     private double damageMultiplier = 1.0; // can upgrade
     private long lastShotTime = 0;
@@ -28,6 +28,10 @@ public class AmmoHandler {
             p.update();
         }
         projectiles.removeIf(p -> !p.isActive());
+    }
+
+    public void updateSpeedMultiplier() {
+
     }
 
     public void render(Graphics g, Camera camera) {
@@ -49,7 +53,7 @@ public class AmmoHandler {
         try {
             Projectile p = currentAmmoType
                     .getDeclaredConstructor(double.class, double.class, double.class, double.class, int.class, int.class, double.class)
-                    .newInstance(x, y, dirX, dirY, mapWidth, mapHeight, speedMultiplier);
+                    .newInstance(x, y, dirX, dirY, mapWidth, mapHeight, bulletSpeedMultiplier);
             projectiles.add(p);
         } catch (Exception e) {
             e.printStackTrace(); // handle bad constructors etc
@@ -64,9 +68,11 @@ public class AmmoHandler {
         return projectiles;
     }
 
-    public void increaseMulitplier(double multiplier) {
-        this.speedMultiplier *= multiplier;
+    public void increaseBulletSpeedMulitplier() {
+        this.bulletSpeedMultiplier *= 1.1;
     }
+
+    public void increaseDamageMultiplier() { this.damageMultiplier *= 1.1;}
 
     public double getDamage() {
         if (projectiles.isEmpty()) return 0;

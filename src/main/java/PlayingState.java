@@ -9,6 +9,7 @@ import utils.Camera;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Scanner;
 
 public class PlayingState implements GameState {
     private final Game game;
@@ -17,7 +18,9 @@ public class PlayingState implements GameState {
     private final Grass grass;
     private final EnemySpawner spawner;
     private int mouseX = 0, mouseY = 0;
-    private Camera camera;
+    private final Camera camera;
+    private boolean paused = false;
+    private boolean levelUpMenuActive = false;
 
     public PlayingState(Game game) {
         this.game = game;
@@ -27,7 +30,7 @@ public class PlayingState implements GameState {
 
         player = new Player(w / 2, h / 2, w, h);
         ammoHandler = new AmmoHandler(game.getMapWidth(), game.getMapHeight());
-        spawner = new EnemySpawner(player, w, h);
+        spawner = new EnemySpawner(w, h);
         grass = new Grass(w, h);
 
         camera = new Camera();
@@ -38,7 +41,72 @@ public class PlayingState implements GameState {
         mouseY = e.getY();
     }
 
+    private void showLevelUpMenu() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (player.getUnspentPoints() > 0) {
+            System.out.println("\n=== LEVEL UP! You have " + player.getUnspentPoints() + " points to spend ===");
+            System.out.println("1. Increase Max Health (+20)");
+            System.out.println("2. Increase Health Regen (+0.1/sec)");
+            System.out.println("3. Increase Move Speed (+0.5)");
+            System.out.println("4. Increase Bullet Speed (+1)");
+            System.out.println("5. Increase Damage (+1)");
+
+            System.out.print("Choose an upgrade: ");
+            int choice;
+            try {
+                choice = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input!");
+                continue;
+            }
+
+            switch (choice) {
+                case 1 -> {
+                    player.increaseMaxHealth();
+                    player.spendPoint();
+                    System.out.println("Max Health increased!");
+                }
+                case 2 -> {
+                    player.increaseRange();
+                    player.spendPoint();
+                    System.out.println("Health Regen increased!");
+                }
+                case 3 -> {
+                    player.increaseSpeed();
+                    player.spendPoint();
+                    System.out.println("Move Speed increased!");
+                }
+                case 4 -> {
+                    ammoHandler.increaseBulletSpeedMulitplier();
+                    player.spendPoint();
+                    System.out.println("Bullet Speed increased!");
+                }
+                case 5 -> {
+                    player.increaseHealthRegen();
+                    player.spendPoint();
+                    System.out.println("Damage increased!");
+                }
+                default -> System.out.println("Invalid choice!");
+            }
+        }
+
+        System.out.println("All points spent! Back to the game.");
+        this.paused = false;
+    }
+
     public void update() {
+        if (player.hasLeveledUp()) {
+            this.paused = true;
+            this.levelUpMenuActive = true;
+            player.clearLevelUpFlag();
+            return;
+        }
+
+        if (this.paused) {
+            return;
+        }
+
         player.update();
         camera.centerOn(player, game.getWidth(), game.getHeight(), game.getMapWidth(), game.getMapHeight());
         updateAmmo();
@@ -56,7 +124,7 @@ public class PlayingState implements GameState {
         ammoHandler.update();
 
         for (Projectile p : ammoHandler.getProjectiles()) {
-            for (Enemy enemy : spawner.enemies) {
+            for (Enemy enemy : spawner.getEnemies()) {
                 if (!enemy.isDead() && p.getBounds().intersects(enemy.getBounds())) {
                     enemy.damage(ammoHandler.getDamage());
                     p.setActive(false);
@@ -74,9 +142,48 @@ public class PlayingState implements GameState {
         player.render(g, camera);
         ammoHandler.render(g, camera);
         spawner.render(g, camera);
+
+        if (levelUpMenuActive) {
+            g.setColor(new Color(0, 0, 0, 180)); // semi-transparent overlay
+            g.fillRect(0, 0, game.getWidth(), game.getHeight());
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString("LEVEL UP! You have " + player.getUnspentPoints() + " points.", 100, 100);
+
+            g.setFont(new Font("Arial", Font.PLAIN, 18));
+            g.drawString("1. Increase Max Health (+20)", 120, 150);
+            g.drawString("2. Increase Health Regen (+0.1/sec)", 120, 180);
+            g.drawString("3. Increase Move Speed (+0.5)", 120, 210);
+            g.drawString("4. Increase Bullet Speed (+1)", 120, 240);
+            g.drawString("5. Increase Damage (+1)", 120, 270);
+        }
     }
 
     public void keyPressed(KeyEvent e) {
+        if (levelUpMenuActive) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.spendPoint(); }
+                case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.spendPoint(); }
+                case KeyEvent.VK_3 -> { player.increaseSpeed(); player.spendPoint(); }
+                case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMulitplier(); player.spendPoint(); }
+                case KeyEvent.VK_5 -> { ammoHandler.increaseDamageMultiplier(); player.spendPoint();  }
+            }
+
+            if (player.getUnspentPoints() <= 0) {
+                System.out.println("All points spent! Back to the game.");
+                levelUpMenuActive = false;
+                paused = false;
+            }
+            System.out.println(player.getMaxHealth());
+            System.out.println(player.getSpeed());
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
+            return; // stop here, don’t run normal controls while menu is open
+        }
+
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> player.setUp(true);
             case KeyEvent.VK_S -> player.setDown(true);

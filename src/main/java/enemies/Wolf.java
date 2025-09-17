@@ -9,6 +9,6 @@ public class Wolf extends Enemy {
         this.hp = 200.0;
         this.speed = 4;
         this.sprite = SpriteLoader.load("/sprites/wolf_front_idle-removebg.png");
-        this.XP = 50;
+        this.XP = 50 + (target.getLevel() * 2);;
     }
 }
