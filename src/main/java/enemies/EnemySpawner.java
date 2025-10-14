@@ -49,7 +49,9 @@ public class EnemySpawner {
         }
 
         // Update existing enemies
-        enemies.forEach(Enemy::update);
+        for (Enemy e : enemies) {
+            e.update(enemies);
+        }
 
         // Remove dead enemies & give XP
         enemies.removeIf(enemy -> {
