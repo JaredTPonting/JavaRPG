@@ -10,7 +10,7 @@ public class EggProjectile extends Projectile {
     private static final Random rand = new Random();
 
     public EggProjectile(double x, double y, double targetX, double targetY, int screenWidth, int screenHeight, double speedMultiplier) {
-        super(x, y, targetX, targetY, screenWidth, screenHeight, 5.0 * speedMultiplier, 50.0); // default egg speed
+        super(x, y, targetX, targetY, screenWidth, screenHeight, 5.0 * speedMultiplier, 50.0);
     }
 
     @Override
