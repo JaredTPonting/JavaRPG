@@ -1,0 +1,81 @@
+import ammo.AmmoHandler;
+import enemies.EnemySpawner;
+import enviroment.ChunkLoader;
+import player.Player;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+
+public class LevelUpState implements GameState {
+    private final Game game;
+    private final Player player;
+    private final AmmoHandler ammoHandler;
+    private final EnemySpawner enemySpawner;
+    private final ChunkLoader chunkLoader;
+
+
+    public LevelUpState(Game game, Player player, AmmoHandler ammoHandler, EnemySpawner enemySpawner, ChunkLoader chunkLoader) {
+        this.game = game;
+        this.player = player;
+        this.ammoHandler = ammoHandler;
+        this.enemySpawner = enemySpawner;
+        this.chunkLoader = chunkLoader;
+    }
+
+    @Override
+    public void update() {
+        // no movement :0
+    }
+
+    @Override
+    public void render(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRect(0, 0, game.getWidth(), game.getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("LEVEL UP! You have " + player.getUnspentPoints() + " points.", 100, 100);
+
+        g.setFont(new Font("Arial", Font.PLAIN, 18));
+        g.drawString("1. Increase Max Health (+20)", 120, 150);
+        g.drawString("2. Increase Health Regen (+0.1/sec)", 120, 180);
+        g.drawString("3. Increase Move Speed (+0.5)", 120, 210);
+        g.drawString("4. Increase Bullet Speed (+1)", 120, 240);
+        g.drawString("5. Increase Damage (+1)", 120, 270);
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.spendPoint(); }
+            case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.spendPoint(); }
+            case KeyEvent.VK_3 -> { player.increaseSpeed(); player.spendPoint(); }
+            case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMulitplier(); player.spendPoint(); }
+            case KeyEvent.VK_5 -> { ammoHandler.increaseDamageMultiplier(); player.spendPoint(); }
+        }
+
+
+        if (player.getUnspentPoints() <= 0) {
+            player.clearLevelUpFlag();
+            player.printStats();
+            player.resetInput();
+            game.setGameState(new PlayingState(game, player, ammoHandler, enemySpawner, chunkLoader)); // resume gameplay
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+}
