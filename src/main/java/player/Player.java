@@ -74,6 +74,13 @@ public class Player {
     public void setLeft(boolean left) { this.left = left; }
     public void setRight(boolean right) { this.right = right; }
 
+    public void resetInput() {
+        this.up = false;
+        this.down = false;
+        this.left = false;
+        this.right = false;
+    }
+
     // Position getters
     public int getX() { return x; }
     public int getY() { return y; }
@@ -85,14 +92,29 @@ public class Player {
     public double getHealthRegen() { return healthRegen; }
     public int getLevel() { return level; }
     public int getUnspentPoints() { return upgradePoints; }
+    public int getXP() { return this.xp;}
+    public int getXPToNextLevel() { return this.xpToNextLevel;}
+
 
     // Update method
     public void update() {
-        // Move player
-        if (up) y -= speed;
-        if (down) y += speed;
-        if (left) x -= speed;
-        if (right) x += speed;
+        int dx = 0;
+        int dy = 0;
+
+        if (up) dy -= 1;
+        if (down) dy += 1;
+        if (left) dx -= 1;
+        if (right) dx += 1;
+
+        // Normalize if moving diagonally
+        if (dx != 0 && dy != 0) {
+            double diagonal = Math.sqrt(2);
+            x += (dx / diagonal) * speed;
+            y += (dy / diagonal) * speed;
+        } else {
+            x += dx * speed;
+            y += dy * speed;
+        }
 
         // Facing & animation state
         if (left) facingLeft = true;
@@ -102,7 +124,10 @@ public class Player {
         boolean isRunning = left || right;
 
         currentState = isMoving ? (isRunning ? State.RUN : State.WALK) : State.IDLE;
-        if (currentState != previousState) { currentFrame = 0; previousState = currentState; }
+        if (currentState != previousState) {
+            currentFrame = 0;
+            previousState = currentState;
+        }
 
         // Frame animation
         long now = System.currentTimeMillis();
@@ -110,11 +135,8 @@ public class Player {
             currentFrame = (currentFrame + 1) % getCurrentSprites().length;
             lastFrameTime = now;
         }
-
-        // Clamp to screen
-        x = Math.max(0, Math.min(x, X_MOVEMENT));
-        y = Math.max(0, Math.min(y, Y_MOVEMENT));
     }
+
 
     // Render
     public void render(Graphics g, Camera camera) {
@@ -149,10 +171,10 @@ public class Player {
     public void clearLevelUpFlag() { leveledUp = false; }
 
     // Stat upgrades
-    public void increaseMaxHealth() { maxHealth *= 1.1; currentHealth = maxHealth; }
-    public void increaseSpeed() { speed *= 1.1; }
-    public void increaseRange() { range *= 1.1; }
-    public void increaseHealthRegen() { healthRegen *= 1.1; }
+    public void increaseMaxHealth() { maxHealth *= 1.1; maxHealth = Math.round(maxHealth * 100.0) / 100.0; currentHealth = maxHealth; }
+    public void increaseSpeed() { speed *= 1.1; speed = Math.round(speed * 100.0) / 100.0; }
+    public void increaseRange() { range *= 1.1; range = Math.round(range * 100.0) / 100.0;}
+    public void increaseHealthRegen() { healthRegen *= 1.1; healthRegen = Math.round(healthRegen * 100.0) / 100.0; }
 
     public void spendPoint() { if (upgradePoints > 0) upgradePoints--; }
 
