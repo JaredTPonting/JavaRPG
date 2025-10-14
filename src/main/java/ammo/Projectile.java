@@ -6,7 +6,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Projectile {
+    protected double startx, starty;
     protected double x, y;
+    protected double maxDistance = 500;
     protected double dx, dy;
     protected double speed;
     protected boolean active = true;
@@ -18,6 +20,8 @@ public abstract class Projectile {
     protected int mapWidth, mapHeight;
 
     public Projectile(double x, double y, double dirX, double dirY, int mapWidth, int mapHeight, double speed, double damage) {
+        this.startx = x;
+        this.starty = y;
         this.x = x;
         this.y = y;
         this.mapWidth = mapWidth;
@@ -38,8 +42,12 @@ public abstract class Projectile {
         x += dx;
         y += dy;
 
-        if (x < -spriteSize || x > mapWidth + spriteSize || y < -spriteSize || y > mapHeight + spriteSize) {
-            active = false;
+        // If travelled further than max distance, deactivate it
+        if (maxDistance > 0) {
+            double dist = Math.hypot(x-startx, y-starty);
+            if (dist >= maxDistance) {
+                active = false;
+            }
         }
     }
 
