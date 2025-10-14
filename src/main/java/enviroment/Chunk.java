@@ -1,10 +1,7 @@
 package enviroment;
 
 import java.awt.*;
-import java.util.Random;
 import utils.Camera;
-
-import java.awt.*;
 
 public abstract class Chunk {
     protected final int chunkX, chunkY;   // chunk grid coordinates
