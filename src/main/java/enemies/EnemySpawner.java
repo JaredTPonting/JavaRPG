@@ -11,6 +11,7 @@ import java.util.Random;
 public class EnemySpawner {
 
     // --- Wave and enemy tracking ---
+    private long lastSpawnTime = System.currentTimeMillis();
     private int currentWave = 0;
     public enum EnemyType { FOX, WOLF, HUNTER }
     private final List<Enemy> enemies = new ArrayList<>();
@@ -18,6 +19,8 @@ public class EnemySpawner {
     private final int SCREEN_WIDTH;
     private final int SCREEN_HEIGHT;
     private final Random random = new Random();
+
+    private Camera camera;
 
     public EnemySpawner(int screenWidth, int screenHeight) {
         this.SCREEN_WIDTH = screenWidth;
@@ -60,12 +63,35 @@ public class EnemySpawner {
         return waveEnemies;
     }
 
+    private EnemyType selectEnemyType(Player player) {
+        int level = player.getLevel();
+        int chance = random.nextInt(100);
+
+        if (level < 5) return EnemyType.FOX;
+        if (level < 10) return chance < 70 ? EnemyType.FOX : EnemyType.WOLF;
+        if (level < 15) return chance < 50 ? EnemyType.FOX : EnemyType.WOLF;
+        if (level < 20) return chance < 30 ? EnemyType.FOX : EnemyType.WOLF;
+        if (level < 25) return chance < 15 ? EnemyType.FOX : EnemyType.WOLF;
+        if (level < 30) return chance < 5 ? EnemyType.FOX : EnemyType.WOLF;
+        return EnemyType.WOLF;
+    }
+
     private Enemy createEnemy(EnemyType type, int x, int y, Player player) {
         return switch (type) {
             case FOX -> new Fox(x, y, player);
             case WOLF -> new Wolf(x, y, player);
             default -> throw new IllegalArgumentException("Unknown enemy type: " + type);
         };
+    }
+
+    private void spawnEnemy(Player player) {
+        EnemyType enemyType = selectEnemyType(player);
+
+        Point spawn = getRandomSpawnPointOutsideCamera();
+        System.out.println(spawn.x);
+        System.out.println(spawn.y);
+
+        enemies.add(createEnemy(enemyType, spawn.x, spawn.y, player));
     }
 
     private Point getRandomSpawnPointOutsideScreen() {
@@ -82,9 +108,53 @@ public class EnemySpawner {
         return new Point(x, y);
     }
 
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
+    private Point getRandomSpawnPointOutsideCamera() {
+        int side = random.nextInt(4); // 0=top, 1=right, 2=bottom, 3=left
+        int x = 0, y = 0;
+
+        int camX = camera.getX();
+        int camY = camera.getY();
+
+        switch (side) {
+            case 0 -> { // top
+                x = camX + random.nextInt(SCREEN_WIDTH);
+                y = camY - 5;
+            }
+            case 1 -> { // right
+                x = camX + SCREEN_WIDTH + 5;
+                y = camY + random.nextInt(SCREEN_HEIGHT);
+            }
+            case 2 -> { // bottom
+                x = camX + random.nextInt(SCREEN_WIDTH);
+                y = camY + SCREEN_HEIGHT + 5;
+            }
+            case 3 -> { // left
+                x = camX - 5;
+                y = camY + random.nextInt(SCREEN_HEIGHT);
+            }
+        }
+
+        return new Point(x, y);
+    }
+
     // --- Gameplay ---
     public void update(Player player) {
-        tryStartNewWave(player);
+        long currentTime = System.currentTimeMillis();
+
+        // Adjust interval based on player level
+        long spawnIntervalMs = 3000;
+        long adjustedInterval = (long) (spawnIntervalMs / (1 + player.getLevel() * 0.05));
+
+        if (currentTime - lastSpawnTime >= adjustedInterval) {
+            spawnEnemy(player);
+            lastSpawnTime = currentTime;
+        }
+
+        // Update existing enemies
         enemies.forEach(Enemy::update);
         enemies.removeIf(enemy -> {
             if (enemy.isDead()) {
