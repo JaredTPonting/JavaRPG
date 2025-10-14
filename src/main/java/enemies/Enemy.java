@@ -1,4 +1,4 @@
-package enemies;// enemies.Enemy.java
+package enemies;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import player.Player;
@@ -6,6 +6,7 @@ import utils.Camera;
 
 public abstract class Enemy {
     protected double x, y;
+    protected double vx = 0, vy = 0;
     protected int size = 32;
     protected double hp;
     protected double speed;
@@ -19,6 +20,10 @@ public abstract class Enemy {
         this.x = x;
         this.y = y;
         this.target = target;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
     public double getX() {
@@ -41,7 +46,7 @@ public abstract class Enemy {
         return this.XP;
     }
 
-    public void update() {
+    public void update(java.util.List<Enemy> allEnemies) {
         if (dead) return;
 
         int targetX = target.getX();
@@ -51,11 +56,47 @@ public abstract class Enemy {
         double dy = targetY - y;
         double distance = Math.sqrt(dx * dx + dy * dy);
 
+        // Attraction toward player
         if (distance > 0) {
-            x += (dx / distance) * speed;
-            y += (dy / distance) * speed;
+            vx += (dx / distance) * 0.1;  // small acceleration toward player
+            vy += (dy / distance) * 0.1;
         }
+
+        // Separation from nearby enemies
+        double separationForceX = 0;
+        double separationForceY = 0;
+        double separationRadius = size * 1.5; // radius to avoid overlap
+
+        for (Enemy e : allEnemies) {
+            if (e == this || e.isDead()) continue;
+            double ex = e.getX();
+            double ey = e.getY();
+            double dist = Math.hypot(x - ex, y - ey);
+            if (dist < separationRadius && dist > 0) {
+                separationForceX += (x - ex) / dist;
+                separationForceY += (y - ey) / dist;
+            }
+        }
+
+        vx += separationForceX * 0.2;
+        vy += separationForceY * 0.2;
+
+        // Add small random jitter so enemies don't sync up perfectly
+        vx += (Math.random() - 0.5) * 0.05;
+        vy += (Math.random() - 0.5) * 0.05;
+
+        // SPEED LIMIT
+        double speedMag = Math.hypot(vx, vy);
+        if (speedMag > speed) {
+            vx = (vx / speedMag) * speed;
+            vy = (vy / speedMag) * speed;
+        }
+
+        // Apply movement
+        x += vx;
+        y += vy;
     }
+
 
     public void damage(double amount) {
         if (!dead) {
