@@ -23,16 +23,14 @@ public class PlayingState implements GameState {
     public PlayingState(Game game) {
         this.game = game;
 
-        int w = game.getMapWidth();
-        int h = game.getMapHeight();
+        int w = game.getWidth();
+        int h = game.getHeight();
 
         player = new Player(w / 2, h / 2, w, h);
         ammoHandler = new AmmoHandler(game.getMapWidth(), game.getMapHeight());
         spawner = new EnemySpawner(w, h);
 
         camera = new Camera();
-
-        spawner.setCamera(camera);
         chunkLoader = new ChunkLoader(this.player, 800, 600, 256);
 
     }
@@ -45,8 +43,6 @@ public class PlayingState implements GameState {
         this.spawner = enemySpawner;
         this.chunkLoader = chunkLoader;
         camera = new Camera();
-
-        spawner.setCamera(camera);
     }
 
     public void update() {
