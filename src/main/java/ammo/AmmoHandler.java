@@ -12,7 +12,7 @@ public class AmmoHandler {
     private final int mapWidth;
     private final int mapHeight;
     private double bulletSpeedMultiplier = 2.0; // can upgrade
-    private long shootCooldown = 500; // can upgrade
+    private long shootCooldown = 1500; // can upgrade
     private double damageMultiplier = 1.0; // can upgrade
     private long lastShotTime = 0;
 
