@@ -1,5 +1,5 @@
 // Grass.java
-package envviroment;
+package enviroment;
 
 import utils.Camera;
 import utils.SpriteLoader;
