@@ -3,7 +3,6 @@ import ammo.AmmoHandler;
 import ammo.Projectile;
 import enemies.Enemy;
 import enemies.EnemySpawner;
-import enviroment.Grass;
 import player.Player;
 import utils.Camera;
 import enviroment.ChunkLoader;
@@ -41,9 +40,6 @@ public class PlayingState implements GameState {
     public PlayingState(Game game, Player player, AmmoHandler ammoHandler, EnemySpawner enemySpawner, ChunkLoader chunkLoader) {
         this.game = game;
 
-        int w = game.getMapWidth();
-        int h = game.getMapHeight();
-
         this.player = player;
         this.ammoHandler = ammoHandler;
         this.spawner = enemySpawner;
@@ -51,59 +47,6 @@ public class PlayingState implements GameState {
         camera = new Camera();
 
         spawner.setCamera(camera);
-    }
-
-    private void showLevelUpMenu() {
-        Scanner scanner = new Scanner(System.in);
-
-        while (player.getUnspentPoints() > 0) {
-            System.out.println("\n=== LEVEL UP! You have " + player.getUnspentPoints() + " points to spend ===");
-            System.out.println("1. Increase Max Health (+20)");
-            System.out.println("2. Increase Health Regen (+0.1/sec)");
-            System.out.println("3. Increase Move Speed (+0.5)");
-            System.out.println("4. Increase Bullet Speed (+1)");
-            System.out.println("5. Increase Damage (+1)");
-
-            System.out.print("Choose an upgrade: ");
-            int choice;
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input!");
-                continue;
-            }
-
-            switch (choice) {
-                case 1 -> {
-                    player.increaseMaxHealth();
-                    player.spendPoint();
-                    System.out.println("Max Health increased!");
-                }
-                case 2 -> {
-                    player.increaseRange();
-                    player.spendPoint();
-                    System.out.println("Health Regen increased!");
-                }
-                case 3 -> {
-                    player.increaseSpeed();
-                    player.spendPoint();
-                    System.out.println("Move Speed increased!");
-                }
-                case 4 -> {
-                    ammoHandler.increaseBulletSpeedMulitplier();
-                    player.spendPoint();
-                    System.out.println("Bullet Speed increased!");
-                }
-                case 5 -> {
-                    player.increaseHealthRegen();
-                    player.spendPoint();
-                    System.out.println("Damage increased!");
-                }
-                default -> System.out.println("Invalid choice!");
-            }
-        }
-
-        System.out.println("All points spent! Back to the game.");
     }
 
     public void update() {
