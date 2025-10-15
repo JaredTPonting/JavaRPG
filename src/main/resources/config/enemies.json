@@ -1,0 +1,16 @@
+{
+  "FOX": {
+    "hp": 100,
+    "speed": 2,
+    "sprite": "/sprites/fox_front_idle-removebg.png",
+    "xpBase": 30,
+    "xpPerLevel": 2
+  },
+  "WOLF": {
+    "hp": 200,
+    "speed": 1.5,
+    "sprite": "/sprites/wolf_front_idle-removebg.png",
+    "xpBase": 60,
+    "xpPerLevel": 2
+  }
+}

@@ -84,7 +84,6 @@ public class EnemySpawner {
     }
 
     private int calculateMinEnemies(int level) {
-        // Linearly scale from base up to max
         return Math.min(BASE_MIN_ENEMIES + level / 2, MAX_MIN_ENEMIES);
     }
 
@@ -97,10 +96,7 @@ public class EnemySpawner {
     }
 
     private Enemy createEnemy(EnemyType type, int x, int y, Player player) {
-        return switch (type) {
-            case FOX, HUNTER -> new Fox(x, y, player);
-            case WOLF -> new Wolf(x, y, player);
-        };
+        return EnemyFactory.create(type.name(), x, y, player);
     }
 
     private Point getRandomSpawnPointOutsideCamera(Player player) {
@@ -158,24 +154,6 @@ public class EnemySpawner {
             }
         }
     }
-
-    // --- Placeholder for future systems ---
-//    private void checkForBossEvent(Player player) {
-//        // Example: every 10 levels, spawn a mini-boss
-//        if (player.getLevel() % 10 == 0 && !isBossPresent()) {
-//            spawnBoss(player);
-//        }
-//    }
-
-//    private boolean isBossPresent() {
-//        return enemies.stream().anyMatch(e -> e instanceof BossEnemy);
-//    }
-//
-//    private void spawnBoss(Player player) {
-//        Point spawn = getRandomSpawnPointOutsideCamera();
-//        enemies.add(new BossEnemy(spawn.x, spawn.y, player));
-//        System.out.println("🔥 Boss spawned!");
-//    }
 
     public void render(Graphics g, Camera camera) {
         enemies.forEach(enemy -> enemy.render(g, camera));

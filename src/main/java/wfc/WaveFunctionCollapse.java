@@ -12,7 +12,6 @@ Hopefully you will just have a complete tileset that doesn't have any missing pi
 
 public class WaveFunctionCollapse {
     private final Plane plane;
-    private final List<Tile> tiles;
     private final ArrayList[][] possibilities;
     private final Random random = new Random();
 
@@ -29,7 +28,6 @@ public class WaveFunctionCollapse {
 
     public WaveFunctionCollapse(Plane plane, List<Tile> tiles) {
         this.plane = plane;
-        this.tiles = tiles;
         int size = plane.getSize();
 
         // Initialize possibilities: each cell starts with all tiles
@@ -185,10 +183,5 @@ public class WaveFunctionCollapse {
     /** Helper to allow wildcard edges ("*") */
     private boolean matches(String edgeA, String edgeB) {
         return "*".equals(edgeA) || "*".equals(edgeB) || edgeA.equals(edgeB);
-    }
-
-    /** Get remaining possible tiles for a cell (for debugging) */
-    public List<Tile> getPossibilities(int x, int y) {
-        return possibilities[y][x];
     }
 }

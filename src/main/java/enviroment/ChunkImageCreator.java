@@ -11,7 +11,6 @@ import wfc.Direction;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.*;
 import java.util.List;
 
@@ -85,9 +84,5 @@ public class ChunkImageCreator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public BufferedImage getRandomChunkImage() {
-        return preGeneratedImages.get(random.nextInt(preGeneratedImages.size()));
     }
 }

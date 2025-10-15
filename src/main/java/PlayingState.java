@@ -9,17 +9,15 @@ import enviroment.ChunkLoader;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Scanner;
 
 public class PlayingState implements GameState {
     private final Game game;
     private final Player player;
     private final AmmoHandler ammoHandler;
     private final EnemySpawner spawner;
-    private int mouseX = 0, mouseY = 0;
     private final Camera camera;
-    private ChunkLoader chunkLoader;
-    private GameWorld gameWorld;
+    private final ChunkLoader chunkLoader;
+    private final GameWorld gameWorld;
 
     public PlayingState(Game game) {
         this.game = game;
@@ -117,8 +115,8 @@ public class PlayingState implements GameState {
     }
 
     public void mouseMoved(MouseEvent e) {
-        mouseX = e.getX();
-        mouseY = e.getY();
+        int mouseX = e.getX();
+        int mouseY = e.getY();
     }
 
     public void mousePressed(MouseEvent e) {

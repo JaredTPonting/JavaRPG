@@ -1,6 +1,4 @@
 import ammo.AmmoHandler;
-import enemies.EnemySpawner;
-import enviroment.ChunkLoader;
 import player.Player;
 
 import java.awt.*;

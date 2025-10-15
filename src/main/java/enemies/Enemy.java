@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import player.Player;
 import utils.Camera;
 
-public abstract class Enemy {
+public class Enemy {
     protected double x, y;
     protected double vx = 0, vy = 0;
     protected int size = 32;

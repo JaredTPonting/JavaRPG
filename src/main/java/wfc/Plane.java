@@ -69,14 +69,4 @@ public class Plane {
         g.dispose();
         return result;
     }
-
-    public void saveAsImage(TileMapParser parser, String filePath) throws IOException {
-        // Used to save final image, again mainly done for testing
-        if (isCollapsed()) {
-            BufferedImage image = render(parser);
-            ImageIO.write(image, "png", new File(filePath));
-        } else {
-            System.out.println("Wave not collapsed");
-        }
-    }
 }

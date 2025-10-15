@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Random;
 
 import player.Player;
-import enviroment.Chunk;
-import enviroment.ChunkImageCreator;
 import utils.Camera;
 
 public class ChunkLoader {
@@ -18,7 +16,6 @@ public class ChunkLoader {
     private final int chunkCount = 20;
 
     private final Map<String, Chunk> chunks = new HashMap<>();
-    private final Random random = new Random();
 
     public ChunkLoader(Player player, int gameWidth, int gameHeight, int chunkSize) {
         this.player = player;

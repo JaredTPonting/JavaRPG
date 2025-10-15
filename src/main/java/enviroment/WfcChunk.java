@@ -1,19 +1,17 @@
 package enviroment;
 
 import utils.Camera;
-import utils.SpriteLoader;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class WfcChunk extends Chunk {
     private final BufferedImage chunkImage;
-
-    private static BufferedImage[] grassTiles; // shared across all chunks
+    private final int chunkCount;
 
     public WfcChunk(int chunkX, int chunkY, int size, int chunkCount) {
         super(chunkX, chunkY, size);
+        this.chunkCount = chunkCount;
         this.chunkImage = WfcImagePool.getRandom();
     }
 
