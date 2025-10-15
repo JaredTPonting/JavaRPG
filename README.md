@@ -1,36 +1,18 @@
-# JavaRPG
+# Chicken Run
+Chicken run is a 2D bullet heaven style game im developing as a challenge to learn some java. You play as a magical chicken, starting off by fending off foxes, then as your power and fame grows, all sorts of creatures will be coming after you! Survive waves of enemies, gain experience, level up, and unlock items to further you rpower!
 
-To Add:
-- Camera with larger map
-- Autofiring
-- Enemy sprite sheet
-- power ups 
-  - Need to figure out what I want to do for this
-- exp system
-- UI Overlay
-- sound effects
+## Features
+- Play as a Magical Chicken: start small but grow stronger
+- Enemy waves: constant enemy spawns that get more challenging as you level. See how far you make it
+- Level Up system: Like an RPG each time you level you can spend your points on stats to increase speed/damage/endurance/...
+- Score system: have your score tracked adn try beating your max score
+- Chunks generated randomly and go on forever
 
-Power Up System:
-
-- How exp is gained
-  - gain exp on every kill (scale dfor more difficult enemies)
-  - Small exp for surviving each wave
-- Level Up
-  - when exp reaches threshold, level up
-  - present player with three random upgrade choices from large pool
-  - player picks 1 which is immediately applied
-  - Upgrade pool can include stats and abilities like:
-Move speed, bullet speed, crit chance, bullet damage, multi shot, piercing shots, fire speed, health regen, shield boost, knockback
-- Unique Weapons unlock system
-  - Unlocking weapons
-    - Defeat a boss (Major enemy every 10 rounds or so)
-    - Unlock a unique weapon as a speciel item/reward
-  - Weapon implementation
-    - Unique weapons replace ammo system temporarily
-    - Example:
-      - Chicken dippers (Dippy time)
-      - changes bullets to chicken dippers for 20 seconds
-      - 60 second cooldown
-      - has splash damage
-      - does more damage to bird type enemies
-    - Each unique weapon has diff special effects
+## TODO
+- Add UI: display health etc
+- Add damage
+- add dash mechanic
+- add minibosses
+- add item drop
+- add stored ineventory
+- add money management and shop along with farmour
