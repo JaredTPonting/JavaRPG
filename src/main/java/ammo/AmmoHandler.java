@@ -16,6 +16,7 @@ public class AmmoHandler {
     private double damageMultiplier = 1.0; // can upgrade
     private long lastShotTime = 0;
 
+
     public AmmoHandler(int mapWidth, int mapHeight) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
@@ -68,7 +69,7 @@ public class AmmoHandler {
         return projectiles;
     }
 
-    public void increaseBulletSpeedMulitplier() {
+    public void increaseBulletSpeedMultiplier() {
         this.bulletSpeedMultiplier *= 1.1;
     }
 

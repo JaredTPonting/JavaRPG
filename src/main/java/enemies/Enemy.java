@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import player.Player;
 import utils.Camera;
+import java.util.List;
 
 public class Enemy {
     protected double x, y;
@@ -13,8 +14,13 @@ public class Enemy {
     protected boolean dead = false;
     protected BufferedImage sprite;
     protected int XP;
+    protected long attackCooldown;
+    protected double lastAttack = System.currentTimeMillis();
+    protected double damage;
 
     protected Player target;
+
+    private long lastUpdateTime = System.nanoTime();
 
     public Enemy(int x, int y, Player target) {
         this.x = x;
@@ -55,56 +61,70 @@ public class Enemy {
         this.vy = 0;
     }
 
-    public void update(java.util.List<Enemy> allEnemies) {
+    public void update(List<Enemy> allEnemies) {
+        long now = System.nanoTime();
+        double deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
+        lastUpdateTime = now;
+
         if (dead) return;
 
-        int targetX = target.getX();
-        int targetY = target.getY();
+        double targetX = target.getX();
+        double targetY = target.getY();
 
+        // Direction to player
         double dx = targetX - x;
         double dy = targetY - y;
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double distance = Math.hypot(dx, dy);
+
+        // Movement Forces
+        double ax = 0;
+        double ay = 0;
 
         // Attraction toward player
         if (distance > 0) {
-            vx += (dx / distance) * 0.2;  // small acceleration toward player
-            vy += (dy / distance) * 0.2;
+            ax += (dx / distance) * 700;  // acceleration toward player
+            ay += (dy / distance) * 700;
         }
 
         // Separation from nearby enemies
-        double separationForceX = 0;
-        double separationForceY = 0;
-        double separationRadius = size * 1.5; // radius to avoid overlap
-
+        double separationRadius = size * 1.5;
         for (Enemy e : allEnemies) {
             if (e == this || e.isDead()) continue;
             double ex = e.getX();
             double ey = e.getY();
             double dist = Math.hypot(x - ex, y - ey);
             if (dist < separationRadius && dist > 0) {
-                separationForceX += (x - ex) / dist;
-                separationForceY += (y - ey) / dist;
+                ax += (x - ex) / dist * 700;
+                ay += (y - ey) / dist * 700;
             }
         }
 
-        vx += separationForceX * 0.2;
-        vy += separationForceY * 0.2;
+        //Small random jitter to keep swarm organic
+        ax += (Math.random() - 0.5) * 100;
+        ay += (Math.random() - 0.5) * 100;
 
-        // Add small random jitter so enemies don't sync up perfectly
-        vx += (Math.random() - 0.5) * 0.05;
-        vy += (Math.random() - 0.5) * 0.05;
+        // Apply acceleration to velocity
+        // Scale by deltaTime to make acceleration time-based
+        vx += ax * deltaTime;
+        vy += ay * deltaTime;
 
-        // SPEED LIMIT
+        // --- Apply friction to stop runaway drift ---
+        double friction = 0.9;
+        vx *= Math.pow(friction, deltaTime * 60);  // stable across FPS
+        vy *= Math.pow(friction, deltaTime * 60);
+
+        // --- Clamp speed ---
         double speedMag = Math.hypot(vx, vy);
         if (speedMag > speed) {
             vx = (vx / speedMag) * speed;
             vy = (vy / speedMag) * speed;
         }
 
-        // Apply movement
-        x += vx;
-        y += vy;
+        // --- Apply movement ---
+        x += vx * deltaTime;
+        y += vy * deltaTime;
     }
+
 
 
     public void damage(double amount) {
@@ -116,9 +136,18 @@ public class Enemy {
         }
     }
 
+    public double attackPlayer() {
+        long now = System.currentTimeMillis();
+        if (now - lastAttack >= attackCooldown) {
+            lastAttack = now;
+            return damage;
+        }
+
+        return 0;
+    }
+
     protected void die() {
         dead = true;
-        System.out.println(this.getClass().getSimpleName() + " defeated");
     }
 
     public boolean isDead() {
@@ -131,7 +160,7 @@ public class Enemy {
 
     public void render(Graphics g, Camera camera) {
         if (!dead) {
-            g.drawImage(sprite, (int) x - camera.getX(), (int) y - camera.getY(), 64, 64, null);
+            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), 64, 64, null);
         }
     }
 }

@@ -7,8 +7,9 @@ import utils.SpriteLoader;
 
 public class Player {
     // Position & movement
-    private int x, y;
-    private double speed = 4.0;        // Can upgrade
+    private boolean dead = false;
+    private double x, y;
+    private double speed = 200;        // Can upgrade
     private boolean up, down, left, right;
     private final int SCREEN_WIDTH, SCREEN_HEIGHT;
     private final int X_MOVEMENT, Y_MOVEMENT;
@@ -39,9 +40,19 @@ public class Player {
     private final int frameDelay = 100;
     private boolean facingLeft = true;
 
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
     private enum State { IDLE, WALK, RUN }
     private State currentState = State.IDLE;
     private State previousState = State.IDLE;
+
+    private long lastUpdateTime = System.nanoTime();
 
     // Constructor
     public Player(int x, int y, int screenWidth, int screenHeight) {
@@ -90,8 +101,8 @@ public class Player {
     }
 
     // Position getters
-    public int getX() { return x; }
-    public int getY() { return y; }
+    public double getX() { return x; }
+    public double getY() { return y; }
 
     // Stat getters
     public double getSpeed() { return speed; }
@@ -106,6 +117,13 @@ public class Player {
     public int getXP() { return this.xp;}
     public int getXPToNextLevel() { return this.xpToNextLevel;}
     public int getMaxXP() { return this.maxXP; }
+
+    public void takeDamage(double damage) {
+        this.currentHealth = Math.max(0, currentHealth - damage);
+        if (currentHealth == 0) {
+            dead = true;
+        }
+    }
 
     // handle regens
     private void regen() {
@@ -125,6 +143,10 @@ public class Player {
 
     // Update method
     public void update() {
+        long now = System.nanoTime();
+        double deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
+        lastUpdateTime = now;
+
         int dx = 0;
         int dy = 0;
 
@@ -134,13 +156,14 @@ public class Player {
         if (right) dx += 1;
 
         // Normalize if moving diagonally
+        double diagonalBoost = 1.05;
         if (dx != 0 && dy != 0) {
             double diagonal = Math.sqrt(2);
-            x += (dx / diagonal) * speed * 1.05;
-            y += (dy / diagonal) * speed * 1.05;
+            x += ((double) dx / diagonal) * speed * diagonalBoost * deltaTime;
+            y += ((double) dy / diagonal) * speed * diagonalBoost * deltaTime;
         } else {
-            x += dx * speed;
-            y += dy * speed;
+            x += dx * speed * deltaTime;
+            y += dy * speed * deltaTime;
         }
 
         // Facing & animation state
@@ -159,10 +182,10 @@ public class Player {
         regen();
 
         // Frame animation
-        long now = System.currentTimeMillis();
-        if (now - lastFrameTime > frameDelay) {
+        long nowMillis = System.currentTimeMillis();
+        if (nowMillis - lastFrameTime > frameDelay) {
             currentFrame = (currentFrame + 1) % getCurrentSprites().length;
-            lastFrameTime = now;
+            lastFrameTime = nowMillis;
         }
     }
 
@@ -172,16 +195,15 @@ public class Player {
         BufferedImage sprite = getCurrentSprites()[currentFrame];
         if (facingLeft) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(sprite, x + 48 - camera.getX(), y - camera.getY(), -48, 48, null);
+            g2d.drawImage(sprite, (int) (x + 48 - camera.getX()), (int) (y - camera.getY()), -48, 48, null);
         } else {
-            g.drawImage(sprite, x - camera.getX(), y - camera.getY(), 48, 48, null);
+            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), 48, 48, null);
         }
     }
 
     // XP & level system
     public void gainXP(int amount) {
         xp += amount;
-        System.out.println("Gained " + amount + " XP. Total: " + xp);
         checkLevelUp();
     }
 
@@ -191,7 +213,6 @@ public class Player {
             level++;
             upgradePoints += 3;
             maxXP = (int)(maxXP * 1.2);
-            System.out.println("Leveled Up! Now level " + level);
             leveledUp = true;
         }
     }
@@ -200,7 +221,7 @@ public class Player {
     public void clearLevelUpFlag() { leveledUp = false; }
 
     // Stat upgrades
-    public void increaseMaxHealth() { maxHealth *= 1.1; maxHealth = Math.round(maxHealth * 100.0) / 100.0; currentHealth = maxHealth; }
+    public void increaseMaxHealth() { maxHealth *= 1.1; maxHealth = Math.round(maxHealth * 100.0) / 100.0; }
     public void increaseSpeed() { speed *= 1.1; speed = Math.round(speed * 100.0) / 100.0; }
     public void increaseEndurance() { maxStamina *= 1.1; maxStamina = Math.round(maxStamina * 100.0) / 100.0;}
     public void increaseRange() { range *= 1.1; range = Math.round(range * 100.0) / 100.0;}

@@ -47,7 +47,7 @@ public class LevelUpState implements GameState {
             case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.spendPoint(); }
             case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.spendPoint(); }
             case KeyEvent.VK_3 -> { player.increaseSpeed(); player.spendPoint(); }
-            case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMulitplier(); player.spendPoint(); }
+            case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMultiplier(); player.spendPoint(); }
             case KeyEvent.VK_5 -> { ammoHandler.increaseDamageMultiplier(); player.spendPoint(); }
         }
 

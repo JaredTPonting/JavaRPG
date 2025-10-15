@@ -53,7 +53,7 @@ public abstract class Projectile {
 
     public void render(Graphics g, Camera camera) {
         if (sprite != null) {
-            g.drawImage(sprite, (int) x - camera.getX(), (int) y - camera.getY(), spriteSize, spriteSize, null);
+            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), spriteSize, spriteSize, null);
         }
     }
 

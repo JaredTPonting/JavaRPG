@@ -62,9 +62,30 @@ public class EnemySpawner {
             return false;
         });
 
+        checkEnemyDamage(enemies, player);
+
         relocateFarEnemies(player);
 
 //        checkForBossEvent(player);
+    }
+
+    public void checkEnemyDamage(List<Enemy> enemies, Player player) {
+        for (Enemy e : enemies) {
+            if (e.isDead()) {
+                continue;
+            }
+            double dx = player.getX() - e.getX();
+            double dy = player.getY() - e.getY();
+            double distance = Math.hypot(dx, dy);
+
+            if (distance <= e.size * 1.5) {
+                double damage = e.attackPlayer();
+                if (damage > 0) {
+                    player.takeDamage(damage);
+                }
+            }
+
+        }
     }
 
     // --- Enemy selection logic ---
@@ -92,7 +113,6 @@ public class EnemySpawner {
         Point spawnPoint = getRandomSpawnPointOutsideCamera(player);
 
         enemies.add(createEnemy(type, spawnPoint.x, spawnPoint.y, player));
-        System.out.println("Spawned " + type + " at " + spawnPoint);
     }
 
     private Enemy createEnemy(EnemyType type, int x, int y, Player player) {
@@ -102,20 +122,20 @@ public class EnemySpawner {
     private Point getRandomSpawnPointOutsideCamera(Player player) {
         int side = random.nextInt(4);
         int x = 0, y = 0;
-        int playerX = player.getX();
-        int playerY = player.getY();
+        double playerX = player.getX();
+        double playerY = player.getY();
 
         switch (side) {
-            case 0 -> { x = playerX + random.nextInt(SCREEN_WIDTH) - (SCREEN_WIDTH / 2); y = playerY - (SCREEN_HEIGHT / 2) - 100; }      // top
-            case 1 -> { x = playerX + (SCREEN_WIDTH / 2) + 100; y = playerY + random.nextInt(SCREEN_HEIGHT) - (SCREEN_HEIGHT / 2); } // right
-            case 2 -> { x = playerX + random.nextInt(SCREEN_WIDTH) - (SCREEN_WIDTH / 2); y = playerY + (SCREEN_HEIGHT / 2) + 100; } // bottom
-            case 3 -> { x = playerX - (SCREEN_WIDTH / 2) - 100; y = playerY + random.nextInt(SCREEN_HEIGHT) - (SCREEN_HEIGHT / 2); }     // left
+            case 0 -> { x = (int) playerX + random.nextInt(SCREEN_WIDTH) - (SCREEN_WIDTH / 2); y = (int) playerY - (SCREEN_HEIGHT / 2) - 100; }      // top
+            case 1 -> { x = (int) playerX + (SCREEN_WIDTH / 2) + 100; y = (int) playerY + random.nextInt(SCREEN_HEIGHT) - (SCREEN_HEIGHT / 2); } // right
+            case 2 -> { x = (int) playerX + random.nextInt(SCREEN_WIDTH) - (SCREEN_WIDTH / 2); y = (int) playerY + (SCREEN_HEIGHT / 2) + 100; } // bottom
+            case 3 -> { x = (int) playerX - (SCREEN_WIDTH / 2) - 100; y = (int) playerY + random.nextInt(SCREEN_HEIGHT) - (SCREEN_HEIGHT / 2); }     // left
         }
 
         return new Point(x, y);
     }
 
-    public Enemy findNearestEnemy(int x, int y, double range) {
+    public Enemy findNearestEnemy(double x, double y, double range) {
         Enemy nearest = null;
         double nearestDistSq = range * range;
 
@@ -136,8 +156,8 @@ public class EnemySpawner {
     }
 
     private void relocateFarEnemies(Player player) {
-        int playerX = player.getX();
-        int playerY = player.getY();
+        double playerX = player.getX();
+        double playerY = player.getY();
         double maxDistance = Math.sqrt(((double) (SCREEN_WIDTH * SCREEN_WIDTH) /4) + ((double) (SCREEN_HEIGHT * SCREEN_HEIGHT) /4));
 
         for (Enemy enemy : enemies) {
@@ -150,7 +170,6 @@ public class EnemySpawner {
                 enemy.setX(newPos.x);
                 enemy.setY(newPos.y);
                 enemy.resetVxVy();
-                System.out.println("ENEMY RELOCATED TO: " + newPos);
             }
         }
     }

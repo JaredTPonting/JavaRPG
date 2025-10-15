@@ -30,7 +30,6 @@ public class WfcImagePool {
                 chunkImages[i] = new BufferedImage(chunkSize, chunkSize, BufferedImage.TYPE_INT_ARGB);
             }
         }
-        System.out.println("Loaded images into memory");
     }
 
     public static BufferedImage getRandom() {

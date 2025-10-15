@@ -20,7 +20,6 @@ public class EnemyFactory {
             InputStream is = EnemyFactory.class.getResourceAsStream("/config/enemies.json");
             Map<String, EnemyConfig> loaded = mapper.readValue(is, mapper.getTypeFactory().constructMapType(Map.class, String.class, EnemyConfig.class));
             configs.putAll(loaded);
-            System.out.println("Enemu configs loaded: " + configs.keySet());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,6 +35,8 @@ public class EnemyFactory {
         e.speed = cfg.speed;
         e.sprite = SpriteLoader.load(cfg.sprite);
         e.XP = cfg.xpBase + (target.getLevel() * cfg.xpPerLevel);
+        e.attackCooldown = cfg.attackCooldown;
+        e.damage = cfg.damage;
         return e;
 
     }
@@ -48,5 +49,7 @@ public class EnemyFactory {
         public String sprite;
         public int xpBase;
         public int xpPerLevel;
+        public long attackCooldown;
+        public double damage;
     }
 }

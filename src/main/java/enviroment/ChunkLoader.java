@@ -37,8 +37,8 @@ public class ChunkLoader {
 
     // Update visible chunks based on player position
     public void update() {
-        int playerChunkX = player.getX() / chunkSize;
-        int playerChunkY = player.getY() / chunkSize;
+        int playerChunkX = (int) player.getX() / chunkSize;
+        int playerChunkY = (int) player.getY() / chunkSize;
 
         // How many chunks fit on screen?
         int chunksOnScreenX = (int) Math.ceil((double) gameWidth / chunkSize) + 1;
@@ -56,8 +56,8 @@ public class ChunkLoader {
 
     // Render all visible chunks
     public void render(Graphics g, Camera camera) {
-        int playerChunkX = player.getX() / chunkSize;
-        int playerChunkY = player.getY() / chunkSize;
+        int playerChunkX = (int) player.getX() / chunkSize;
+        int playerChunkY = (int) player.getY() / chunkSize;
 
         int chunksOnScreenX = (int) Math.ceil((double) gameWidth / chunkSize) + 1;
         int chunksOnScreenY = (int) Math.ceil((double) gameHeight / chunkSize) + 1;

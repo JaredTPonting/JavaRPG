@@ -22,8 +22,8 @@ public class WfcChunk extends Chunk {
 
     @Override
     public void render(Graphics g, Camera camera) {
-        int worldX = chunkX * size - camera.getX();
-        int worldY = chunkY * size - camera.getY();
+        int worldX = chunkX * size - (int) camera.getX();
+        int worldY = chunkY * size - (int) camera.getY();
         g.drawImage(chunkImage, worldX, worldY, null);
     }
 }
