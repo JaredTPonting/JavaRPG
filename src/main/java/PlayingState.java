@@ -6,6 +6,7 @@ import enemies.EnemySpawner;
 import player.Player;
 import utils.Camera;
 import enviroment.ChunkLoader;
+import ui.UI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -17,6 +18,7 @@ public class PlayingState implements GameState {
     private final EnemySpawner spawner;
     private final Camera camera;
     private final ChunkLoader chunkLoader;
+    private final UI ui;
     private final GameWorld gameWorld;
 
     public PlayingState(Game game) {
@@ -28,10 +30,11 @@ public class PlayingState implements GameState {
         player = new Player(w / 2, h / 2, w, h);
         ammoHandler = new AmmoHandler(game.getMapWidth(), game.getMapHeight());
         spawner = new EnemySpawner(w, h);
+        ui = new UI(player);
 
         camera = new Camera();
-        chunkLoader = new ChunkLoader(this.player, 800, 600, 1500);
-        gameWorld = new GameWorld(this.player, this.ammoHandler, this.spawner, this.chunkLoader);
+        chunkLoader = new ChunkLoader(this.player, game.getWidth(), game.getHeight(), 1500);
+        gameWorld = new GameWorld(this.player, this.ammoHandler, this.spawner, this.chunkLoader, this.ui);
 
     }
 
@@ -42,6 +45,7 @@ public class PlayingState implements GameState {
         this.ammoHandler = gameWorld.getAmmoHandler();
         this.spawner = gameWorld.getEnemySpawner();
         this.chunkLoader = gameWorld.getChunkLoader();
+        this.ui = gameWorld.getUi();
         camera = new Camera();
     }
 
@@ -57,6 +61,7 @@ public class PlayingState implements GameState {
         updateAmmo();
         spawner.update(player);
         chunkLoader.update();
+        ui.update();
 
         Enemy target = spawner.findNearestEnemy(player.getX(), player.getY(), player.getRange());
         if (target != null && ammoHandler.canShoot()) {
@@ -87,6 +92,7 @@ public class PlayingState implements GameState {
         player.render(g, camera);
         ammoHandler.render(g, camera);
         spawner.render(g, camera);
+        ui.render((Graphics2D) g, game.getWidth(), game.getHeight());
 
     }
 

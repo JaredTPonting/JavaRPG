@@ -57,7 +57,7 @@ public class PauseState implements GameState {
             g.drawString("Max Health: " + player.getMaxHealth(), 350, 260);
             g.drawString("Speed: " + player.getSpeed(), 350, 290);
             g.drawString("Health Regen: " + player.getHealthRegen(), 350, 320);
-            g.drawString("XP: " + player.getXP() + "/" + player.getXPToNextLevel(), 350, 350);
+            g.drawString("XP: " + player.getXP() + "/" + player.getMaxXP(), 350, 350);
         }
     }
 
