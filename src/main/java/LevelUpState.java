@@ -11,16 +11,14 @@ public class LevelUpState implements GameState {
     private final Game game;
     private final Player player;
     private final AmmoHandler ammoHandler;
-    private final EnemySpawner enemySpawner;
-    private final ChunkLoader chunkLoader;
+    private final GameWorld gameWorld;
 
 
-    public LevelUpState(Game game, Player player, AmmoHandler ammoHandler, EnemySpawner enemySpawner, ChunkLoader chunkLoader) {
+    public LevelUpState(Game game, GameWorld gameWorld) {
         this.game = game;
-        this.player = player;
-        this.ammoHandler = ammoHandler;
-        this.enemySpawner = enemySpawner;
-        this.chunkLoader = chunkLoader;
+        this.gameWorld = gameWorld;
+        this.player = gameWorld.getPlayer();
+        this.ammoHandler = gameWorld.getAmmoHandler();
     }
 
     @Override
@@ -60,7 +58,7 @@ public class LevelUpState implements GameState {
             player.clearLevelUpFlag();
             player.printStats();
             player.resetInput();
-            game.setGameState(new PlayingState(game, player, ammoHandler, enemySpawner, chunkLoader)); // resume gameplay
+            game.setGameState(new PlayingState(game, gameWorld)); // resume gameplay
         }
     }
 

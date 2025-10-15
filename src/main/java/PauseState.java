@@ -10,9 +10,7 @@ import java.awt.event.MouseEvent;
 public class PauseState implements GameState {
     private final Game game;
     private final Player player;
-    private final AmmoHandler ammoHandler;
-    private final EnemySpawner enemySpawner;
-    private final ChunkLoader chunkLoader;
+    private final GameWorld gameWorld;
 
     private boolean showStats = false;
 
@@ -21,12 +19,10 @@ public class PauseState implements GameState {
     private final Rectangle statsButton = new Rectangle(500, 400, 200, 50);
     private final Rectangle quitButton = new Rectangle(500, 600, 200, 50);
 
-    public PauseState(Game game, Player player, AmmoHandler ammoHandler, EnemySpawner enemySpawner, ChunkLoader chunkLoader) {
+    public PauseState(Game game, GameWorld gameWorld) {
         this.game = game;
-        this.player = player;
-        this.ammoHandler = ammoHandler;
-        this.enemySpawner = enemySpawner;
-        this.chunkLoader = chunkLoader;
+        this.gameWorld = gameWorld;
+        this.player = gameWorld.getPlayer();
     }
 
     @Override
@@ -100,7 +96,7 @@ public class PauseState implements GameState {
     private void resumeGame() {
         // Reset input so player doesn't keep moving
         player.resetInput();
-        game.setGameState(new PlayingState(game, player, ammoHandler, enemySpawner, chunkLoader));
+        game.setGameState(new PlayingState(game, gameWorld));
     }
 
     @Override

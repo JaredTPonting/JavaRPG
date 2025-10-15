@@ -153,6 +153,7 @@ public class EnemySpawner {
                 Point newPos = getRandomSpawnPointOutsideCamera(player);
                 enemy.setX(newPos.x);
                 enemy.setY(newPos.y);
+                enemy.resetVxVy();
                 System.out.println("ENEMY RELOCATED TO: " + newPos);
             }
         }

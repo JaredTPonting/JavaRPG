@@ -19,6 +19,7 @@ public class PlayingState implements GameState {
     private int mouseX = 0, mouseY = 0;
     private final Camera camera;
     private ChunkLoader chunkLoader;
+    private GameWorld gameWorld;
 
     public PlayingState(Game game) {
         this.game = game;
@@ -31,24 +32,25 @@ public class PlayingState implements GameState {
         spawner = new EnemySpawner(w, h);
 
         camera = new Camera();
-        chunkLoader = new ChunkLoader(this.player, 800, 600, 256);
+        chunkLoader = new ChunkLoader(this.player, 800, 600, 1500);
+        gameWorld = new GameWorld(this.player, this.ammoHandler, this.spawner, this.chunkLoader);
 
     }
 
-    public PlayingState(Game game, Player player, AmmoHandler ammoHandler, EnemySpawner enemySpawner, ChunkLoader chunkLoader) {
+    public PlayingState(Game game, GameWorld gameWorld) {
         this.game = game;
-
-        this.player = player;
-        this.ammoHandler = ammoHandler;
-        this.spawner = enemySpawner;
-        this.chunkLoader = chunkLoader;
+        this.gameWorld = gameWorld;
+        this.player = gameWorld.getPlayer();
+        this.ammoHandler = gameWorld.getAmmoHandler();
+        this.spawner = gameWorld.getEnemySpawner();
+        this.chunkLoader = gameWorld.getChunkLoader();
         camera = new Camera();
     }
 
     public void update() {
         if (player.hasLeveledUp()) {
             player.resetInput();
-            game.setGameState(new LevelUpState(game, player, ammoHandler, spawner, chunkLoader));
+            game.setGameState(new LevelUpState(game, gameWorld));
             return;
         }
 
@@ -93,7 +95,7 @@ public class PlayingState implements GameState {
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            game.setGameState(new PauseState(game, player, ammoHandler, spawner, chunkLoader));
+            game.setGameState(new PauseState(game, gameWorld));
             return;
         }
 

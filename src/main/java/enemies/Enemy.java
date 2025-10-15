@@ -46,6 +46,15 @@ public abstract class Enemy {
         return this.XP;
     }
 
+    public double getVx() {
+        return this.vx;
+    }
+
+    public void resetVxVy() {
+        this.vx = 0;
+        this.vy = 0;
+    }
+
     public void update(java.util.List<Enemy> allEnemies) {
         if (dead) return;
 
@@ -58,8 +67,8 @@ public abstract class Enemy {
 
         // Attraction toward player
         if (distance > 0) {
-            vx += (dx / distance) * 0.1;  // small acceleration toward player
-            vy += (dy / distance) * 0.1;
+            vx += (dx / distance) * 0.2;  // small acceleration toward player
+            vy += (dy / distance) * 0.2;
         }
 
         // Separation from nearby enemies

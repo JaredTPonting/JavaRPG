@@ -7,6 +7,7 @@ import java.util.Random;
 
 import player.Player;
 import enviroment.Chunk;
+import enviroment.ChunkImageCreator;
 import utils.Camera;
 
 public class ChunkLoader {
@@ -14,6 +15,7 @@ public class ChunkLoader {
     private final int gameWidth;
     private final int gameHeight;
     private final Player player;
+    private final int chunkCount = 20;
 
     private final Map<String, Chunk> chunks = new HashMap<>();
     private final Random random = new Random();
@@ -23,13 +25,15 @@ public class ChunkLoader {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.chunkSize = chunkSize;
+        ChunkImageCreator chunkImageCreator = new ChunkImageCreator(chunkCount, 20);
+        WfcImagePool.init(chunkCount, chunkSize);
     }
 
     // Generate or fetch existing chunk
     private Chunk getOrCreateChunk(int chunkX, int chunkY) {
         String key = chunkX + "," + chunkY;
         return chunks.computeIfAbsent(key, k ->
-                new GrassChunk(chunkX, chunkY, chunkSize, 16, 16, random)
+                new WfcChunk(chunkX, chunkY, chunkSize, chunkCount)
         );
     }
 
