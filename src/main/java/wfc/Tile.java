@@ -15,10 +15,6 @@ public class Tile {
         this.tilemapLocation = tilemapLocation;
         this.edges = edges;
     }
-
-    public String getName() {
-        return this.name;
-    }
     public Point getTilemapLocation() {
         return this.tilemapLocation;
     }

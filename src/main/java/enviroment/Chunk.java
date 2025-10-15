@@ -20,16 +20,5 @@ public abstract class Chunk {
     // Subclasses may override rendering if needed
     public void render(Graphics g, Camera camera) {
     }
-
-    // Default tile rendering (subclasses can override if needed)
-    protected void renderTile(Graphics g, int tileId, int drawX, int drawY, int tileSize) {
-        switch (tileId) {
-            case 0 -> g.setColor(Color.GREEN);
-            case 1 -> g.setColor(Color.YELLOW);
-            case 2 -> g.setColor(Color.GRAY);
-            default -> g.setColor(Color.BLACK);
-        }
-        g.fillRect(drawX, drawY, tileSize, tileSize);
-    }
 }
 
