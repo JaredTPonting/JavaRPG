@@ -16,7 +16,7 @@ public class GameWorld {
     public EnemySpawner enemySpawner;
     public ChunkLoader chunkLoader;
     public UI ui;
-    private StateStack stateStack;
+    private final StateStack stateStack;
     int gameWidth;
     int gameHeight;
 

@@ -7,7 +7,6 @@ import player.Player;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
-import core.Game;
 import utils.GameWorld;
 
 import java.awt.*;
@@ -104,11 +103,12 @@ public class PlayingState implements GameState {
         }
     }
 
-    public void mouseMoved(MouseEvent e) {
-        int mouseX = e.getX();
-        int mouseY = e.getY();
-    }
 
     public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
     }
 }

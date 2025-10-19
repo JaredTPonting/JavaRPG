@@ -14,13 +14,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     public static final int SCREEN_WIDTH = 1200;
     public static final int SCREEN_HEIGHT = 900;
 
-    public static final int MAP_WIDTH = SCREEN_WIDTH * 2;
-    public static final int MAP_HEIGHT = SCREEN_HEIGHT * 2;
-
     private Thread thread;
     private boolean running = false;
 
-    private GameState currentState;
     public GameWorld gameWorld;
 
     public Game() {
@@ -59,14 +55,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
     public int getHeight() {
         return SCREEN_HEIGHT;
-    }
-
-    public int getMapWidth() {
-        return MAP_WIDTH;
-    }
-
-    public int getMapHeight() {
-        return MAP_HEIGHT;
     }
 
     public synchronized void start() {

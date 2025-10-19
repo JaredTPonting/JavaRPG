@@ -3,7 +3,6 @@ package enviroment;
 import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import player.Player;
 import utils.Camera;
@@ -13,7 +12,7 @@ public class ChunkLoader {
     private final int gameWidth;
     private final int gameHeight;
     private final Player player;
-    private final int chunkCount = 20;
+    private final int chunkCount = 1;
 
     private final Map<String, Chunk> chunks = new HashMap<>();
 
