@@ -1,3 +1,8 @@
+package core;
+
+import states.GameState;
+import utils.GameWorld;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,6 +21,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     private boolean running = false;
 
     private GameState currentState;
+    public GameWorld gameWorld;
 
     public Game() {
         JFrame frame = new JFrame("Chicken Run");
@@ -34,14 +40,17 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                if (currentState != null) {
-                    currentState.mouseMoved(e);
+                if (getGameState() != null) {
+                    getGameState().mouseMoved(e);
                 }
             }
         });
 
-        // Start in menu state
-        setGameState(new MenuState(this));
+        this.gameWorld = new GameWorld(getWidth(), getHeight());
+    }
+
+    public GameState getGameState() {
+        return gameWorld.getGameState();
     }
 
     public int getWidth() {
@@ -102,44 +111,36 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
 
     private void update() {
-        if (currentState != null) {
-            currentState.update();
-        }
+        gameWorld.update();
     }
 
     private void render(BufferStrategy bs) {
         Graphics g = bs.getDrawGraphics();
 
-        if (currentState != null) {
-            currentState.render(g);
-        }
+        gameWorld.render(g);
 
         g.dispose();
         bs.show();
     }
 
-    public void setGameState(GameState state) {
-        this.currentState = state;
-    }
-
     // Event forwarding
     public void keyPressed(KeyEvent e) {
-        if (currentState != null) {
-            currentState.keyPressed(e);
+        if (getGameState() != null) {
+            getGameState().keyPressed(e);
         }
     }
 
     public void keyReleased(KeyEvent e) {
-        if (currentState != null) {
-            currentState.keyReleased(e);
+        if (getGameState() != null) {
+            getGameState().keyReleased(e);
         }
     }
 
     public void keyTyped(KeyEvent e) {}
 
     public void mousePressed(MouseEvent e) {
-        if (currentState != null) {
-            currentState.mousePressed(e);
+        if (getGameState() != null) {
+            getGameState().mousePressed(e);
         }
     }
 

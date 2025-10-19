@@ -1,4 +1,4 @@
-// PlayingState.java
+package states;// states.PlayingState.java
 import ammo.AmmoHandler;
 import ammo.Projectile;
 import enemies.Enemy;
@@ -7,57 +7,41 @@ import player.Player;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
+import core.Game;
+import utils.GameWorld;
 
 import java.awt.*;
 import java.awt.event.*;
 
 public class PlayingState implements GameState {
-    private final Game game;
-    private final Player player;
-    private final AmmoHandler ammoHandler;
-    private final EnemySpawner spawner;
     private final Camera camera;
-    private final ChunkLoader chunkLoader;
-    private final UI ui;
-    private final GameWorld gameWorld;
+    public GameWorld gameWorld;
+    public Player player;
+    public EnemySpawner spawner;
+    public ChunkLoader chunkLoader;
+    public UI ui;
+    public AmmoHandler ammoHandler;
 
-    public PlayingState(Game game) {
-        this.game = game;
-
-        int w = game.getWidth();
-        int h = game.getHeight();
-
-        player = new Player(w / 2, h / 2, w, h);
-        ammoHandler = new AmmoHandler(game.getMapWidth(), game.getMapHeight());
-        spawner = new EnemySpawner(w, h);
-        ui = new UI(player);
-
-        camera = new Camera();
-        chunkLoader = new ChunkLoader(this.player, game.getWidth(), game.getHeight(), 1500);
-        gameWorld = new GameWorld(this.player, this.ammoHandler, this.spawner, this.chunkLoader, this.ui);
-
-    }
-
-    public PlayingState(Game game, GameWorld gameWorld) {
-        this.game = game;
+    public PlayingState(GameWorld gameWorld) {
+        this.camera = new Camera();
         this.gameWorld = gameWorld;
         this.player = gameWorld.getPlayer();
-        this.ammoHandler = gameWorld.getAmmoHandler();
         this.spawner = gameWorld.getEnemySpawner();
         this.chunkLoader = gameWorld.getChunkLoader();
         this.ui = gameWorld.getUi();
-        camera = new Camera();
+        this.ammoHandler = gameWorld.getAmmoHandler();
+
     }
 
     public void update() {
         if (player.hasLeveledUp()) {
             player.resetInput();
-            game.setGameState(new LevelUpState(game, gameWorld));
+            gameWorld.getStateStack().push(new LevelUpState(gameWorld));
             return;
         }
 
         player.update();
-        camera.centerOn(player, game.getWidth(), game.getHeight(), game.getMapWidth(), game.getMapHeight());
+        camera.centerOn(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         updateAmmo();
         spawner.update(player);
         chunkLoader.update();
@@ -87,19 +71,19 @@ public class PlayingState implements GameState {
 
     public void render(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, game.getWidth(), game.getHeight());
+        g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         chunkLoader.render(g, camera);
         player.render(g, camera);
         ammoHandler.render(g, camera);
         spawner.render(g, camera);
-        ui.render((Graphics2D) g, game.getWidth(), game.getHeight());
+        ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
 
     }
 
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            game.setGameState(new PauseState(game, gameWorld));
+            gameWorld.getStateStack().push(new PauseState(gameWorld));
             return;
         }
 

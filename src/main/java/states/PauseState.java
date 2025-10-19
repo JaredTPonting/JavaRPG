@@ -1,11 +1,13 @@
+package states;
+
 import player.Player;
+import utils.GameWorld;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class PauseState implements GameState {
-    private final Game game;
     private final Player player;
     private final GameWorld gameWorld;
 
@@ -16,8 +18,7 @@ public class PauseState implements GameState {
     private final Rectangle statsButton = new Rectangle(500, 400, 200, 50);
     private final Rectangle quitButton = new Rectangle(500, 600, 200, 50);
 
-    public PauseState(Game game, GameWorld gameWorld) {
-        this.game = game;
+    public PauseState(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         this.player = gameWorld.getPlayer();
     }
@@ -31,7 +32,7 @@ public class PauseState implements GameState {
     public void render(Graphics g) {
         // Dark overlay
         g.setColor(new Color(0, 0, 0, 180));
-        g.fillRect(0, 0, game.getWidth(), game.getHeight());
+        g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
 
         // Draw buttons
         g.setColor(Color.WHITE);
@@ -93,7 +94,7 @@ public class PauseState implements GameState {
     private void resumeGame() {
         // Reset input so player doesn't keep moving
         player.resetInput();
-        game.setGameState(new PlayingState(game, gameWorld));
+        gameWorld.getStateStack().pop();
     }
 
     @Override

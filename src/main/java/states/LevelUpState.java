@@ -1,19 +1,21 @@
+package states;
+
 import ammo.AmmoHandler;
 import player.Player;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import core.Game;
+import utils.GameWorld;
 
 public class LevelUpState implements GameState {
-    private final Game game;
     private final Player player;
     private final AmmoHandler ammoHandler;
     private final GameWorld gameWorld;
 
 
-    public LevelUpState(Game game, GameWorld gameWorld) {
-        this.game = game;
+    public LevelUpState(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         this.player = gameWorld.getPlayer();
         this.ammoHandler = gameWorld.getAmmoHandler();
@@ -27,7 +29,7 @@ public class LevelUpState implements GameState {
     @Override
     public void render(Graphics g) {
         g.setColor(new Color(0, 0, 0, 180));
-        g.fillRect(0, 0, game.getWidth(), game.getHeight());
+        g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
@@ -56,7 +58,7 @@ public class LevelUpState implements GameState {
             player.clearLevelUpFlag();
             player.printStats();
             player.resetInput();
-            game.setGameState(new PlayingState(game, gameWorld)); // resume gameplay
+            gameWorld.getStateStack().pop(); // resume gameplay
         }
     }
 
