@@ -1,6 +1,5 @@
 package states;
 
-import ammo.AmmoHandler;
 import entities.player.Player;
 
 import java.awt.*;
@@ -11,14 +10,12 @@ import utils.GameWorld;
 
 public class LevelUpState implements GameState {
     private final Player player;
-    private final AmmoHandler ammoHandler;
     private final GameWorld gameWorld;
 
 
     public LevelUpState(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         this.player = gameWorld.getPlayer();
-        this.ammoHandler = gameWorld.getAmmoHandler();
     }
 
     @Override
@@ -49,8 +46,6 @@ public class LevelUpState implements GameState {
             case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.levelUp(); }
             case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.levelUp(); }
             case KeyEvent.VK_3 -> { player.increaseSpeed(); player.levelUp(); }
-            case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMultiplier(); player.levelUp(); }
-            case KeyEvent.VK_5 -> { ammoHandler.increaseDamageMultiplier(); player.levelUp(); }
             case KeyEvent.VK_ESCAPE -> { gameWorld.getStateStack().pop(); }
         }
 

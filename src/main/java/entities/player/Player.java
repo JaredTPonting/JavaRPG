@@ -26,6 +26,45 @@ public class Player extends Entity {
     private long lastFrameTime = 0;
     private final int frameDelay = 100;
     private boolean facingLeft = true;
+    private boolean facingRight = false;
+
+    private boolean lastFacingLeft = true;
+    private boolean lastFacingRight = false;
+    private boolean lastFacingUp = false;
+    private boolean lastFacingDown = false;
+
+    public boolean isLastFacingLeft() {
+        return lastFacingLeft;
+    }
+
+    public void setLastFacingLeft(boolean lastFacingLeft) {
+        this.lastFacingLeft = lastFacingLeft;
+    }
+
+    public boolean isLastFacingRight() {
+        return lastFacingRight;
+    }
+
+    public void setLastFacingRight(boolean lastFacingRight) {
+        this.lastFacingRight = lastFacingRight;
+    }
+
+    public boolean isLastFacingUp() {
+        return lastFacingUp;
+    }
+
+    public void setLastFacingUp(boolean lastFacingUp) {
+        this.lastFacingUp = lastFacingUp;
+    }
+
+    public boolean isLastFacingDown() {
+        return lastFacingDown;
+    }
+
+    public void setLastFacingDown(boolean lastFacingDown) {
+        this.lastFacingDown = lastFacingDown;
+    }
+
 
     private enum State { IDLE, WALK, RUN }
     private State currentState = State.IDLE;
@@ -68,6 +107,11 @@ public class Player extends Entity {
     public void setLeft(boolean left) { this.left = left; }
     public void setRight(boolean right) { this.right = right; }
 
+    public boolean getUp() { return this.up; }
+    public boolean getDown() { return this.down; }
+    public boolean getLeft() { return this.left; }
+    public boolean getRight() { return this.right; }
+
     public void resetInput() {
         this.up = false;
         this.down = false;
@@ -91,6 +135,9 @@ public class Player extends Entity {
     public int getXP() { return (int) this.playerLevel.getExperiencePoints();}
     public int getXPToNextLevel() { return (int) this.playerLevel.getNextLevelCost() - (int) this.playerLevel.getExperiencePoints();}
     public int getMaxXP() { return (int) this.playerLevel.getNextLevelCost(); }
+    public PlayerStats getPlayerStats() {
+        return this.playerStats;
+    }
 
     public void takeDamage(double damage) {
         this.playerStats.takeDamage(damage);
@@ -107,10 +154,11 @@ public class Player extends Entity {
         int dx = 0;
         int dy = 0;
 
-        if (up) dy -= 1;
-        if (down) dy += 1;
-        if (left) dx -= 1;
-        if (right) dx += 1;
+        if (up) {dy -= 1; setLastFacingUp(true); setLastFacingDown(false);}
+        if (down) {dy += 1; setLastFacingDown(true); setLastFacingUp(false);}
+        if (!up & !down) {setLastFacingUp(false); setLastFacingDown(false);}
+        if (left) {dx -= 1; setLastFacingLeft(true); setLastFacingRight(false);}
+        if (right) {dx += 1; setLastFacingRight(true); setLastFacingLeft(false);}
 
         // Normalize if moving diagonally
         double diagonalBoost = 1.05;
@@ -124,8 +172,8 @@ public class Player extends Entity {
         }
 
         // Facing & animation state
-        if (left) facingLeft = true;
-        if (right) facingLeft = false;
+        if (left){ facingLeft = true;}
+        if (right){ facingLeft = false;}
 
         boolean isMoving = up || down || left || right;
         boolean isRunning = left || right;
@@ -145,7 +193,6 @@ public class Player extends Entity {
             lastFrameTime = nowMillis;
         }
         updateHitBox();
-        System.out.println("X= " + this.x + " | y = " + this.y + "| Hitbox = " + hitBox);
     }
 
 

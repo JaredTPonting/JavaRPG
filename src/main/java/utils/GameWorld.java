@@ -1,6 +1,5 @@
 package utils;
 
-import ammo.AmmoHandler;
 import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
 import entities.player.Player;
@@ -12,7 +11,6 @@ import java.awt.*;
 
 public class GameWorld {
     public Player player;
-    public AmmoHandler ammoHandler;
     public EnemySpawner enemySpawner;
     public ChunkLoader chunkLoader;
     public CollisionChecker collisionChecker;
@@ -23,7 +21,6 @@ public class GameWorld {
 
     public GameWorld(int gameWidth, int gameHeight) {
         this.player = new Player(this,gameWidth / 2, gameHeight / 2, 48, 48);
-        this.ammoHandler = new AmmoHandler(gameWidth, gameHeight);
         this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
         this.chunkLoader = new ChunkLoader(this.player, gameWidth, gameHeight, 1500);
         this.ui = new UI(this.player);
@@ -60,10 +57,6 @@ public class GameWorld {
 
     public Player getPlayer() {
         return this.player;
-    }
-
-    public AmmoHandler getAmmoHandler() {
-        return this.ammoHandler;
     }
 
     public EnemySpawner getEnemySpawner() {

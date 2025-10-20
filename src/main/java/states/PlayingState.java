@@ -1,13 +1,12 @@
 package states;// states.PlayingState.java
-import ammo.AmmoHandler;
-import ammo.Projectile;
-import entities.enemies.Enemy;
 import entities.enemies.EnemySpawner;
 import entities.player.Player;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
 import utils.GameWorld;
+import weapons.WeaponManager;
+import weapons.eggcannon.EggCannon;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +18,7 @@ public class PlayingState implements GameState {
     public EnemySpawner spawner;
     public ChunkLoader chunkLoader;
     public UI ui;
-    public AmmoHandler ammoHandler;
+    public WeaponManager weaponManager;
 
     public PlayingState(GameWorld gameWorld) {
         this.camera = new Camera();
@@ -28,7 +27,8 @@ public class PlayingState implements GameState {
         this.spawner = gameWorld.getEnemySpawner();
         this.chunkLoader = gameWorld.getChunkLoader();
         this.ui = gameWorld.getUi();
-        this.ammoHandler = gameWorld.getAmmoHandler();
+        this.weaponManager = new WeaponManager();
+        weaponManager.addWeapon(new EggCannon(this.player, 1000, gameWorld));
 
     }
 
@@ -41,40 +41,20 @@ public class PlayingState implements GameState {
 
         player.update();
         camera.centerOn(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
-        updateAmmo();
+        weaponManager.update();
         spawner.update(player);
         chunkLoader.update();
         ui.update();
-
-        Enemy target = spawner.findNearestEnemy(player.getX(), player.getY(), player.getRange());
-        if (target != null && ammoHandler.canShoot()) {
-            double dx = target.getX() - player.getX();
-            double dy = target.getY() - player.getY();
-            ammoHandler.fire(player.getX(), player.getY(), dx, dy);
-        }
-    }
-
-    private void updateAmmo() {
-        ammoHandler.update();
-
-        for (Projectile p : ammoHandler.getProjectiles()) {
-            for (Enemy enemy : spawner.getEnemies()) {
-                if (!enemy.isDead() && p.getBounds().intersects(enemy.getBounds())) {
-                    enemy.damage(ammoHandler.getDamage());
-                    p.setActive(false);
-                    break;
-                }
-            }
-        }
     }
 
     public void render(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         chunkLoader.render(g, camera);
+        weaponManager.render(g, camera);
         player.render(g, camera);
-        ammoHandler.render(g, camera);
         spawner.render(g, camera);
+
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
 
     }
