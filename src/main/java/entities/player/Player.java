@@ -154,11 +154,52 @@ public class Player extends Entity {
         int dx = 0;
         int dy = 0;
 
-        if (up) {dy -= 1; setLastFacingUp(true); setLastFacingDown(false);}
-        if (down) {dy += 1; setLastFacingDown(true); setLastFacingUp(false);}
-        if (!up & !down) {setLastFacingUp(false); setLastFacingDown(false);}
-        if (left) {dx -= 1; setLastFacingLeft(true); setLastFacingRight(false);}
-        if (right) {dx += 1; setLastFacingRight(true); setLastFacingLeft(false);}
+        if (up) {dy -= 1;}
+        if (down) {dy += 1;}
+        if (left) {dx -= 1;}
+        if (right) {dx += 1;}
+
+        if (dx == 0 & dy == 1) { // down
+            setLastFacingDown(true);
+            setLastFacingUp(false);
+            setLastFacingLeft(false);
+            setLastFacingRight(false);
+        } else if (dx == 0 & dy == -1) { // up
+            setLastFacingDown(false);
+            setLastFacingUp(true);
+            setLastFacingLeft(false);
+            setLastFacingRight(false);
+        } else if (dx == 1 & dy == -1) { // right up
+            setLastFacingDown(false);
+            setLastFacingUp(true);
+            setLastFacingLeft(false);
+            setLastFacingRight(true);
+        } else if (dx == -1 & dy == 1) { // left down
+            setLastFacingDown(true);
+            setLastFacingUp(false);
+            setLastFacingLeft(true);
+            setLastFacingRight(false);
+        } else if (dx == 1 & dy == 0) { // right
+            setLastFacingDown(false);
+            setLastFacingUp(false);
+            setLastFacingLeft(false);
+            setLastFacingRight(true);
+        } else if (dx == -1 & dy == 0) { // left
+            setLastFacingDown(false);
+            setLastFacingUp(false);
+            setLastFacingLeft(true);
+            setLastFacingRight(false);
+        } else if (dx == 1 & dy == 1) { // right down
+            setLastFacingDown(true);
+            setLastFacingUp(false);
+            setLastFacingLeft(false);
+            setLastFacingRight(true);
+        } else if (dx == -1 & dy == -1) { // left up
+            setLastFacingDown(false);
+            setLastFacingUp(true);
+            setLastFacingLeft(true);
+            setLastFacingRight(false);
+        }
 
         // Normalize if moving diagonally
         double diagonalBoost = 1.05;
