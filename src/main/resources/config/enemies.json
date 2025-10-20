@@ -5,8 +5,8 @@
     "sprite": "/sprites/fox_front_idle-removebg.png",
     "xpBase": 30,
     "xpPerLevel": 2,
-    "attackCooldown": 1000,
-    "damage": 20.0
+    "damage": 20.0,
+    "attackSpeed": 1.0
   },
   "WOLF": {
     "hp": 200,
@@ -14,7 +14,7 @@
     "sprite": "/sprites/wolf_front_idle-removebg.png",
     "xpBase": 60,
     "xpPerLevel": 2,
-    "attackCooldown": 1000,
-    "damage": 35.0
+    "damage": 35.0,
+    "attackSpeed": 1.5
   }
 }

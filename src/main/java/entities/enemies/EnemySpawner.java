@@ -1,7 +1,8 @@
-package enemies;
+package entities.enemies;
 
-import player.Player;
+import entities.player.Player;
 import utils.Camera;
+import utils.GameWorld;
 
 import java.awt.*;
 import java.util.*;
@@ -10,6 +11,7 @@ import java.util.List;
 public class EnemySpawner {
 
     public enum EnemyType { FOX, WOLF, HUNTER }
+    private GameWorld gameWorld;
 
     private final List<Enemy> enemies = new ArrayList<>();
     private final Random random = new Random();
@@ -24,9 +26,10 @@ public class EnemySpawner {
     private static final int MAX_MIN_ENEMIES = 1500;
     private static final long BASE_SPAWN_INTERVAL_MS = 100;
 
-    public EnemySpawner(int screenWidth, int screenHeight) {
+    public EnemySpawner(GameWorld gameWorld, int screenWidth, int screenHeight) {
         this.SCREEN_WIDTH = screenWidth;
         this.SCREEN_HEIGHT = screenHeight;
+        this.gameWorld = gameWorld;
     }
 
     public List<Enemy> getEnemies() {
@@ -40,7 +43,7 @@ public class EnemySpawner {
         // Adjust spawn interval (faster spawns at higher level)
         long spawnInterval = (long) (BASE_SPAWN_INTERVAL_MS / (1 + player.getLevel() * 0.05));
 
-        // Maintain minimum enemies alive
+        // Maintain minimum entities.enemies alive
         int minEnemies = calculateMinEnemies(player.getLevel());
 
         if (enemies.size() < minEnemies && now - lastSpawnTime > spawnInterval) {
@@ -48,12 +51,12 @@ public class EnemySpawner {
             lastSpawnTime = now;
         }
 
-        // Update existing enemies
+        // Update existing entities.enemies
         for (Enemy e : enemies) {
-            e.update(enemies);
+            e.update();
         }
 
-        // Remove dead enemies & give XP
+        // Remove dead entities.enemies & give XP
         enemies.removeIf(enemy -> {
             if (enemy.isDead()) {
                 player.gainXP(enemy.getXP());
@@ -66,7 +69,7 @@ public class EnemySpawner {
 
         relocateFarEnemies(player);
 
-//        checkForBossEvent(player);
+//        checkForBossEvent(entities.player);
     }
 
     public void checkEnemyDamage(List<Enemy> enemies, Player player) {
@@ -78,7 +81,7 @@ public class EnemySpawner {
             double dy = player.getY() - e.getY();
             double distance = Math.hypot(dx, dy);
 
-            if (distance <= e.size * 1.5) {
+            if (gameWorld.getCollisionChecker().checkCollision(e, player)) {
                 double damage = e.attackPlayer();
                 if (damage > 0) {
                     player.takeDamage(damage);
@@ -116,7 +119,7 @@ public class EnemySpawner {
     }
 
     private Enemy createEnemy(EnemyType type, int x, int y, Player player) {
-        return EnemyFactory.create(type.name(), x, y, player);
+        return EnemyFactory.create(type.name(), gameWorld, x, y, player);
     }
 
     private Point getRandomSpawnPointOutsideCamera(Player player) {

@@ -1,6 +1,6 @@
 package states;
 
-import player.Player;
+import entities.player.Player;
 import utils.GameWorld;
 
 import java.awt.*;
@@ -16,7 +16,9 @@ public class PauseState implements GameState {
     // Button positions and sizes
     private final Rectangle resumeButton = new Rectangle(500, 300, 200, 50);
     private final Rectangle statsButton = new Rectangle(500, 400, 200, 50);
+    private final Rectangle levelUpButton = new Rectangle(500, 500, 200, 50);
     private final Rectangle quitButton = new Rectangle(500, 600, 200, 50);
+
 
     public PauseState(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -38,12 +40,14 @@ public class PauseState implements GameState {
         g.setColor(Color.WHITE);
         g.fillRect(resumeButton.x, resumeButton.y, resumeButton.width, resumeButton.height);
         g.fillRect(statsButton.x, statsButton.y, statsButton.width, statsButton.height);
+        g.fillRect(levelUpButton.x, levelUpButton.y, levelUpButton.width, levelUpButton.height);
         g.fillRect(quitButton.x, quitButton.y, quitButton.width, quitButton.height);
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("RESUME", resumeButton.x + 50, resumeButton.y + 30);
         g.drawString("STATS", statsButton.x + 60, statsButton.y + 30);
+        g.drawString("LEVEL UP", levelUpButton.x + 60, levelUpButton.y + 30);
         g.drawString("QUIT", quitButton.x + 70, quitButton.y + 30);
 
         // Show stats overlay
@@ -88,13 +92,21 @@ public class PauseState implements GameState {
             showStats = !showStats;
         } else if (quitButton.contains(p)) {
             System.exit(0); // quit game immediately
+        } else if (levelUpButton.contains(p)) {
+            levelUpPlayer();
         }
     }
 
     private void resumeGame() {
-        // Reset input so player doesn't keep moving
+        // Reset input so entities.player doesn't keep moving
         player.resetInput();
         gameWorld.getStateStack().pop();
+    }
+
+    private void levelUpPlayer() {
+        if (player.checkLevelUp()) {
+            gameWorld.getStateStack().push(new LevelUpState(gameWorld));
+        }
     }
 
     @Override

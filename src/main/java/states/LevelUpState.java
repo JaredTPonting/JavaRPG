@@ -1,12 +1,12 @@
 package states;
 
 import ammo.AmmoHandler;
-import player.Player;
+import entities.player.Player;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import core.Game;
+
 import utils.GameWorld;
 
 public class LevelUpState implements GameState {
@@ -33,7 +33,7 @@ public class LevelUpState implements GameState {
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("LEVEL UP! You have " + player.getUnspentPoints() + " points.", 100, 100);
+        g.drawString("LEVEL UP! You have " + player.getXP() + " / " + player.getMaxXP(), 100, 100);
 
         g.setFont(new Font("Arial", Font.PLAIN, 18));
         g.drawString("1. Increase Max Health (+20)", 120, 150);
@@ -46,16 +46,16 @@ public class LevelUpState implements GameState {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.spendPoint(); }
-            case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.spendPoint(); }
-            case KeyEvent.VK_3 -> { player.increaseSpeed(); player.spendPoint(); }
-            case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMultiplier(); player.spendPoint(); }
-            case KeyEvent.VK_5 -> { ammoHandler.increaseDamageMultiplier(); player.spendPoint(); }
+            case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.levelUp(); }
+            case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.levelUp(); }
+            case KeyEvent.VK_3 -> { player.increaseSpeed(); player.levelUp(); }
+            case KeyEvent.VK_4 -> { ammoHandler.increaseBulletSpeedMultiplier(); player.levelUp(); }
+            case KeyEvent.VK_5 -> { ammoHandler.increaseDamageMultiplier(); player.levelUp(); }
+            case KeyEvent.VK_ESCAPE -> { gameWorld.getStateStack().pop(); }
         }
 
 
-        if (player.getUnspentPoints() <= 0) {
-            player.clearLevelUpFlag();
+        if (!player.checkLevelUp()) {
             player.printStats();
             player.resetInput();
             gameWorld.getStateStack().pop(); // resume gameplay

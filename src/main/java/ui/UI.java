@@ -1,7 +1,7 @@
 package ui;
 
 import java.awt.*;
-import player.Player;
+import entities.player.Player;
 
 public class UI {
     private Player player;
@@ -44,7 +44,7 @@ public class UI {
         drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedStamina / player.getMaxStamina()), new Color(38, 156, 31), "STAMINA");
 
         y += barHeight + spacing;
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedXP / player.getMaxXP()), new Color(38, 156, 215), "XP");
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedXP / player.getMaxXP()), new Color(38, 156, 215), player.checkLevelUp() ? "CAN LEVEL UP" : "XP");
 
 
     }

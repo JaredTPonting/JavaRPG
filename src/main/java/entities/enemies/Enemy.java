@@ -1,12 +1,16 @@
-package enemies;
+package entities.enemies;
+
+import entities.Entity;
+import utils.GameWorld;
+import utils.Cooldown;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import player.Player;
+import entities.player.Player;
 import utils.Camera;
 import java.util.List;
 
-public class Enemy {
-    protected double x, y;
+public class Enemy extends Entity {
     protected double vx = 0, vy = 0;
     protected int size = 32;
     protected double hp;
@@ -14,18 +18,19 @@ public class Enemy {
     protected boolean dead = false;
     protected BufferedImage sprite;
     protected int XP;
-    protected long attackCooldown;
-    protected double lastAttack = System.currentTimeMillis();
     protected double damage;
+    protected Cooldown attackCooldown;
 
     protected Player target;
 
     private long lastUpdateTime = System.nanoTime();
 
-    public Enemy(int x, int y, Player target) {
-        this.x = x;
-        this.y = y;
-        this.target = target;
+    public Enemy(GameWorld gameWorld, int x, int y, int width, int height, double attackSpeed) {
+        super(gameWorld, x, y, width, height);
+        this.target = gameWorld.getPlayer();
+        long baseDuration = 1000;
+        long adjustedDuration = (long) (baseDuration / attackSpeed);
+        this.attackCooldown = new Cooldown(adjustedDuration);
     }
 
     public void setSpeed(int speed) {
@@ -61,7 +66,9 @@ public class Enemy {
         this.vy = 0;
     }
 
-    public void update(List<Enemy> allEnemies) {
+    @Override
+    public void update() {
+        List<Enemy> allEnemies = gameWorld.getEnemySpawner().getEnemies();
         long now = System.nanoTime();
         double deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
         lastUpdateTime = now;
@@ -71,7 +78,7 @@ public class Enemy {
         double targetX = target.getX();
         double targetY = target.getY();
 
-        // Direction to player
+        // Direction to entities.player
         double dx = targetX - x;
         double dy = targetY - y;
         double distance = Math.hypot(dx, dy);
@@ -80,13 +87,13 @@ public class Enemy {
         double ax = 0;
         double ay = 0;
 
-        // Attraction toward player
+        // Attraction toward entities.player
         if (distance > 0) {
-            ax += (dx / distance) * 700;  // acceleration toward player
+            ax += (dx / distance) * 700;  // acceleration toward entities.player
             ay += (dy / distance) * 700;
         }
 
-        // Separation from nearby enemies
+        // Separation from nearby entities.enemies
         double separationRadius = size * 1.5;
         for (Enemy e : allEnemies) {
             if (e == this || e.isDead()) continue;
@@ -123,6 +130,8 @@ public class Enemy {
         // --- Apply movement ---
         x += vx * deltaTime;
         y += vy * deltaTime;
+
+        updateHitBox();
     }
 
 
@@ -137,9 +146,8 @@ public class Enemy {
     }
 
     public double attackPlayer() {
-        long now = System.currentTimeMillis();
-        if (now - lastAttack >= attackCooldown) {
-            lastAttack = now;
+        if (attackCooldown.ready()) {
+            attackCooldown.reset();
             return damage;
         }
 
@@ -158,9 +166,10 @@ public class Enemy {
         return new Rectangle((int) x, (int) y, size, size);
     }
 
+    @Override
     public void render(Graphics g, Camera camera) {
         if (!dead) {
-            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), 64, 64, null);
+            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.width, this.height, null);
         }
     }
 }

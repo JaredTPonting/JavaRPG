@@ -1,8 +1,7 @@
-package enemies;
+package entities.enemies;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
-import player.Player;
+import entities.player.Player;
+import utils.GameWorld;
 import utils.SpriteLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,17 +24,16 @@ public class EnemyFactory {
         }
     }
 
-    public static Enemy create(String type, int x, int y, Player target) {
+    public static Enemy create(String type, GameWorld gameWorld, int x, int y, Player target) {
         EnemyConfig cfg = configs.get(type);
         if (cfg == null) {
             throw new IllegalArgumentException("Unkown enemy seleciton");
         }
-        Enemy e = new Enemy(x, y, target);
+        Enemy e = new Enemy(gameWorld, x, y, 64, 64, cfg.attackSpeed);
         e.hp = cfg.hp;
         e.speed = cfg.speed;
         e.sprite = SpriteLoader.load(cfg.sprite);
         e.XP = cfg.xpBase + (target.getLevel() * cfg.xpPerLevel);
-        e.attackCooldown = cfg.attackCooldown;
         e.damage = cfg.damage;
         return e;
 
@@ -49,7 +47,7 @@ public class EnemyFactory {
         public String sprite;
         public int xpBase;
         public int xpPerLevel;
-        public long attackCooldown;
+        public double attackSpeed;
         public double damage;
     }
 }

@@ -1,9 +1,9 @@
 package states;// states.PlayingState.java
 import ammo.AmmoHandler;
 import ammo.Projectile;
-import enemies.Enemy;
-import enemies.EnemySpawner;
-import player.Player;
+import entities.enemies.Enemy;
+import entities.enemies.EnemySpawner;
+import entities.player.Player;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;

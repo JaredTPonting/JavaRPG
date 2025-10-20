@@ -32,7 +32,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         this.addMouseListener(this);
         this.setFocusable(true);
         this.requestFocus();
-
+        this.gameWorld = new GameWorld(getWidth(), getHeight());
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -42,7 +42,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
             }
         });
 
-        this.gameWorld = new GameWorld(getWidth(), getHeight());
+
     }
 
     public GameState getGameState() {

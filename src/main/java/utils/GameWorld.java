@@ -1,9 +1,9 @@
 package utils;
 
 import ammo.AmmoHandler;
-import enemies.EnemySpawner;
+import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
-import player.Player;
+import entities.player.Player;
 import states.GameState;
 import ui.UI;
 import states.MenuState;
@@ -15,20 +15,22 @@ public class GameWorld {
     public AmmoHandler ammoHandler;
     public EnemySpawner enemySpawner;
     public ChunkLoader chunkLoader;
+    public CollisionChecker collisionChecker;
     public UI ui;
     private final StateStack stateStack;
     int gameWidth;
     int gameHeight;
 
     public GameWorld(int gameWidth, int gameHeight) {
-        this.player = new Player(gameWidth / 2, gameHeight / 2, gameWidth, gameHeight);
+        this.player = new Player(this,gameWidth / 2, gameHeight / 2, 48, 48);
         this.ammoHandler = new AmmoHandler(gameWidth, gameHeight);
-        this.enemySpawner = new EnemySpawner(gameWidth, gameHeight);
+        this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
         this.chunkLoader = new ChunkLoader(this.player, gameWidth, gameHeight, 1500);
         this.ui = new UI(this.player);
         this.stateStack = new StateStack();
         this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
+        this.collisionChecker = new CollisionChecker();
         stateStack.push(new MenuState(this));
     }
 
@@ -70,6 +72,10 @@ public class GameWorld {
 
     public ChunkLoader getChunkLoader() {
         return this.chunkLoader;
+    }
+
+    public CollisionChecker getCollisionChecker() {
+        return this.collisionChecker;
     }
 
     public UI getUi() {

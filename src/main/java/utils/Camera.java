@@ -1,9 +1,6 @@
 package utils;
 
-import player.Player;
-
-import java.awt.*;
-import java.util.Random;
+import entities.player.Player;
 
 public class Camera {
     double camX, camY;

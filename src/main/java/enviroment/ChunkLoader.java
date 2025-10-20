@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.Map;
 
-import player.Player;
+import entities.player.Player;
 import utils.Camera;
 
 public class ChunkLoader {
@@ -34,7 +34,7 @@ public class ChunkLoader {
     }
 
 
-    // Update visible chunks based on player position
+    // Update visible chunks based on entities.player position
     public void update() {
         int playerChunkX = (int) player.getX() / chunkSize;
         int playerChunkY = (int) player.getY() / chunkSize;
