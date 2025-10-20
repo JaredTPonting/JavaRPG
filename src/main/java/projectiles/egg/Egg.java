@@ -1,5 +1,6 @@
 package projectiles.egg;
 
+import entities.enemies.Enemy;
 import entities.player.Player;
 import projectiles.Projectile;
 import utils.Camera;
@@ -36,6 +37,7 @@ public class Egg extends Projectile {
         if (left) dx -= 1;
         if (right) dx += 1;
         loadSprite();
+        hitBox = new Rectangle((int) x, (int) y, 32, 32);
     }
 
     @Override
@@ -53,6 +55,14 @@ public class Egg extends Projectile {
             x += dx * this.speed * deltaTime;
             y += dy * this.speed * deltaTime;
         }
+        for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
+            if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
+                e.damage(this.getDamage());
+                this.destroyProjectile();
+            }
+        }
+
+        updateHitBox();
     }
 
     protected void loadSprite() {

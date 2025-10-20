@@ -33,12 +33,14 @@ public abstract class Weapon {
 
     public void update() {
         tryFire();
+        List<Projectile> toRemove = new ArrayList<>();
         for (Projectile p : activeProjectiles) {
             p.update();
             if (!p.isAlive()) {
-                activeProjectiles.remove(p);
+                toRemove.add(p);
             }
         }
+        activeProjectiles.removeAll(toRemove);
     }
 
     public void render(Graphics g, Camera camera) {

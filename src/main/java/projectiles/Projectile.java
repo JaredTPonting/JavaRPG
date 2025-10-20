@@ -3,6 +3,8 @@ package projectiles;
 import utils.Camera;
 import utils.GameWorld;
 
+import java.awt.*;
+
 
 public abstract class Projectile {
     protected double x, y;
@@ -13,11 +15,17 @@ public abstract class Projectile {
     protected GameWorld gameWorld;
     public long lastUpdateTime;
 
+    protected Rectangle hitBox;
+
     public Projectile(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
     }
 
     public abstract void update();
+    protected void updateHitBox() {
+        hitBox.setLocation((int) this.x, (int) this.y);
+    }
+    public Rectangle getHitBox() { return this.hitBox; }
 
     public abstract void render(java.awt.Graphics g, Camera camera);
 
@@ -33,6 +41,7 @@ public abstract class Projectile {
     }
 
     public boolean isAlive() { return alive; }
+    public void destroyProjectile() { this.alive=false; }
 
     // Accessors for modifiers
     public double getX() { return x; }
