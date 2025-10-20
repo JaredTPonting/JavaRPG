@@ -3,7 +3,6 @@ package projectiles;
 import utils.Camera;
 import utils.GameWorld;
 
-import java.awt.*;
 
 public abstract class Projectile {
     protected double x, y;

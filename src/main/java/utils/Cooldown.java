@@ -1,7 +1,7 @@
 package utils;
 
 public class Cooldown {
-    private long duration;
+    private final long duration;
     private long lastUsed;
 
     public Cooldown(long duration) {

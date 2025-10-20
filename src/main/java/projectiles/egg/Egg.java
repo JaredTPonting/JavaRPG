@@ -1,6 +1,5 @@
 package projectiles.egg;
 
-import entities.enemies.EnemySpawner;
 import entities.player.Player;
 import projectiles.Projectile;
 import utils.Camera;
@@ -16,7 +15,6 @@ public class Egg extends Projectile {
     boolean loaded = false;
     protected int spriteSize = 32;
     private static final BufferedImage[] eggSprites = new BufferedImage[30];
-    private boolean up, down, left, right;
     protected BufferedImage sprite;
     private static final Random rand = new Random();
 
@@ -27,10 +25,10 @@ public class Egg extends Projectile {
         this.damage = 50.0;
         this.x = player.getX();
         this.y = player.getY();
-        this.up = player.isLastFacingUp();
-        this.down = player.isLastFacingDown();
-        this.left = player.isLastFacingLeft();
-        this.right = player.isLastFacingRight();
+        boolean up = player.isLastFacingUp();
+        boolean down = player.isLastFacingDown();
+        boolean left = player.isLastFacingLeft();
+        boolean right = player.isLastFacingRight();
         this.lastUpdateTime = System.nanoTime();
 
         if (up) dy -= 1;
@@ -49,8 +47,8 @@ public class Egg extends Projectile {
         System.out.println(dx + "  " + dy);
         if (dx != 0 && dy != 0) {
             double diagonal = Math.sqrt(2);
-            x += ((double) dx / diagonal) * this.speed * diagonalBoost * deltaTime;
-            y += ((double) dy / diagonal) * this.speed * diagonalBoost * deltaTime;
+            x += ( dx / diagonal) * this.speed * diagonalBoost * deltaTime;
+            y += ( dy / diagonal) * this.speed * diagonalBoost * deltaTime;
         } else {
             x += dx * this.speed * deltaTime;
             y += dy * this.speed * deltaTime;
