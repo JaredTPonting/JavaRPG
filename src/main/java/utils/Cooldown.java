@@ -6,7 +6,7 @@ public class Cooldown {
 
     public Cooldown(long duration) {
         this.duration = duration;
-        this.lastUsed = 0;
+        this.lastUsed = System.currentTimeMillis();
     }
 
     public boolean ready() {

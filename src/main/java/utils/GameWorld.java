@@ -3,45 +3,57 @@ package utils;
 import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
 import entities.player.Player;
+import lingeringzones.LingeringZoneManager;
 import states.GameState;
-import ui.UI;
 import states.MenuState;
+import ui.UI;
 import weapons.WeaponManager;
 
 import java.awt.*;
 
-public class GameWorld {
-    public Player player;
-    public EnemySpawner enemySpawner;
-    public ChunkLoader chunkLoader;
-    public CollisionChecker collisionChecker;
-    public UI ui;
+public class GameWorld implements WorldContext {
+
+    private Player player;
+    private EnemySpawner enemySpawner;
+    private ChunkLoader chunkLoader;
+    private CollisionChecker collisionChecker;
+    private UI ui;
     private final StateStack stateStack;
     private WeaponManager weaponManager;
-    int gameWidth;
-    int gameHeight;
+    private LingeringZoneManager lingeringZoneManager;
+    private Point mousePosition = new Point(0, 0);
 
+    // game dims
+    private final int gameWidth;
+    private final int gameHeight;
+
+    // constructor
     public GameWorld(int gameWidth, int gameHeight) {
-        this.player = new Player(this,gameWidth / 2, gameHeight / 2, 48, 48);
-        this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
-        this.chunkLoader = new ChunkLoader(this.player, gameWidth, gameHeight, 1500);
-        this.ui = new UI(this.player);
-        this.stateStack = new StateStack();
-        this.weaponManager = new WeaponManager();
-        this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
+        this.stateStack = new StateStack();
         this.collisionChecker = new CollisionChecker();
+
+        initWorld();
         stateStack.push(new MenuState(this));
     }
 
-    public int getGameWidth() {
-        return this.gameWidth;
+    // Init
+    private void initWorld() {
+        this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48, 48);
+        this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
+        this.chunkLoader = new ChunkLoader(player, gameWidth, gameHeight, 1500);
+        this.ui = new UI(player);
+        this.weaponManager = new WeaponManager();
+        this.lingeringZoneManager = new LingeringZoneManager();
     }
 
-    public int getGameHeight() {
-        return this.gameHeight;
+    /** Resets core gameplay components while preserving persistent state. */
+    public void refresh() {
+        initWorld();
     }
 
+    // COre Loops
     public void update() {
         stateStack.update();
     }
@@ -50,34 +62,21 @@ public class GameWorld {
         stateStack.render(g);
     }
 
-    public StateStack getStateStack() {
-        return stateStack;
-    }
+    // Getters & Setters
+    public int getGameWidth() { return gameWidth; }
+    public int getGameHeight() { return gameHeight; }
 
-    public GameState getGameState() {
-        return stateStack.peek();
-    }
+    public Point getMousePosition() { return this.mousePosition; }
+    public void setMousePosition(Point p) {this.mousePosition = p; }
 
-    public WeaponManager getWeaponManager() { return this.weaponManager; }
+    public StateStack getStateStack() { return stateStack; }
+    public GameState getGameState() { return stateStack.peek(); }
 
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public EnemySpawner getEnemySpawner() {
-        return this.enemySpawner;
-    }
-
-    public ChunkLoader getChunkLoader() {
-        return this.chunkLoader;
-    }
-
-    public CollisionChecker getCollisionChecker() {
-        return this.collisionChecker;
-    }
-
-    public UI getUi() {
-        return ui;
-    }
-
+    public Player getPlayer() { return player; }
+    public EnemySpawner getEnemySpawner() { return enemySpawner; }
+    public ChunkLoader getChunkLoader() { return chunkLoader; }
+    public CollisionChecker getCollisionChecker() { return collisionChecker; }
+    public UI getUi() { return ui; }
+    public WeaponManager getWeaponManager() { return weaponManager; }
+    public LingeringZoneManager getLingeringZoneManager() { return lingeringZoneManager; }
 }

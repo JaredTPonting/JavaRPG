@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 
-public class Game extends Canvas implements Runnable, KeyListener, MouseListener {
+public class Game extends Canvas implements Runnable, InputHandler.GameStateProvider {
 
     // Screen dimensions
     public static final int SCREEN_WIDTH = 1200;
@@ -20,27 +20,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     public GameWorld gameWorld;
 
     public Game() {
-        JFrame frame = new JFrame("Chicken Run");
-        frame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.add(this);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        Display display = new Display("Chicken Run", SCREEN_WIDTH, SCREEN_HEIGHT, this);
 
-        this.addKeyListener(this);
-        this.addMouseListener(this);
-        this.setFocusable(true);
-        this.requestFocus();
+        InputHandler input = new InputHandler(this::getGameState);
+        addKeyListener(input);
+        addMouseListener(input);
+        addMouseMotionListener(input);
         this.gameWorld = new GameWorld(getWidth(), getHeight());
-        this.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                if (getGameState() != null) {
-                    getGameState().mouseMoved(e);
-                }
-            }
-        });
 
 
     }
@@ -104,38 +90,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
     private void render(BufferStrategy bs) {
         Graphics g = bs.getDrawGraphics();
-
         gameWorld.render(g);
-
         g.dispose();
         bs.show();
     }
-
-    // Event forwarding
-    public void keyPressed(KeyEvent e) {
-        if (getGameState() != null) {
-            getGameState().keyPressed(e);
-        }
-    }
-
-    public void keyReleased(KeyEvent e) {
-        if (getGameState() != null) {
-            getGameState().keyReleased(e);
-        }
-    }
-
-    public void keyTyped(KeyEvent e) {}
-
-    public void mousePressed(MouseEvent e) {
-        if (getGameState() != null) {
-            getGameState().mousePressed(e);
-        }
-    }
-
-    public void mouseReleased(MouseEvent e) {}
-    public void mouseClicked(MouseEvent e) {}
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
 
     public static void main(String[] args) {
         Game game = new Game();

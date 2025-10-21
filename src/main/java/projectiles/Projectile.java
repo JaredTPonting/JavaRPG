@@ -36,7 +36,8 @@ public abstract class Projectile {
         for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
             if (!enemiesHit.contains(e)) {
                 if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
-                    e.damage(this.getDamage());
+                    e.takeDamage(this.getDamage());
+                    this.onHitEffect(e);
                     enemiesHit.add(e);
                     this.reduceMaxHits();
                 }
@@ -52,14 +53,12 @@ public abstract class Projectile {
 
     public abstract void render(java.awt.Graphics g, Camera camera);
 
-    protected void onHit() {
-        onHitEffect();
-    }
     public void setMaxHits(int newMaxHits) {
         this.maxHits = newMaxHits;
     }
 
-    protected abstract void onHitEffect();
+    protected abstract void onHitEffect(Enemy e);
+    protected abstract void onDeletionEffect();
 
     protected boolean hasCollided() {
         // Placeholder for collision detection
@@ -73,7 +72,7 @@ public abstract class Projectile {
             this.destroyProjectile();
         }
     }
-    public void destroyProjectile() { this.alive=false; }
+    public void destroyProjectile() { this.onDeletionEffect(); this.alive=false; }
 
     // Accessors for modifiers
     public double getX() { return x; }

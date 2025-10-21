@@ -20,7 +20,6 @@ public class Player extends Entity {
 
     // XP system
     private PlayerLevel playerLevel;
-    private boolean leveledUp = false;
 
     // Sprites & animation
     private BufferedImage[] idleSprites, walkSprites, runSprites;
@@ -134,7 +133,7 @@ public class Player extends Entity {
     public double getHealthRegen() { return this.playerStats.getHealthRegen(); }
     public double getMaxStamina() { return this.playerStats.getMaxStamina(); };
     public double getCurrentStamina() { return this.playerStats.getCurrentStamina(); }
-    public int getLevel() { return this.playerStats.getLevel(); }
+    public int getLevel() { return this.playerLevel.getPlayerLevel(); }
     public int getXP() { return (int) this.playerLevel.getExperiencePoints();}
     public int getXPToNextLevel() { return (int) this.playerLevel.getNextLevelCost() - (int) this.playerLevel.getExperiencePoints();}
     public int getMaxXP() { return (int) this.playerLevel.getNextLevelCost(); }
@@ -266,17 +265,18 @@ public class Player extends Entity {
         }
     }
 
-    public boolean hasLeveledUp() { return leveledUp; }
-    public void clearLevelUpFlag() { leveledUp = false; }
-
     // Stat upgrades
-    public void increaseMaxHealth() { this.playerStats.increaseHealthLevel(); }
-    public void increaseSpeed() { this.playerStats.increaseSpeedLevel(); }
+    public void increaseMaxHealth() { this.playerStats.increaseMaxHealth(); }
+    public void increaseSpeed() { this.playerStats.increaseSpeed(); }
     public void increaseEndurance() { this.playerStats.increaseEndurance();}
     public void increaseRange() { range *= 1.1; range = Math.round(range * 100.0) / 100.0;}
     public void increaseHealthRegen() { this.playerStats.increaseHealthRegen(); }
+    public void increaseDamage() { this.playerStats.increaseDamage(); }
+    public void increaseMagicDamage() { this.playerStats.increaseMagicDamage(); }
 
     public void levelUp() { if (this.playerLevel.canLevelUp()) this.playerLevel.levelUp(); }
+
+    public boolean isDead() { return this.playerStats.isDead();}
 
     // Debug
     public void printStats() {

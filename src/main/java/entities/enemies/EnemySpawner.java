@@ -101,9 +101,9 @@ public class EnemySpawner {
         } else if (level < 10) {
             return roll < 70 ? EnemyType.FOX : EnemyType.WOLF;
         } else if (level < 20) {
-            return roll < 50 ? EnemyType.WOLF : EnemyType.HUNTER;
+            return EnemyType.WOLF;
         } else {
-            return roll < 20 ? EnemyType.WOLF : EnemyType.HUNTER;
+            return EnemyType.WOLF;
         }
     }
 

@@ -66,15 +66,24 @@ public class PlayerStats {
     public double  getSpeed() {
         return speed;
     }
-    public void increaseSpeedLevel() {
+    public void increaseSpeed() {
         this.speedLevel += 1;
         this.speed += 50;
+    }
+
+    public void increaseDamage() {
+        this.damageLevel += 1;
+        this.damage += 10;
+    }
+    public void increaseMagicDamage() {
+        this.magicDamageLevel += 1;
+        this.magicDamage += 10;
     }
 
     public double getMaxHealth() {
         return maxHealth;
     }
-    public void increaseHealthLevel() {
+    public void increaseMaxHealth() {
         this.healthLevel += 1;
         this.maxHealth += 50;
     }

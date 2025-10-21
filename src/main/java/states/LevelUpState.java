@@ -33,11 +33,11 @@ public class LevelUpState implements GameState {
         g.drawString("LEVEL UP! You have " + player.getXP() + " / " + player.getMaxXP(), 100, 100);
 
         g.setFont(new Font("Arial", Font.PLAIN, 18));
-        g.drawString("1. Increase Max Health (+20)", 120, 150);
-        g.drawString("2. Increase Health Regen (+0.1/sec)", 120, 180);
-        g.drawString("3. Increase Move Speed (+0.5)", 120, 210);
-        g.drawString("4. Increase Bullet Speed (+1)", 120, 240);
-        g.drawString("5. Increase Damage (+1)", 120, 270);
+        g.drawString("1. Increase Max Health", 120, 150);
+        g.drawString("2. Increase Health Regen", 120, 180);
+        g.drawString("3. Increase Move Speed", 120, 210);
+        g.drawString("4. Increase Damage", 120, 240);
+        g.drawString("5. Increase Magic Damage", 120, 270);
     }
 
     @Override
@@ -46,6 +46,8 @@ public class LevelUpState implements GameState {
             case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.levelUp(); }
             case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.levelUp(); }
             case KeyEvent.VK_3 -> { player.increaseSpeed(); player.levelUp(); }
+            case KeyEvent.VK_4 -> { player.increaseDamage(); player.levelUp(); }
+            case KeyEvent.VK_5 -> { player.increaseMagicDamage(); player.levelUp(); }
             case KeyEvent.VK_ESCAPE -> { gameWorld.getStateStack().pop(); }
         }
 

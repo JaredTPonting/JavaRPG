@@ -20,7 +20,7 @@ public class Egg extends Projectile {
     public Egg(GameWorld gameWorld) {
         super(gameWorld);
         this.speed = 400;
-        this.damage = 50.0;
+        this.damage = 50.0 + gameWorld.getPlayer().getPlayerStats().getDamage();
         this.x = owner.getX();
         this.y = owner.getY();
         boolean up = owner.isLastFacingUp();
@@ -78,7 +78,12 @@ public class Egg extends Projectile {
     }
 
     @Override
-    protected void onHitEffect() {
+    protected void onHitEffect(Enemy e) {
+
+    }
+
+    @Override
+    protected void onDeletionEffect() {
 
     }
 }

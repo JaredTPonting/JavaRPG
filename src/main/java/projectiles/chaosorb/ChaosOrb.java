@@ -1,5 +1,7 @@
 package projectiles.chaosorb;
 
+import entities.enemies.Enemy;
+import lingeringzones.chaoszone.ChaosZone;
 import projectiles.Projectile;
 import utils.Camera;
 import utils.GameWorld;
@@ -21,7 +23,7 @@ public class ChaosOrb extends Projectile {
         this.dx = dx;
         this.dy = dy;
         this.speed = 200;
-        this.damage = 50;
+        this.damage = 50 + owner.getPlayerStats().getMagicDamage();
         this.spawnTime = System.currentTimeMillis();
         this.hitBox = new Rectangle((int) x, (int) y, 12, 12);
         this.lastUpdateTime = System.nanoTime();
@@ -48,8 +50,14 @@ public class ChaosOrb extends Projectile {
     }
 
     @Override
-    protected void onHitEffect() {
-        // could trigger explosion or immediate AoE
+    protected void onHitEffect(Enemy e) {
+
     }
+
+    @Override
+    protected void onDeletionEffect() {
+        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x, this.y, 30, 2000));
+    }
+
 
 }

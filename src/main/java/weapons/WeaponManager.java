@@ -4,7 +4,6 @@ import utils.Camera;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class WeaponManager {
     ArrayList<Weapon> weapons = new ArrayList<>();

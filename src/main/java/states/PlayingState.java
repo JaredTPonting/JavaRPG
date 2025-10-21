@@ -1,6 +1,7 @@
 package states;// states.PlayingState.java
 import entities.enemies.EnemySpawner;
 import entities.player.Player;
+import lingeringzones.LingeringZoneManager;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
@@ -13,13 +14,15 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class PlayingState implements GameState {
+
     private final Camera camera;
-    public GameWorld gameWorld;
-    public Player player;
-    public EnemySpawner spawner;
-    public ChunkLoader chunkLoader;
-    public UI ui;
-    public WeaponManager weaponManager;
+    private final GameWorld gameWorld;
+    private final Player player;
+    private final EnemySpawner spawner;
+    private final ChunkLoader chunkLoader;
+    private final UI ui;
+    private final WeaponManager weaponManager;
+    private final LingeringZoneManager lingeringZoneManager;
 
     public PlayingState(GameWorld gameWorld) {
         this.camera = new Camera();
@@ -29,40 +32,51 @@ public class PlayingState implements GameState {
         this.chunkLoader = gameWorld.getChunkLoader();
         this.ui = gameWorld.getUi();
         this.weaponManager = gameWorld.getWeaponManager();
-        weaponManager.addWeapon(new EggCannon(this.player, 1000, gameWorld));
-        weaponManager.addWeapon(new ChaosOrbBlaster(this.player, 1000, gameWorld));
-
+        this.lingeringZoneManager = gameWorld.getLingeringZoneManager();
+        initWeapons();
     }
 
+    private void initWeapons() {
+        weaponManager.addWeapon(new EggCannon(player, 1000, gameWorld));
+        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1000, gameWorld));
+    }
+
+    @Override
     public void update() {
-        if (player.hasLeveledUp()) {
-            player.resetInput();
-            gameWorld.getStateStack().push(new LevelUpState(gameWorld));
+
+        if (player.isDead()) {
+            handleDeath();
             return;
         }
 
         player.update();
         camera.centerOn(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         weaponManager.update();
+        lingeringZoneManager.update();
         spawner.update(player);
         chunkLoader.update();
         ui.update();
     }
 
+    private void handleDeath() {
+        gameWorld.refresh();
+        gameWorld.getStateStack().pop();
+    }
+
+    @Override
     public void render(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         chunkLoader.render(g, camera);
         weaponManager.render(g, camera);
+        lingeringZoneManager.render(g, camera);
         player.render(g, camera);
         spawner.render(g, camera);
-
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
-
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
-
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             gameWorld.getStateStack().push(new PauseState(gameWorld));
             return;
@@ -76,6 +90,7 @@ public class PlayingState implements GameState {
         }
     }
 
+    @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> player.setUp(false);
@@ -85,12 +100,9 @@ public class PlayingState implements GameState {
         }
     }
 
-
-    public void mousePressed(MouseEvent e) {
-    }
-
     @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
+    @Override
+    public void mouseMoved(MouseEvent e) {}
 }
+

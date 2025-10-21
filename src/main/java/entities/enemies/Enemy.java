@@ -22,6 +22,7 @@ public class Enemy extends Entity {
     protected double damage;
     protected Cooldown attackCooldown;
     public DeltaTimer deltaTimer;
+    public double speedDebuff;
 
     protected Player target;
 
@@ -34,6 +35,7 @@ public class Enemy extends Entity {
         long adjustedDuration = (long) (baseDuration / attackSpeed);
         this.attackCooldown = new Cooldown(adjustedDuration);
         this.deltaTimer = new DeltaTimer();
+        this.speedDebuff = 1;
     }
 
     public void setSpeed(int speed) {
@@ -129,15 +131,23 @@ public class Enemy extends Entity {
         }
 
         // --- Apply movement ---
-        x += vx * deltaTime;
-        y += vy * deltaTime;
+        x += (vx * deltaTime) * speedDebuff;
+        y += (vy * deltaTime) * speedDebuff;
 
         updateHitBox();
+        resetSpeedDebufF();
+    }
+
+    public void resetSpeedDebufF() {
+        this.speedDebuff = 1;
+    }
+
+    public void setSpeedDebuff(Double debuff) {
+        this.speedDebuff = debuff;
     }
 
 
-
-    public void damage(double amount) {
+    public void takeDamage(double amount) {
         if (!dead) {
             hp -= amount;
             if (hp <= 0) {
