@@ -1,7 +1,6 @@
 package projectiles.egg;
 
 import entities.enemies.Enemy;
-import entities.player.Player;
 import projectiles.Projectile;
 import utils.Camera;
 import utils.GameWorld;
@@ -12,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Egg extends Projectile {
-    Player player;
     boolean loaded = false;
     protected int spriteSize = 32;
     private static final BufferedImage[] eggSprites = new BufferedImage[30];
@@ -21,16 +19,16 @@ public class Egg extends Projectile {
 
     public Egg(GameWorld gameWorld) {
         super(gameWorld);
-        this.player = gameWorld.getPlayer();
         this.speed = 400;
         this.damage = 50.0;
-        this.x = player.getX();
-        this.y = player.getY();
-        boolean up = player.isLastFacingUp();
-        boolean down = player.isLastFacingDown();
-        boolean left = player.isLastFacingLeft();
-        boolean right = player.isLastFacingRight();
+        this.x = owner.getX();
+        this.y = owner.getY();
+        boolean up = owner.isLastFacingUp();
+        boolean down = owner.isLastFacingDown();
+        boolean left = owner.isLastFacingLeft();
+        boolean right = owner.isLastFacingRight();
         this.lastUpdateTime = System.nanoTime();
+
 
         if (up) dy -= 1;
         if (down) dy += 1;
@@ -42,11 +40,8 @@ public class Egg extends Projectile {
 
     @Override
     public void update() {
-        long now = System.nanoTime();
-        double deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
-        lastUpdateTime = now;
+        double deltaTime = this.deltaTimer.getDelta();
         double diagonalBoost = 1.05;
-        System.out.println(dx + "  " + dy);
         if (dx != 0 && dy != 0) {
             double diagonal = Math.sqrt(2);
             x += ( dx / diagonal) * this.speed * diagonalBoost * deltaTime;
@@ -55,12 +50,7 @@ public class Egg extends Projectile {
             x += dx * this.speed * deltaTime;
             y += dy * this.speed * deltaTime;
         }
-        for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
-            if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
-                e.damage(this.getDamage());
-                this.destroyProjectile();
-            }
-        }
+        this.checkEnemyCollision();
 
         updateHitBox();
     }

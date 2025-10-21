@@ -5,12 +5,14 @@ import entities.Entity;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import utils.Camera;
+import utils.DeltaTimer;
 import utils.GameWorld;
 import utils.SpriteLoader;
 
 public class Player extends Entity {
     // Position & movement
     private boolean up, down, left, right;
+    public DeltaTimer deltaTimer;
 
     // Stats
     private PlayerStats playerStats;
@@ -78,6 +80,7 @@ public class Player extends Entity {
 
         this.playerStats = new PlayerStats(200.0, 100.0, 0.5, 100.0, 5.0, 50, 50);
         this.playerLevel = new PlayerLevel();
+        this.deltaTimer = new DeltaTimer();
 
         idleSprites = loadSprites("/sprites/cute_chicken_idle.png", 6);
         walkSprites = loadSprites("/sprites/cute_chicken_walk.png", 6);
@@ -144,12 +147,12 @@ public class Player extends Entity {
     }
 
 
+
+
     // Update method
     @Override
     public void update() {
-        long now = System.nanoTime();
-        double deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
-        lastUpdateTime = now;
+        double deltaTime = deltaTimer.getDelta();
 
         int dx = 0;
         int dy = 0;

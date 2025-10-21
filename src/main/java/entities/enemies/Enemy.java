@@ -1,6 +1,7 @@
 package entities.enemies;
 
 import entities.Entity;
+import utils.DeltaTimer;
 import utils.GameWorld;
 import utils.Cooldown;
 
@@ -20,6 +21,7 @@ public class Enemy extends Entity {
     protected int XP;
     protected double damage;
     protected Cooldown attackCooldown;
+    public DeltaTimer deltaTimer;
 
     protected Player target;
 
@@ -31,6 +33,7 @@ public class Enemy extends Entity {
         long baseDuration = 1000;
         long adjustedDuration = (long) (baseDuration / attackSpeed);
         this.attackCooldown = new Cooldown(adjustedDuration);
+        this.deltaTimer = new DeltaTimer();
     }
 
     public void setSpeed(int speed) {
@@ -69,9 +72,7 @@ public class Enemy extends Entity {
     @Override
     public void update() {
         List<Enemy> allEnemies = gameWorld.getEnemySpawner().getEnemies();
-        long now = System.nanoTime();
-        double deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
-        lastUpdateTime = now;
+        double deltaTime = this.deltaTimer.getDelta();
 
         if (dead) return;
 

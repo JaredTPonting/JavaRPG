@@ -24,7 +24,6 @@ public abstract class Weapon {
 
     public void tryFire() {
         if (cooldown.ready()) {
-            System.out.println("FIREING");
             List<Projectile> shots = createProjectiles();
             activeProjectiles.addAll(shots);
             cooldown.reset();

@@ -6,6 +6,7 @@ import enviroment.ChunkLoader;
 import ui.UI;
 import utils.GameWorld;
 import weapons.WeaponManager;
+import weapons.chaosorbblaster.ChaosOrbBlaster;
 import weapons.eggcannon.EggCannon;
 
 import java.awt.*;
@@ -27,8 +28,9 @@ public class PlayingState implements GameState {
         this.spawner = gameWorld.getEnemySpawner();
         this.chunkLoader = gameWorld.getChunkLoader();
         this.ui = gameWorld.getUi();
-        this.weaponManager = new WeaponManager();
+        this.weaponManager = gameWorld.getWeaponManager();
         weaponManager.addWeapon(new EggCannon(this.player, 1000, gameWorld));
+        weaponManager.addWeapon(new ChaosOrbBlaster(this.player, 1000, gameWorld));
 
     }
 

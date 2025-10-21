@@ -6,6 +6,7 @@ import entities.player.Player;
 import states.GameState;
 import ui.UI;
 import states.MenuState;
+import weapons.WeaponManager;
 
 import java.awt.*;
 
@@ -16,6 +17,7 @@ public class GameWorld {
     public CollisionChecker collisionChecker;
     public UI ui;
     private final StateStack stateStack;
+    private WeaponManager weaponManager;
     int gameWidth;
     int gameHeight;
 
@@ -25,6 +27,7 @@ public class GameWorld {
         this.chunkLoader = new ChunkLoader(this.player, gameWidth, gameHeight, 1500);
         this.ui = new UI(this.player);
         this.stateStack = new StateStack();
+        this.weaponManager = new WeaponManager();
         this.gameHeight = gameHeight;
         this.gameWidth = gameWidth;
         this.collisionChecker = new CollisionChecker();
@@ -54,6 +57,8 @@ public class GameWorld {
     public GameState getGameState() {
         return stateStack.peek();
     }
+
+    public WeaponManager getWeaponManager() { return this.weaponManager; }
 
     public Player getPlayer() {
         return this.player;
