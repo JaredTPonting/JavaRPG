@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Enemy extends Entity {
     protected double vx = 0, vy = 0;
-    protected int size = 32;
+
     protected double hp;
     protected double speed;
     protected boolean dead = false;
@@ -28,14 +28,15 @@ public class Enemy extends Entity {
 
     private long lastUpdateTime = System.nanoTime();
 
-    public Enemy(GameWorld gameWorld, int x, int y, int width, int height, double attackSpeed) {
-        super(gameWorld, x, y, width, height);
+    public Enemy(GameWorld gameWorld, int x, int y, double attackSpeed, int size) {
+        super(gameWorld, x, y, size);
         this.target = gameWorld.getPlayer();
         long baseDuration = 1000;
         long adjustedDuration = (long) (baseDuration / attackSpeed);
         this.attackCooldown = new Cooldown(adjustedDuration);
         this.deltaTimer = new DeltaTimer();
         this.speedDebuff = 1;
+        this.size = size;
     }
 
     public void setSpeed(int speed) {
@@ -97,7 +98,7 @@ public class Enemy extends Entity {
         }
 
         // Separation from nearby entities.enemies
-        double separationRadius = size * 1.5;
+        double separationRadius = size * 0.8;
         for (Enemy e : allEnemies) {
             if (e == this || e.isDead()) continue;
             double ex = e.getX();
@@ -180,7 +181,7 @@ public class Enemy extends Entity {
     @Override
     public void render(Graphics g, Camera camera) {
         if (!dead) {
-            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.width, this.height, null);
+            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
         }
     }
 }

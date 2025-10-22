@@ -12,6 +12,20 @@ public class WeaponManager {
         weapons.add(weapon);
     }
 
+    public Weapon getWeaponByName(String name) {
+        for (Weapon weapon : weapons) {
+            if (weapon.getName().equalsIgnoreCase(name)) {
+                return weapon;
+            }
+        }
+        return null;
+    }
+
+    public void addWeaponMod(String name, WeaponMods mod) {
+        Weapon weapon = getWeaponByName(name);
+        weapon.addWeaponMod(mod);
+    }
+
     public void update() {
         for (Weapon weapon : weapons) {
             weapon.update();

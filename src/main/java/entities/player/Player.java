@@ -74,8 +74,8 @@ public class Player extends Entity {
     private long lastUpdateTime = System.nanoTime();
 
     // Constructor
-    public Player(GameWorld gameWorld, int x, int y, int width, int height) {
-        super(gameWorld, x, y, width, height);
+    public Player(GameWorld gameWorld, int x, int y, int size) {
+        super(gameWorld, x, y, size);
 
         this.playerStats = new PlayerStats(200.0, 100.0, 0.5, 100.0, 5.0, 50, 50);
         this.playerLevel = new PlayerLevel();
@@ -245,9 +245,9 @@ public class Player extends Entity {
         BufferedImage sprite = getCurrentSprites()[currentFrame];
         if (facingLeft) {
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(sprite, (int) (x + 48 - camera.getX()), (int) (y - camera.getY()), -this.width, this.height, null);
+            g2d.drawImage(sprite, (int) (x + 48 - camera.getX()), (int) (y - camera.getY()), -this.size, this.size, null);
         } else {
-            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.width, this.height, null);
+            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
         }
     }
 

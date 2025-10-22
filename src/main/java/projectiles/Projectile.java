@@ -1,5 +1,6 @@
 package projectiles;
 
+import entities.Entity;
 import entities.enemies.Enemy;
 import entities.player.Player;
 import utils.Camera;

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class EnemySpawner {
 
-    public enum EnemyType { FOX, WOLF, HUNTER }
+    public enum EnemyType { FOX, WOLF, FOXMINIBOSS }
     private GameWorld gameWorld;
 
     private final List<Enemy> enemies = new ArrayList<>();
@@ -91,13 +91,17 @@ public class EnemySpawner {
     // --- Enemy selection logic ---
     private EnemyType selectEnemyType(Player player) {
         int level = player.getLevel();
-        int roll = random.nextInt(100);
+        int roll = random.nextInt(1000);
+
+        if (roll < 10) {
+            return EnemyType.FOXMINIBOSS;
+        }
 
         if (level < 5) {
             return EnemyType.FOX;
-        } else if (level < 10) {
-            return roll < 70 ? EnemyType.FOX : EnemyType.WOLF;
-        } else if (level < 20) {
+        } else if (level < 100) {
+            return roll < 700 ? EnemyType.FOX : EnemyType.WOLF;
+        } else if (level < 200) {
             return EnemyType.WOLF;
         } else {
             return EnemyType.WOLF;

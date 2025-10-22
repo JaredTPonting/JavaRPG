@@ -5,24 +5,23 @@ import java.awt.*;
 import utils.Camera;
 import utils.GameWorld;
 
-public abstract class Entity {
+public abstract class Entity{
     protected GameWorld gameWorld;
 
     protected double x, y;
     protected double dx, dy;
-    protected int width, height;
+    protected int size;
 
     protected Rectangle hitBox;
 
     protected boolean active = true;
 
-    public Entity(GameWorld gameWorld, double x, double y, int width, int height) {
+    public Entity(GameWorld gameWorld, double x, double y, int size) {
         this.gameWorld = gameWorld;
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
-        this.hitBox = new Rectangle((int) x, (int) y, width, height);
+        this.hitBox = new Rectangle((int) x, (int) y, size, size);
+        this.size = size;
     }
 
     public abstract void update();
@@ -39,12 +38,7 @@ public abstract class Entity {
     public double getY() {
         return y;
     }
-    public int getWidth() {
-        return width;
-    }
-    public int getHeight() {
-        return height;
-    }
+    public int getSize() { return this.size; }
     public boolean isActive() {
         return active;
     }

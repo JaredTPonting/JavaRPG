@@ -9,6 +9,7 @@ import utils.GameWorld;
 import weapons.WeaponManager;
 import weapons.chaosorbblaster.ChaosOrbBlaster;
 import weapons.eggcannon.EggCannon;
+import weapons.eggcannon.weaponmods.TripleEggMod;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -38,7 +39,8 @@ public class PlayingState implements GameState {
 
     private void initWeapons() {
         weaponManager.addWeapon(new EggCannon(player, 1000, gameWorld));
-        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1000, gameWorld));
+//        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1000, gameWorld));
+//        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
     }
 
     @Override
@@ -60,7 +62,7 @@ public class PlayingState implements GameState {
 
     private void handleDeath() {
         gameWorld.refresh();
-        gameWorld.getStateStack().pop();
+        gameWorld.getStateStack().push(new GameOverState(gameWorld));
     }
 
     @Override

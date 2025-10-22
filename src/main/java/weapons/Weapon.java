@@ -1,5 +1,6 @@
 package weapons;
 
+import entities.Entity;
 import entities.player.Player;
 import projectiles.Projectile;
 import utils.Camera;
@@ -12,14 +13,16 @@ import java.util.List;
 
 public abstract class Weapon {
     public final GameWorld gameWorld;
-    protected Player owner;
+    protected Entity owner;
     protected Cooldown cooldown;
     protected List<Projectile> activeProjectiles = new ArrayList<>();
+    public List<WeaponMods> weaponMods;
 
-    public Weapon(Player owner, long cooldownMillis, GameWorld gameWorld) {
+    public Weapon(Entity owner, long cooldownMillis, GameWorld gameWorld) {
         this.owner = owner;
         this.cooldown = new Cooldown(cooldownMillis);
         this.gameWorld = gameWorld;
+        this.weaponMods = new ArrayList<>();
     }
 
     public void tryFire() {
@@ -42,10 +45,18 @@ public abstract class Weapon {
         activeProjectiles.removeAll(toRemove);
     }
 
+    public void addWeaponMod(WeaponMods mod){
+        this.weaponMods.add(mod);
+    }
+
     public void render(Graphics g, Camera camera) {
         for (Projectile p : activeProjectiles) {
             p.render(g, camera);
         }
+    }
+
+    public String getName() {
+        return this.getClass().getSimpleName();
     }
 
     protected abstract List<Projectile> createProjectiles();

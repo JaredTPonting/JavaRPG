@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 public class VectorManipulation {
     public Point2D.Double rotate(double x, double y, double angleDegrees) {
         double angleRad = Math.toRadians(angleDegrees);
-        double newX = Math.cos(angleRad) * x + (Math.sin(angleRad) * y);
+        double newX = Math.cos(angleRad) * x - (Math.sin(angleRad) * y);
         double newY = Math.sin(angleRad) * x + (Math.cos(angleRad) * y);
         return new Point2D.Double(newX, newY);
     }

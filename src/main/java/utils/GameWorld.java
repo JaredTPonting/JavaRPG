@@ -40,7 +40,7 @@ public class GameWorld implements WorldContext {
 
     // Init
     private void initWorld() {
-        this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48, 48);
+        this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48);
         this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
         this.chunkLoader = new ChunkLoader(player, gameWidth, gameHeight, 1500);
         this.ui = new UI(player);

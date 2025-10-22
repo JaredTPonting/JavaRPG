@@ -1,8 +1,8 @@
 package weapons.chaosorbblaster;
 
+import entities.Entity;
 import projectiles.Projectile;
 import projectiles.chaosorb.ChaosOrb;
-import entities.player.Player;
 import utils.GameWorld;
 import weapons.Weapon;
 
@@ -14,7 +14,7 @@ public class ChaosOrbBlaster extends Weapon {
 
     private Random random = new Random();
 
-    public ChaosOrbBlaster(Player owner, long cooldownMillis, GameWorld gameWorld) {
+    public ChaosOrbBlaster(Entity owner, long cooldownMillis, GameWorld gameWorld) {
         super(owner, cooldownMillis, gameWorld);
     }
 

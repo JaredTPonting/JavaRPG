@@ -6,7 +6,8 @@
     "xpBase": 30,
     "xpPerLevel": 2,
     "damage": 20.0,
-    "attackSpeed": 1.0
+    "attackSpeed": 1.0,
+    "size": 40
   },
   "WOLF": {
     "hp": 200,
@@ -15,6 +16,27 @@
     "xpBase": 60,
     "xpPerLevel": 2,
     "damage": 35.0,
-    "attackSpeed": 1.5
+    "attackSpeed": 1.5,
+    "size": 64
+  },
+  "FOXMINIBOSS": {
+    "hp": 300,
+    "speed": 200,
+    "sprite": "/sprites/fox_front_idle-removebg.png",
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 100
+  },
+  "MUSHROOM": {
+    "hp": 80,
+    "speed": 200,
+    "sprite": "/sprites/fox_front_idle-removebg.png",
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 100
   }
 }

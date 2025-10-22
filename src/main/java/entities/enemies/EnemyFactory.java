@@ -29,7 +29,7 @@ public class EnemyFactory {
         if (cfg == null) {
             throw new IllegalArgumentException("Unkown enemy seleciton");
         }
-        Enemy e = new Enemy(gameWorld, x, y, 64, 64, cfg.attackSpeed);
+        Enemy e = new Enemy(gameWorld, x, y, cfg.attackSpeed, cfg.size);
         e.hp = cfg.hp;
         e.speed = cfg.speed;
         e.sprite = SpriteLoader.load(cfg.sprite);
@@ -49,5 +49,6 @@ public class EnemyFactory {
         public int xpPerLevel;
         public double attackSpeed;
         public double damage;
+        public int size;
     }
 }
