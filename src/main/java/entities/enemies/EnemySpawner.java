@@ -77,9 +77,6 @@ public class EnemySpawner {
             if (e.isDead()) {
                 continue;
             }
-            double dx = player.getX() - e.getX();
-            double dy = player.getY() - e.getY();
-            double distance = Math.hypot(dx, dy);
 
             if (gameWorld.getCollisionChecker().checkCollision(e, player)) {
                 double damage = e.attackPlayer();
