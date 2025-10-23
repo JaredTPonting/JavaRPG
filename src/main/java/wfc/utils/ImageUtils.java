@@ -31,6 +31,5 @@ public class ImageUtils {
         File file = new File(path);
         file.getParentFile().mkdirs();
         ImageIO.write(image, "png", file);
-        System.out.println(path);
     }
 }
