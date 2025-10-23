@@ -18,7 +18,6 @@ public class Animation {
 
         int frameWidth = spriteSheet.getWidth() / frameCount;
         int height = spriteSheet.getHeight();
-        System.out.println(spriteSheet + " " + loop);
 
         frames = new BufferedImage[frameCount];
         for (int i = 0; i < frameCount; i++) {
