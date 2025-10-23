@@ -108,6 +108,7 @@ public class PlayerStats {
     public double getMaxStamina() {
         return maxStamina;
     }
+    public void exhaustStamia(double staminaUsed) { this.currentStamina -= staminaUsed;}
     public void increaseEndurance() {
         this.enduranceLevel += 1;
         this.maxStamina += 50;

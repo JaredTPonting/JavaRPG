@@ -21,7 +21,6 @@ public abstract class Projectile {
     public Player owner;
     public int maxHits;
     public ArrayList<Enemy> enemiesHit = new ArrayList<>();
-    public DeltaTimer deltaTimer;
 
     protected Rectangle hitBox;
 
@@ -29,7 +28,6 @@ public abstract class Projectile {
         this.gameWorld = gameWorld;
         this.owner = gameWorld.getPlayer();
         this.maxHits = 1;
-        this.deltaTimer = new DeltaTimer();
     }
 
     public void checkEnemyCollision() {
@@ -45,7 +43,7 @@ public abstract class Projectile {
         }
     }
 
-    public abstract void update();
+    public abstract void update(double dt);
     protected void updateHitBox() {
         hitBox.setLocation((int) this.x, (int) this.y);
     }

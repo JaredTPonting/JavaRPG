@@ -133,6 +133,7 @@ public class PauseState implements GameState {
 
     private void resumeGame() {
         player.resetInput();
+        gameWorld.getDeltaTimer().resume();
         gameWorld.getStateStack().pop();
     }
 

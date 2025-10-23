@@ -2,13 +2,13 @@ package entities.enemies;
 
 import core.GameWorld;
 import entities.Entity;
+import loot.Chest;
 import utils.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import entities.player.Player;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,20 +19,18 @@ public class Enemy extends Entity {
     protected double speed;
     protected boolean dead = false;
     public boolean triggeredDeath = false;
-    protected BufferedImage sprite;
     protected int XP;
     protected double damage;
     protected Cooldown attackCooldown;
-    public DeltaTimer deltaTimer;
     public double speedDebuff;
     public Cooldown deathTimer;
 
+    public boolean isBoss = false;
+
     protected Player target;
 
-    private long lastUpdateTime = System.nanoTime();
-
     // Animations
-    private Map<String, Animation> animations = new HashMap<>();
+    private final Map<String, Animation> animations;
     private String state = "run";
 
     public Enemy(GameWorld gameWorld, int x, int y, double attackSpeed, int size, Map<String, Animation> animations, double xOffset, double yOffset) {
@@ -41,7 +39,6 @@ public class Enemy extends Entity {
         long baseDuration = 1000;
         long adjustedDuration = (long) (baseDuration / attackSpeed);
         this.attackCooldown = new Cooldown(adjustedDuration);
-        this.deltaTimer = new DeltaTimer();
         this.speedDebuff = 1;
         this.size = size;
         this.animations = animations;
@@ -51,16 +48,12 @@ public class Enemy extends Entity {
         this.speed = speed;
     }
 
-    public double getX() {
-        return this.x;
+    public void setBoss(boolean boss) {
+        this.isBoss = boss;
     }
 
     public void setX(double newX) {
         this.x = newX;
-    }
-
-    public double getY() {
-        return this.y;
     }
 
     public void setY(double newY) {
@@ -87,16 +80,22 @@ public class Enemy extends Entity {
         }
     }
 
+    private void dropChest() {
+        System.out.println("dropping chest");
+        this.gameWorld.getLootManager().addChest(new Chest(this.x + ((double) this.size / 2), this.y + this.size));
+    }
+
     @Override
-    public void update() {
+    public void update(double dt) {
         List<Enemy> allEnemies = gameWorld.getEnemySpawner().getEnemies();
-        double deltaTime = this.deltaTimer.getDelta();
+        this.attackCooldown.update(dt);
         double dx = target.getX() - x;
         double dy = target.getY() - y;
         double distance = Math.hypot(dx, dy);
 
         if (triggeredDeath) {
             animations.get(state).update();
+            deathTimer.update(dt);
             if (deathTimer.ready()){
                 die();
             }
@@ -118,11 +117,7 @@ public class Enemy extends Entity {
         }
         animations.get(state).update();
 
-        if (dx>0) {
-            facingLeft = false;
-        } else {
-            facingLeft = true;
-        }
+        facingLeft = !(dx > 0);
 
         // Movement Forces
         double ax = 0;
@@ -153,13 +148,13 @@ public class Enemy extends Entity {
 
         // Apply acceleration to velocity
         // Scale by deltaTime to make acceleration time-based
-        vx += ax * deltaTime;
-        vy += ay * deltaTime;
+        vx += ax * dt;
+        vy += ay * dt;
 
         // --- Apply friction to stop runaway drift ---
         double friction = 0.9;
-        vx *= Math.pow(friction, deltaTime * 60);  // stable across FPS
-        vy *= Math.pow(friction, deltaTime * 60);
+        vx *= Math.pow(friction, dt * 60);  // stable across FPS
+        vy *= Math.pow(friction, dt * 60);
 
         // --- Clamp speed ---
         double speedMag = Math.hypot(vx, vy);
@@ -169,8 +164,8 @@ public class Enemy extends Entity {
         }
 
         // --- Apply movement ---
-        x += (vx * deltaTime) * speedDebuff;
-        y += (vy * deltaTime) * speedDebuff;
+        x += (vx * dt) * speedDebuff;
+        y += (vy * dt) * speedDebuff;
 
         updateHitBox();
         resetSpeeddebuff();
@@ -178,13 +173,6 @@ public class Enemy extends Entity {
 
     public void resetSpeeddebuff() {
         this.speedDebuff = 1;
-    }
-
-    public double getPlayerDistance() {
-        // Direction to entities.player
-        double dx = target.getX() - x;
-        double dy = target.getY() - y;
-        return Math.hypot(dx, dy);
     }
 
     public void setSpeedDebuff(Double debuff) {
@@ -215,8 +203,11 @@ public class Enemy extends Entity {
     }
 
     public void startDeath() {
-        this.deathTimer = new Cooldown(5000);
+        this.deathTimer = new Cooldown(5);
         triggeredDeath = true;
+        if (this.isBoss) {
+            dropChest();
+        }
     }
 
     protected void die() {
@@ -243,5 +234,14 @@ public class Enemy extends Entity {
         } else {
             g.drawImage(frame, (int)(x - camera.getX() + size), (int)(y - camera.getY()), -size, size, null);
         }
+    }
+
+    @Override
+    public double getRenderY() {
+        return this.y + size;
+    }
+
+    public double getY() {
+        return this.y;
     }
 }

@@ -26,9 +26,9 @@ public class WeaponManager {
         weapon.addWeaponMod(mod);
     }
 
-    public void update() {
+    public void update(double dt) {
         for (Weapon weapon : weapons) {
-            weapon.update();
+            weapon.update(dt);
         }
     }
 

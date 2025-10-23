@@ -4,10 +4,12 @@ import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
 import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
+import loot.LootManager;
 import states.GameState;
 import states.MenuState;
 import ui.UI;
 import utils.CollisionChecker;
+import utils.DeltaTimer;
 import utils.StateStack;
 import utils.WorldContext;
 import weapons.WeaponManager;
@@ -19,12 +21,15 @@ public class GameWorld implements WorldContext {
     private Player player;
     private EnemySpawner enemySpawner;
     private ChunkLoader chunkLoader;
-    private CollisionChecker collisionChecker;
+    private LootManager lootManager;
+    private final CollisionChecker collisionChecker;
     private UI ui;
     private final StateStack stateStack;
     private WeaponManager weaponManager;
     private LingeringZoneManager lingeringZoneManager;
     private Point mousePosition = new Point(0, 0);
+
+    private DeltaTimer deltaTimer;
 
     // game dims
     private final int gameWidth;
@@ -49,6 +54,8 @@ public class GameWorld implements WorldContext {
         this.ui = new UI(player);
         this.weaponManager = new WeaponManager();
         this.lingeringZoneManager = new LingeringZoneManager();
+        this.deltaTimer = new DeltaTimer();
+        this.lootManager = new LootManager();
     }
 
     /** Resets core gameplay components while preserving persistent state. */
@@ -69,11 +76,15 @@ public class GameWorld implements WorldContext {
     public int getGameWidth() { return gameWidth; }
     public int getGameHeight() { return gameHeight; }
 
+    public DeltaTimer getDeltaTimer() { return this.deltaTimer; }
+
     public Point getMousePosition() { return this.mousePosition; }
     public void setMousePosition(Point p) {this.mousePosition = p; }
 
     public StateStack getStateStack() { return stateStack; }
     public GameState getGameState() { return stateStack.peek(); }
+
+    public LootManager getLootManager() { return this.lootManager; }
 
     public Player getPlayer() { return player; }
     public EnemySpawner getEnemySpawner() { return enemySpawner; }

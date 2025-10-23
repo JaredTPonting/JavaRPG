@@ -9,7 +9,7 @@ import java.awt.*;
 
 // Nested class for lingering damage zone
 public abstract class LingeringZone {
-    private final Cooldown lifeSpan;
+    private double lifeSpan;
     public final GameWorld gameWorld;
     private final Cooldown tick;
     private double x, y, radius;
@@ -21,12 +21,14 @@ public abstract class LingeringZone {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.lifeSpan = new Cooldown(lifeSpan);
-        this.tick = new Cooldown(500);
+        this.lifeSpan = lifeSpan;
+        this.tick = new Cooldown(0.5);
     }
 
-    public void update() {
-        if (lifeSpan.ready()) {
+    public void update(double dt) {
+        lifeSpan -= dt;
+        this.tick.update(dt);
+        if (lifeSpan<=0) {
             this.destroy();
             return;
         }
@@ -43,6 +45,7 @@ public abstract class LingeringZone {
                     this.affectEnemy(e);
                 }
             }
+            tick.reset();
         }
     }
 

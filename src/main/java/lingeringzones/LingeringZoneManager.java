@@ -13,10 +13,10 @@ public class LingeringZoneManager {
         lingeringZones.add(zone);
     }
 
-    public void update() {
+    public void update(double dt) {
         List<LingeringZone> toRemove = new ArrayList<>();
         for (LingeringZone z : lingeringZones) {
-            z.update();
+            z.update(dt);
             if (!z.isAlive()) {
                 toRemove.add(z);
             }

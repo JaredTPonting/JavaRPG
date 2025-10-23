@@ -4,8 +4,9 @@ import java.awt.*;
 
 import utils.Camera;
 import core.GameWorld;
+import utils.Renderable;
 
-public abstract class Entity{
+public abstract class Entity implements Renderable {
     protected GameWorld gameWorld;
 
     protected double x, y;
@@ -37,7 +38,7 @@ public abstract class Entity{
         initHitBox();
     }
 
-    public abstract void update();
+    public abstract void update(double dt);
 
     public void initHitBox() {
         this.xOffset = (int) (size * offsetWidth);
@@ -55,9 +56,6 @@ public abstract class Entity{
     }
     public double getX() {
         return x;
-    }
-    public double getY() {
-        return y;
     }
     public int getSize() { return this.size; }
     public boolean isActive() {

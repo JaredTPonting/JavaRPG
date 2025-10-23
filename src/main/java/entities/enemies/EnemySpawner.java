@@ -46,7 +46,7 @@ public class EnemySpawner {
     }
 
     // --- Main update loop ---
-    public void update(Player player) {
+    public void update(Player player, double dt) {
         long now = System.currentTimeMillis();
 
         // Adjust spawn interval (faster spawns at higher level)
@@ -62,7 +62,7 @@ public class EnemySpawner {
 
         // Update existing entities.enemies
         for (Enemy e : enemies) {
-            e.update();
+            e.update(dt);
         }
 
         // Remove dead entities.enemies & give XP
@@ -75,7 +75,7 @@ public class EnemySpawner {
         });
 
         relocateFarEnemies(player);
-        this.damageIndicators.update();
+        this.damageIndicators.update(dt);
     }
 
     public void checkEnemyDamage(List<Enemy> enemies, Player player) {
@@ -86,7 +86,7 @@ public class EnemySpawner {
 
             if (gameWorld.getCollisionChecker().checkCollision(e, player)) {
                 double damage = e.attackPlayer();
-                if (damage > 0) {
+                if (damage > 0 && !player.getInvunerable()) {
                     player.takeDamage(damage);
                 }
             }

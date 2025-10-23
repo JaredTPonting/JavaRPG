@@ -18,14 +18,11 @@ public class Game extends Canvas implements Runnable, InputHandler.GameStateProv
 
     public Game() {
         Display display = new Display("Chicken Run", SCREEN_WIDTH, SCREEN_HEIGHT, this);
-
+        this.gameWorld = new GameWorld(getWidth(), getHeight());
         InputHandler input = new InputHandler(this::getGameState);
         addKeyListener(input);
         addMouseListener(input);
         addMouseMotionListener(input);
-        this.gameWorld = new GameWorld(getWidth(), getHeight());
-
-
     }
 
     public GameState getGameState() {

@@ -11,6 +11,7 @@ public class VectorManipulation {
     }
     public Point2D.Double normalise(double x, double y) {
         double magnitude = Math.sqrt(x*x + y*y);
+        if (magnitude==0) return new Point2D.Double(x, y);
         double newX = x / magnitude;
         double newY = y / magnitude;
         return new Point2D.Double(newX, newY);

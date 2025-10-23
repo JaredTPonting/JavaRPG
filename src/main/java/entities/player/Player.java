@@ -3,36 +3,49 @@ package entities.player;
 import entities.Entity;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import utils.Camera;
-import utils.DeltaTimer;
 import core.GameWorld;
+import utils.Cooldown;
 import utils.SpriteLoader;
+import utils.VectorManipulation;
 
 public class Player extends Entity {
     // Position & movement
     private boolean up, down, left, right;
-    public DeltaTimer deltaTimer;
+
+    // util
+    private final VectorManipulation vectorManipulation = new VectorManipulation();
 
     // Stats
-    private PlayerStats playerStats;
+    private final PlayerStats playerStats;
     private double range = 600.0;
 
     // XP system
-    private PlayerLevel playerLevel;
+    private final PlayerLevel playerLevel;
 
     // Sprites & animation
-    private BufferedImage[] idleSprites, walkSprites, runSprites;
+    private final BufferedImage[] idleSprites;
+    private final BufferedImage[] walkSprites;
+    private final BufferedImage[] runSprites;
     private int currentFrame = 0;
     private long lastFrameTime = 0;
     private final int frameDelay = 100;
     private boolean facingLeft = true;
-    private boolean facingRight = false;
 
     private boolean lastFacingLeft = true;
     private boolean lastFacingRight = false;
     private boolean lastFacingUp = false;
     private boolean lastFacingDown = false;
+    private boolean invunerable = false;
+
+    // Dash values
+    private boolean isDashing = false;
+    private Cooldown dashDuration = new Cooldown(0.15);
+    private Cooldown dashCooldown = new Cooldown(0.95);
+    private double dashSpeedMultiplier = 4.0;
+    private double dashEnduranceCost = 50.0;
 
     public boolean isLastFacingLeft() {
         return lastFacingLeft;
@@ -66,20 +79,24 @@ public class Player extends Entity {
         this.lastFacingDown = lastFacingDown;
     }
 
+    public void dash() {
+        if (dashCooldown.ready() && (dashEnduranceCost < this.getCurrentStamina())) {
+            this.isDashing = true;
+            this.playerStats.exhaustStamia(this.dashEnduranceCost);
+        }
+    }
+
 
     private enum State { IDLE, WALK, RUN }
     private State currentState = State.IDLE;
     private State previousState = State.IDLE;
 
-    private long lastUpdateTime = System.nanoTime();
-
     // Constructor
     public Player(GameWorld gameWorld, int x, int y, int size, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
 
-        this.playerStats = new PlayerStats(200.0, 200.0, 0.5, 100.0, 5.0, 50, 50);
+        this.playerStats = new PlayerStats(200.0, 20000.0, 0.5, 100.0, 5.0, 50, 50);
         this.playerLevel = new PlayerLevel();
-        this.deltaTimer = new DeltaTimer();
 
         idleSprites = loadSprites("/sprites/cute_chicken_idle.png", 6);
         walkSprites = loadSprites("/sprites/cute_chicken_walk.png", 6);
@@ -133,6 +150,7 @@ public class Player extends Entity {
     public double getHealthRegen() { return this.playerStats.getHealthRegen(); }
     public double getMaxStamina() { return this.playerStats.getMaxStamina(); };
     public double getCurrentStamina() { return this.playerStats.getCurrentStamina(); }
+    public boolean getInvunerable() { return this.invunerable; }
     public int getLevel() { return this.playerLevel.getPlayerLevel(); }
     public int getXP() { return (int) this.playerLevel.getExperiencePoints();}
     public int getXPToNextLevel() { return (int) this.playerLevel.getNextLevelCost() - (int) this.playerLevel.getExperiencePoints();}
@@ -146,15 +164,12 @@ public class Player extends Entity {
     }
 
 
-
-
     // Update method
     @Override
-    public void update() {
-        double deltaTime = deltaTimer.getDelta();
-
-        int dx = 0;
-        int dy = 0;
+    public void update(double dt) {
+        double dx = 0;
+        double dy = 0;
+        double diagonalBoost = 1.05;
 
         if (up) {dy -= 1;}
         if (down) {dy += 1;}
@@ -202,16 +217,44 @@ public class Player extends Entity {
             setLastFacingLeft(true);
             setLastFacingRight(false);
         }
+        Point2D.Double dxDy = vectorManipulation.normalise(dx, dy);
+        dx = dxDy.getX();
+        dy = dxDy.getY();
 
-        // Normalize if moving diagonally
-        double diagonalBoost = 1.05;
+
+        if (isDashing) {
+            System.out.println("DASHING");
+            dashDuration.update(dt);
+            double dashSpeed = playerStats.getSpeed() * dashSpeedMultiplier;
+
+            // Diagonal Boost
+            if (dx != 0  && dy != 0) {
+                x += dx * dashSpeed * diagonalBoost * dt;
+                y += dy * dashSpeed * diagonalBoost * dt;
+            } else {
+                x += dx * dashSpeed * dt;
+                y += dy * dashSpeed * dt;
+            }
+
+            updateHitBox();
+
+            if (dashDuration.ready()) {
+                dashDuration.reset();
+                this.isDashing = false;
+                this.invunerable = false;
+            }
+            return;
+        }
+
+        dashCooldown.update(dt);
+
+        // Diagonal Boost
         if (dx != 0 && dy != 0) {
-            double diagonal = Math.sqrt(2);
-            x += ((double) dx / diagonal) * this.playerStats.getSpeed() * diagonalBoost * deltaTime;
-            y += ((double) dy / diagonal) * this.playerStats.getSpeed() * diagonalBoost * deltaTime;
+            x += dx * this.playerStats.getSpeed() * diagonalBoost * dt;
+            y += dy * this.playerStats.getSpeed() * diagonalBoost * dt;
         } else {
-            x += dx * this.playerStats.getSpeed() * deltaTime;
-            y += dy * this.playerStats.getSpeed() * deltaTime;
+            x += dx * this.playerStats.getSpeed() * dt;
+            y += dy * this.playerStats.getSpeed() * dt;
         }
 
         // Facing & animation state
@@ -248,6 +291,11 @@ public class Player extends Entity {
         } else {
             g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
         }
+    }
+
+    @Override
+    public double getRenderY() {
+        return this.y + size;
     }
 
     // XP & level system

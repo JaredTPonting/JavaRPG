@@ -36,7 +36,7 @@ public class EnemyFactory {
     public static Enemy create(String type, GameWorld gameWorld, int x, int y, Player target) {
         EnemyConfig cfg = configs.get(type);
         if (cfg == null) {
-            throw new IllegalArgumentException("Unkown enemy seleciton");
+            throw new IllegalArgumentException("Unknown enemy selection");
         }
         // Load animations
         Map<String, Animation> loadedAnimations = new HashMap<>();
@@ -51,6 +51,7 @@ public class EnemyFactory {
         e.speed = cfg.speed;
         e.XP = cfg.xpBase + (target.getLevel() * cfg.xpPerLevel);
         e.damage = cfg.damage;
+        e.setBoss(cfg.boss);
         return e;
 
     }
@@ -64,6 +65,7 @@ public class EnemyFactory {
         public double attackSpeed;
         public double damage;
         public int size;
+        public boolean boss;
         public Map<String, AnimationInfo> animations;
     }
 }

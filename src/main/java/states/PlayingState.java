@@ -2,17 +2,24 @@ package states;// states.PlayingState.java
 import entities.enemies.EnemySpawner;
 import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
+import loot.LootManager;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
 import core.GameWorld;
+import utils.DeltaTimer;
+import utils.Renderable;
 import weapons.WeaponManager;
 import weapons.chaosorbblaster.ChaosOrbBlaster;
+import weapons.chaosorbblaster.weaponmods.ExtraShot;
 import weapons.eggcannon.EggCannon;
+import weapons.eggcannon.weaponmods.BackwardShot;
 import weapons.eggcannon.weaponmods.TripleEggMod;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class PlayingState implements GameState {
 
@@ -24,6 +31,8 @@ public class PlayingState implements GameState {
     private final UI ui;
     private final WeaponManager weaponManager;
     private final LingeringZoneManager lingeringZoneManager;
+    private final DeltaTimer deltaTimer;
+    private final LootManager lootManager;
 
     public PlayingState(GameWorld gameWorld) {
         this.camera = new Camera();
@@ -34,28 +43,34 @@ public class PlayingState implements GameState {
         this.ui = gameWorld.getUi();
         this.weaponManager = gameWorld.getWeaponManager();
         this.lingeringZoneManager = gameWorld.getLingeringZoneManager();
+        this.deltaTimer = this.gameWorld.getDeltaTimer();
+        this.lootManager = gameWorld.getLootManager();
         initWeapons();
     }
 
     private void initWeapons() {
-//        weaponManager.addWeapon(new EggCannon(player, 1000, gameWorld));
-        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1000, gameWorld));
-//        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
+        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
+        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
+        weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
+        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
+        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
     }
 
     @Override
     public void update() {
+        double dt = deltaTimer.getDelta();
 
         if (player.isDead()) {
             handleDeath();
             return;
         }
 
-        player.update();
+        player.update(dt);
         camera.centerOn(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
-        weaponManager.update();
-        lingeringZoneManager.update();
-        spawner.update(player);
+        weaponManager.update(dt);
+        lingeringZoneManager.update(dt);
+        spawner.update(player, dt);
+        lootManager.update(dt);
         chunkLoader.update();
         ui.update();
     }
@@ -72,14 +87,22 @@ public class PlayingState implements GameState {
         chunkLoader.render(g, camera);
         weaponManager.render(g, camera);
         lingeringZoneManager.render(g, camera);
-        player.render(g, camera);
-        spawner.render(g, camera);
+        ArrayList<Renderable> depthObjects = new ArrayList<>();
+        depthObjects.add(player);
+        depthObjects.addAll(spawner.getEnemies());
+        depthObjects.addAll(lootManager.getChests());
+        depthObjects.sort(Comparator.comparingDouble(Renderable::getRenderY));
+        for (Renderable r : depthObjects) {
+            r.render(g, camera);
+        }
+
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            this.deltaTimer.pause();
             gameWorld.getStateStack().push(new PauseState(gameWorld));
             return;
         }
@@ -89,6 +112,7 @@ public class PlayingState implements GameState {
             case KeyEvent.VK_S -> player.setDown(true);
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
+            case KeyEvent.VK_SPACE -> player.dash();
         }
     }
 
