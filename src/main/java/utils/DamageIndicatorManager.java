@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DamageIndicatorManager {
-    private List<DamageIndicator> damageIndicators;
+    private final List<DamageIndicator> damageIndicators;
 
     public DamageIndicatorManager() {
         this.damageIndicators = new ArrayList<DamageIndicator>();
@@ -15,10 +15,10 @@ public class DamageIndicatorManager {
         this.damageIndicators.add(new DamageIndicator(damage, x, y));
     }
 
-    public void update() {
+    public void update(double dt) {
         List<DamageIndicator> toRemove = new ArrayList<DamageIndicator>();
         for (DamageIndicator I: this.damageIndicators) {
-            I.update();
+            I.update(dt);
             if (I.isFinished()) {
                 toRemove.add(I);
             }
