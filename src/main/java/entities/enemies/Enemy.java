@@ -203,7 +203,7 @@ public class Enemy extends Entity {
     }
 
     public void startDeath() {
-        this.deathTimer = new Cooldown(5);
+        this.deathTimer = new Cooldown(2);
         triggeredDeath = true;
         if (this.isBoss) {
             dropChest();
