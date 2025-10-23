@@ -1,23 +1,30 @@
 package utils;
 
 public class Cooldown {
-    private final long duration;
-    private long lastUsed;
+    private final double duration; // seconds
+    private double timer;          // remaining time
 
-    public Cooldown(long duration) {
-        this.duration = duration;
-        this.lastUsed = System.currentTimeMillis();
+    public Cooldown(double durationSeconds) {
+        this.duration = durationSeconds;
+        this.timer = duration;
+    }
+
+    public void update(double dt) {
+        if (timer > 0) {
+            timer -= dt;
+        }
     }
 
     public boolean ready() {
-        return System.currentTimeMillis() - lastUsed >= duration;
-    }
-
-    public double percentDone() {
-        return (double) (System.currentTimeMillis() / lastUsed) / duration;
+        return timer <= 0;
     }
 
     public void reset() {
-        lastUsed = System.currentTimeMillis();
+        timer = duration;
+    }
+
+    public double percentDone() {
+        return 1.0 - Math.max(0, timer / duration);
     }
 }
+
