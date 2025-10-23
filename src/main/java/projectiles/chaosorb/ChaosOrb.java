@@ -6,6 +6,7 @@ import projectiles.Projectile;
 import utils.Camera;
 import core.GameWorld;
 
+import java.util.Random;
 import java.awt.*;
 
 public class ChaosOrb extends Projectile {
@@ -14,12 +15,15 @@ public class ChaosOrb extends Projectile {
     private long lifeTimeMillis = 1500; // projectile lifetime
     private long spawnTime;
 
-    public ChaosOrb(GameWorld gameWorld, double x, double y, double dx, double dy) {
+    public ChaosOrb(GameWorld gameWorld) {
         super(gameWorld);
-        this.x = x;
-        this.y = y;
-        this.dx = dx;
-        this.dy = dy;
+        // random direction unit vector
+        Random random = new Random();
+        double angle = random.nextDouble() * 2 * Math.PI;
+        this.dx = Math.cos(angle);
+        this.dy = Math.sin(angle);
+        this.x = this.owner.getX();
+        this.y = this.owner.getY();
         this.speed = 200;
         this.damage = 50 + owner.getPlayerStats().getMagicDamage();
         this.spawnTime = System.currentTimeMillis();
@@ -28,12 +32,10 @@ public class ChaosOrb extends Projectile {
     }
 
     @Override
-    public void update() {
-        double deltaTime = this.deltaTimer.getDelta();
+    public void update(double dt) {
 
-
-        x += dx * speed * deltaTime;
-        y += dy * speed * deltaTime;
+        x += dx * speed * dt;
+        y += dy * speed * dt;
         updateHitBox();
         this.checkEnemyCollision();
     }
@@ -54,7 +56,7 @@ public class ChaosOrb extends Projectile {
 
     @Override
     protected void onDeletionEffect() {
-        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x, this.y, 30, 2000));
+        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x, this.y, 30, 2));
     }
 
 
