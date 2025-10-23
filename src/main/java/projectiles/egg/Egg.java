@@ -67,16 +67,15 @@ public class Egg extends Projectile {
     }
 
     @Override
-    public void update() {
-        double deltaTime = this.deltaTimer.getDelta();
+    public void update(double dt) {
         double diagonalBoost = 1.05;
         if (dx != 0 && dy != 0) {
             double diagonal = Math.sqrt(2);
-            x += ( dx / diagonal) * this.speed * diagonalBoost * deltaTime;
-            y += ( dy / diagonal) * this.speed * diagonalBoost * deltaTime;
+            x += ( dx / diagonal) * this.speed * diagonalBoost * dt;
+            y += ( dy / diagonal) * this.speed * diagonalBoost * dt;
         } else {
-            x += dx * this.speed * deltaTime;
-            y += dy * this.speed * deltaTime;
+            x += dx * this.speed * dt;
+            y += dy * this.speed * dt;
         }
         this.checkEnemyCollision();
 
