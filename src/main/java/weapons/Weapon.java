@@ -32,11 +32,12 @@ public abstract class Weapon {
         }
     }
 
-    public void update() {
+    public void update(double dt) {
+        this.cooldown.update(dt);
         tryFire();
         List<Projectile> toRemove = new ArrayList<>();
         for (Projectile p : activeProjectiles) {
-            p.update();
+            p.update(dt);
             if (!p.isAlive()) {
                 toRemove.add(p);
             }
