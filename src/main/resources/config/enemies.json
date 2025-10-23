@@ -1,42 +1,132 @@
 {
-  "FOX": {
-    "hp": 100,
-    "speed": 100,
-    "sprite": "/sprites/fox_front_idle-removebg.png",
-    "xpBase": 30,
-    "xpPerLevel": 2,
-    "damage": 20.0,
-    "attackSpeed": 1.0,
-    "size": 40
-  },
-  "WOLF": {
-    "hp": 200,
-    "speed": 150,
-    "sprite": "/sprites/wolf_front_idle-removebg.png",
-    "xpBase": 60,
-    "xpPerLevel": 2,
-    "damage": 35.0,
-    "attackSpeed": 1.5,
-    "size": 64
-  },
-  "FOXMINIBOSS": {
-    "hp": 300,
-    "speed": 200,
-    "sprite": "/sprites/fox_front_idle-removebg.png",
-    "xpBase": 30,
-    "xpPerLevel": 2,
-    "damage": 50.0,
-    "attackSpeed": 1.0,
-    "size": 100
-  },
   "MUSHROOM": {
     "hp": 80,
     "speed": 200,
-    "sprite": "/sprites/fox_front_idle-removebg.png",
     "xpBase": 30,
     "xpPerLevel": 2,
     "damage": 50.0,
     "attackSpeed": 1.0,
-    "size": 100
+    "size": 120,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/mushroom/Mushroom-Run.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/mushroom/Mushroom-Attack.png",
+        "frames": 10,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/mushroom/Mushroom-Die.png",
+        "frames": 15,
+        "loop": false
+      }
+    }
+  },
+  "SMALLDEMON": {
+    "hp": 80,
+    "speed": 200,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 60,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/smallDemon/FLYING.png",
+        "frames": 4,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/smallDemon/ATTACK.png",
+        "frames": 8,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/smallDemon/DEATH.png",
+        "frames": 7,
+        "loop": false
+      }
+    }
+  },
+  "R1SLIME": {
+    "hp": 80,
+    "speed": 200,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 90,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/round1/slime/walk.png",
+        "frames": 6,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/round1/slime/attack.png",
+        "frames": 6,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/round1/slime/death.png",
+        "frames": 6,
+        "loop": false
+      }
+    }
+  },
+  "R1WOLF": {
+    "hp": 80,
+    "speed": 200,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 100,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/round1/wolf/walk.png",
+        "frames": 6,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/round1/wolf/attack.png",
+        "frames": 6,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/round1/wolf/death.png",
+        "frames": 6,
+        "loop": false
+      }
+    }
+  },
+  "R1GOBLIN": {
+    "hp": 80,
+    "speed": 200,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 100,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/round1/goblin/walk.png",
+        "frames": 6,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/round1/goblin/attack.png",
+        "frames": 6,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/round1/goblin/death.png",
+        "frames": 6,
+        "loop": false
+      }
+    }
   }
 }

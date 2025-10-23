@@ -3,7 +3,7 @@ package lingeringzones;
 import entities.enemies.Enemy;
 import utils.Camera;
 import utils.Cooldown;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
 

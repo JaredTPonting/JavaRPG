@@ -1,11 +1,8 @@
 package core;
 
 import states.GameState;
-import utils.GameWorld;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas implements Runnable, InputHandler.GameStateProvider {

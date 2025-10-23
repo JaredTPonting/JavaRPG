@@ -3,7 +3,7 @@ package weapons.chaosorbblaster;
 import entities.Entity;
 import projectiles.Projectile;
 import projectiles.chaosorb.ChaosOrb;
-import utils.GameWorld;
+import core.GameWorld;
 import weapons.Weapon;
 
 import java.util.ArrayList;

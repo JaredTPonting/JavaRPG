@@ -1,11 +1,10 @@
 package weapons;
 
 import entities.Entity;
-import entities.player.Player;
 import projectiles.Projectile;
 import utils.Camera;
 import utils.Cooldown;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -13,6 +13,10 @@ public class Cooldown {
         return System.currentTimeMillis() - lastUsed >= duration;
     }
 
+    public double percentDone() {
+        return (double) (System.currentTimeMillis() / lastUsed) / duration;
+    }
+
     public void reset() {
         lastUsed = System.currentTimeMillis();
     }

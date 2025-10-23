@@ -2,7 +2,8 @@ package entities.enemies;
 
 import entities.player.Player;
 import utils.Camera;
-import utils.GameWorld;
+import core.GameWorld;
+import utils.DamageIndicatorManager;
 
 import java.awt.*;
 import java.util.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class EnemySpawner {
 
-    public enum EnemyType { FOX, WOLF, FOXMINIBOSS }
+    public enum EnemyType { FOX, WOLF, FOXMINIBOSS, MUSHROOM, SMALLDEMON, R1SLIME, R1WOLF, R1GOBLIN }
     private GameWorld gameWorld;
 
     private final List<Enemy> enemies = new ArrayList<>();
@@ -26,10 +27,18 @@ public class EnemySpawner {
     private static final int MAX_MIN_ENEMIES = 1500;
     private static final long BASE_SPAWN_INTERVAL_MS = 100;
 
+    // Damage indicator
+    private DamageIndicatorManager damageIndicators;
+
+    // Round manager
+    private RoundManager roundManager;
+
     public EnemySpawner(GameWorld gameWorld, int screenWidth, int screenHeight) {
         this.SCREEN_WIDTH = screenWidth;
         this.SCREEN_HEIGHT = screenHeight;
         this.gameWorld = gameWorld;
+        this.damageIndicators = new DamageIndicatorManager();
+        this.roundManager = new RoundManager();
     }
 
     public List<Enemy> getEnemies() {
@@ -65,16 +74,13 @@ public class EnemySpawner {
             return false;
         });
 
-        checkEnemyDamage(enemies, player);
-
         relocateFarEnemies(player);
-
-//        checkForBossEvent(entities.player);
+        this.damageIndicators.update();
     }
 
     public void checkEnemyDamage(List<Enemy> enemies, Player player) {
         for (Enemy e : enemies) {
-            if (e.isDead()) {
+            if (e.isDead() | e.triggeredDeath) {
                 continue;
             }
 
@@ -90,22 +96,15 @@ public class EnemySpawner {
 
     // --- Enemy selection logic ---
     private EnemyType selectEnemyType(Player player) {
-        int level = player.getLevel();
-        int roll = random.nextInt(1000);
-
-        if (roll < 10) {
-            return EnemyType.FOXMINIBOSS;
+        RoundsData round = roundManager.getCurrentRoundData();
+        if (roundManager.shouldSpawnMiniBoss(random)) {
+            return EnemyType.MUSHROOM;
         }
 
-        if (level < 5) {
-            return EnemyType.FOX;
-        } else if (level < 100) {
-            return roll < 700 ? EnemyType.FOX : EnemyType.WOLF;
-        } else if (level < 200) {
-            return EnemyType.WOLF;
-        } else {
-            return EnemyType.WOLF;
-        }
+        List<String> pool = round.getEnemies();
+        String chosen = pool.get(random.nextInt(pool.size()));
+
+        return EnemyType.valueOf(chosen);
     }
 
     private int calculateMinEnemies(int level) {
@@ -178,7 +177,12 @@ public class EnemySpawner {
         }
     }
 
+    public DamageIndicatorManager getDamageIndicators() {
+        return this.damageIndicators;
+    }
+
     public void render(Graphics g, Camera camera) {
         enemies.forEach(enemy -> enemy.render(g, camera));
+        this.damageIndicators.render(g, camera);
     }
 }

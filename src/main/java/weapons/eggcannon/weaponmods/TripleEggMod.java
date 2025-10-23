@@ -1,9 +1,7 @@
 package weapons.eggcannon.weaponmods;
 
-import entities.Entity;
-import entities.player.Player;
 import projectiles.egg.Egg;
-import utils.GameWorld;
+import core.GameWorld;
 import weapons.WeaponMods;
 
 import java.util.List;

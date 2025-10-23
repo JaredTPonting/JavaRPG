@@ -1,6 +1,6 @@
 package states;
 
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
 import java.awt.event.*;

@@ -1,4 +1,4 @@
-package utils;
+package core;
 
 import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
@@ -7,6 +7,9 @@ import lingeringzones.LingeringZoneManager;
 import states.GameState;
 import states.MenuState;
 import ui.UI;
+import utils.CollisionChecker;
+import utils.StateStack;
+import utils.WorldContext;
 import weapons.WeaponManager;
 
 import java.awt.*;
@@ -40,7 +43,7 @@ public class GameWorld implements WorldContext {
 
     // Init
     private void initWorld() {
-        this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48);
+        this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48, 0.22, 0.22);
         this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
         this.chunkLoader = new ChunkLoader(player, gameWidth, gameHeight, 1500);
         this.ui = new UI(player);

@@ -5,7 +5,7 @@ import lingeringzones.LingeringZoneManager;
 import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
-import utils.GameWorld;
+import core.GameWorld;
 import weapons.WeaponManager;
 import weapons.chaosorbblaster.ChaosOrbBlaster;
 import weapons.eggcannon.EggCannon;
@@ -38,8 +38,8 @@ public class PlayingState implements GameState {
     }
 
     private void initWeapons() {
-        weaponManager.addWeapon(new EggCannon(player, 1000, gameWorld));
-//        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1000, gameWorld));
+//        weaponManager.addWeapon(new EggCannon(player, 1000, gameWorld));
+        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1000, gameWorld));
 //        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
     }
 

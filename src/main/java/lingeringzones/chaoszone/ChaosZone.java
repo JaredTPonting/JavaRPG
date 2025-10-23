@@ -2,7 +2,7 @@ package lingeringzones.chaoszone;
 
 import entities.enemies.Enemy;
 import lingeringzones.LingeringZone;
-import utils.GameWorld;
+import core.GameWorld;
 
 public class ChaosZone extends LingeringZone {
     public ChaosZone(GameWorld gameWorld, double x, double y, double radius, long lifeSpan) {

@@ -1,11 +1,10 @@
 package projectiles;
 
-import entities.Entity;
 import entities.enemies.Enemy;
 import entities.player.Player;
 import utils.Camera;
 import utils.DeltaTimer;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public abstract class Projectile {
 
     public void checkEnemyCollision() {
         for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
-            if (!enemiesHit.contains(e)) {
+            if (!enemiesHit.contains(e) & !e.triggeredDeath) {
                 if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
                     e.takeDamage(this.getDamage());
                     this.onHitEffect(e);

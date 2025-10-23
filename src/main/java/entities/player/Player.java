@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import utils.Camera;
 import utils.DeltaTimer;
-import utils.GameWorld;
+import core.GameWorld;
 import utils.SpriteLoader;
 
 public class Player extends Entity {
@@ -74,10 +74,10 @@ public class Player extends Entity {
     private long lastUpdateTime = System.nanoTime();
 
     // Constructor
-    public Player(GameWorld gameWorld, int x, int y, int size) {
-        super(gameWorld, x, y, size);
+    public Player(GameWorld gameWorld, int x, int y, int size, double xOffset, double yOffset) {
+        super(gameWorld, x, y, size, xOffset, yOffset);
 
-        this.playerStats = new PlayerStats(200.0, 100.0, 0.5, 100.0, 5.0, 50, 50);
+        this.playerStats = new PlayerStats(200.0, 200.0, 0.5, 100.0, 5.0, 50, 50);
         this.playerLevel = new PlayerLevel();
         this.deltaTimer = new DeltaTimer();
 
@@ -244,8 +244,7 @@ public class Player extends Entity {
     public void render(Graphics g, Camera camera) {
         BufferedImage sprite = getCurrentSprites()[currentFrame];
         if (facingLeft) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(sprite, (int) (x + 48 - camera.getX()), (int) (y - camera.getY()), -this.size, this.size, null);
+            g.drawImage(sprite, (int) (x + this.size - camera.getX()), (int) (y - camera.getY()), -this.size, this.size, null);
         } else {
             g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
         }

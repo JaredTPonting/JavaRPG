@@ -1,8 +1,7 @@
 package weapons;
 
-import entities.player.Player;
 import projectiles.Projectile;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.util.List;
 

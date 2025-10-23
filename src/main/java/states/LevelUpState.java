@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import utils.GameWorld;
+import core.GameWorld;
 
 public class LevelUpState implements GameState {
     private final Player player;

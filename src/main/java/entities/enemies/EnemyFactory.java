@@ -1,10 +1,12 @@
 package entities.enemies;
 
 import entities.player.Player;
-import utils.GameWorld;
+import utils.Animation;
+import core.GameWorld;
 import utils.SpriteLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,6 +14,13 @@ import java.util.Map;
 
 public class EnemyFactory {
     private static Map<String, EnemyConfig> configs = new HashMap<>();
+    public Map<String, AnimationInfo> animations;
+
+    public static class AnimationInfo {
+        public String sheet;  // path to the PNG sprite sheet
+        public int frames;    // number of frames in the sheet
+        public boolean loop; // if animation loops
+    }
 
     static {
         try {
@@ -29,10 +38,17 @@ public class EnemyFactory {
         if (cfg == null) {
             throw new IllegalArgumentException("Unkown enemy seleciton");
         }
-        Enemy e = new Enemy(gameWorld, x, y, cfg.attackSpeed, cfg.size);
+        // Load animations
+        Map<String, Animation> loadedAnimations = new HashMap<>();
+        for (var entry : cfg.animations.entrySet()){
+            String name = entry.getKey();
+            AnimationInfo info = entry.getValue();
+            BufferedImage sheet = SpriteLoader.load(info.sheet);
+            loadedAnimations.put(name, new Animation(sheet, info.frames, 100, info.loop));
+        }
+        Enemy e = new Enemy(gameWorld, x, y, cfg.attackSpeed, cfg.size, loadedAnimations, 0.1, 0.1);
         e.hp = cfg.hp;
         e.speed = cfg.speed;
-        e.sprite = SpriteLoader.load(cfg.sprite);
         e.XP = cfg.xpBase + (target.getLevel() * cfg.xpPerLevel);
         e.damage = cfg.damage;
         return e;
@@ -40,15 +56,14 @@ public class EnemyFactory {
     }
 
 
-
     public static class EnemyConfig {
         public double hp;
         public double speed;
-        public String sprite;
         public int xpBase;
         public int xpPerLevel;
         public double attackSpeed;
         public double damage;
         public int size;
+        public Map<String, AnimationInfo> animations;
     }
 }

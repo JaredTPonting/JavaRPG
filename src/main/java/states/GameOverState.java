@@ -1,7 +1,6 @@
 package states;
 
-import entities.player.Player;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -25,36 +24,36 @@ public class GameOverState implements GameState {
 
     @Override
     public void render(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g;
 
         GameState stateBeneath = gameWorld.getStateStack().peekBelowTop();
         if (stateBeneath != null) {
-            stateBeneath.render(g2);
+            stateBeneath.render(g2d);
         }
 
         int width = gameWorld.getGameWidth();
         int height = gameWorld.getGameHeight();
 
         // Draw faint red overlay
-        g2.setColor(overlayColor);
-        g2.fillRect(0, 0, width, height);
+        g2d.setColor(overlayColor);
+        g2d.fillRect(0, 0, width, height);
 
         // Draw "YOU DIED"
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Arial", Font.BOLD, 80));
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 80));
         String deathText = "YOU DIED";
-        FontMetrics fm = g2.getFontMetrics();
+        FontMetrics fm = g2d.getFontMetrics();
         int textX = (width - fm.stringWidth(deathText)) / 2;
         int textY = height / 2 - 20;
-        g2.drawString(deathText, textX, textY);
+        g2d.drawString(deathText, textX, textY);
 
         // Draw "click to go to main menu"
-        g2.setFont(new Font("Arial", Font.PLAIN, 30));
+        g2d.setFont(new Font("Arial", Font.PLAIN, 30));
         String prompt = "Click to go to main menu";
-        fm = g2.getFontMetrics();
+        fm = g2d.getFontMetrics();
         textX = (width - fm.stringWidth(prompt)) / 2;
         textY += 80;
-        g2.drawString(prompt, textX, textY);
+        g2d.drawString(prompt, textX, textY);
     }
 
     @Override

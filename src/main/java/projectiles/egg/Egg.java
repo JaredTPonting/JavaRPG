@@ -1,10 +1,9 @@
 package projectiles.egg;
 
-import entities.Entity;
 import entities.enemies.Enemy;
 import projectiles.Projectile;
 import utils.Camera;
-import utils.GameWorld;
+import core.GameWorld;
 import utils.SpriteLoader;
 import utils.VectorManipulation;
 

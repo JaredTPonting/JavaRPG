@@ -1,7 +1,7 @@
 package utils;
+import core.GameWorld;
 import states.GameState;
 import states.MenuState;
-import states.PlayingState;
 
 import java.awt.*;
 import java.util.Stack;

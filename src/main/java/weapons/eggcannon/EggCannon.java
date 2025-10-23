@@ -1,10 +1,9 @@
 package weapons.eggcannon;
 
 import entities.Entity;
-import entities.player.Player;
 import projectiles.Projectile;
 import projectiles.egg.Egg;
-import utils.GameWorld;
+import core.GameWorld;
 import weapons.Weapon;
 import weapons.WeaponMods;
 

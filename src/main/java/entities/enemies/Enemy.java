@@ -1,15 +1,16 @@
 package entities.enemies;
 
+import core.GameWorld;
 import entities.Entity;
-import utils.DeltaTimer;
-import utils.GameWorld;
-import utils.Cooldown;
+import utils.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import entities.player.Player;
-import utils.Camera;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Enemy extends Entity {
     protected double vx = 0, vy = 0;
@@ -17,19 +18,25 @@ public class Enemy extends Entity {
     protected double hp;
     protected double speed;
     protected boolean dead = false;
+    public boolean triggeredDeath = false;
     protected BufferedImage sprite;
     protected int XP;
     protected double damage;
     protected Cooldown attackCooldown;
     public DeltaTimer deltaTimer;
     public double speedDebuff;
+    public Cooldown deathTimer;
 
     protected Player target;
 
     private long lastUpdateTime = System.nanoTime();
 
-    public Enemy(GameWorld gameWorld, int x, int y, double attackSpeed, int size) {
-        super(gameWorld, x, y, size);
+    // Animations
+    private Map<String, Animation> animations = new HashMap<>();
+    private String state = "run";
+
+    public Enemy(GameWorld gameWorld, int x, int y, double attackSpeed, int size, Map<String, Animation> animations, double xOffset, double yOffset) {
+        super(gameWorld, x, y, size, xOffset, yOffset);
         this.target = gameWorld.getPlayer();
         long baseDuration = 1000;
         long adjustedDuration = (long) (baseDuration / attackSpeed);
@@ -37,6 +44,7 @@ public class Enemy extends Entity {
         this.deltaTimer = new DeltaTimer();
         this.speedDebuff = 1;
         this.size = size;
+        this.animations = animations;
     }
 
     public void setSpeed(int speed) {
@@ -72,20 +80,49 @@ public class Enemy extends Entity {
         this.vy = 0;
     }
 
+    public String getState() { return this.state; }
+    public void setState(String newState) {
+        if (animations.containsKey(newState)) {
+            this.state = newState;
+        }
+    }
+
     @Override
     public void update() {
         List<Enemy> allEnemies = gameWorld.getEnemySpawner().getEnemies();
         double deltaTime = this.deltaTimer.getDelta();
-
-        if (dead) return;
-
-        double targetX = target.getX();
-        double targetY = target.getY();
-
-        // Direction to entities.player
-        double dx = targetX - x;
-        double dy = targetY - y;
+        double dx = target.getX() - x;
+        double dy = target.getY() - y;
         double distance = Math.hypot(dx, dy);
+
+        if (triggeredDeath) {
+            animations.get(state).update();
+            if (deathTimer.ready()){
+                die();
+            }
+            vx = 0;
+            vy = 0;
+            updateHitBox();
+            return;
+        } else if (gameWorld.getCollisionChecker().checkCollision(this, target)) {
+            setState("attack");
+            vx=0;
+            vy=0;
+            animations.get(state).update();   // update attack animation
+
+            target.takeDamage(this.attackPlayer());
+
+            return;
+        } else {
+            setState("run");
+        }
+        animations.get(state).update();
+
+        if (dx>0) {
+            facingLeft = false;
+        } else {
+            facingLeft = true;
+        }
 
         // Movement Forces
         double ax = 0;
@@ -100,7 +137,7 @@ public class Enemy extends Entity {
         // Separation from nearby entities.enemies
         double separationRadius = size * 0.8;
         for (Enemy e : allEnemies) {
-            if (e == this || e.isDead()) continue;
+            if (e == this || e.isDead() || e.triggeredDeath) continue;
             double ex = e.getX();
             double ey = e.getY();
             double dist = Math.hypot(x - ex, y - ey);
@@ -136,11 +173,18 @@ public class Enemy extends Entity {
         y += (vy * deltaTime) * speedDebuff;
 
         updateHitBox();
-        resetSpeedDebufF();
+        resetSpeeddebuff();
     }
 
-    public void resetSpeedDebufF() {
+    public void resetSpeeddebuff() {
         this.speedDebuff = 1;
+    }
+
+    public double getPlayerDistance() {
+        // Direction to entities.player
+        double dx = target.getX() - x;
+        double dy = target.getY() - y;
+        return Math.hypot(dx, dy);
     }
 
     public void setSpeedDebuff(Double debuff) {
@@ -149,11 +193,15 @@ public class Enemy extends Entity {
 
 
     public void takeDamage(double amount) {
-        if (!dead) {
+        if (!triggeredDeath) {
             hp -= amount;
+            this.addDamageIndicator((int) amount, (int) this.x, (int) this.y);
             if (hp <= 0) {
-                die();
+                startDeath();
+                setState("die");
             }
+        } else if (deathTimer.ready()) {
+            die();
         }
     }
 
@@ -164,6 +212,11 @@ public class Enemy extends Entity {
         }
 
         return 0;
+    }
+
+    public void startDeath() {
+        this.deathTimer = new Cooldown(5000);
+        triggeredDeath = true;
     }
 
     protected void die() {
@@ -178,10 +231,17 @@ public class Enemy extends Entity {
         return new Rectangle((int) x, (int) y, size, size);
     }
 
+    public void addDamageIndicator(int damage, int x, int y) {
+        this.gameWorld.getEnemySpawner().getDamageIndicators().addIndicator(damage, x, y);
+    }
+
     @Override
     public void render(Graphics g, Camera camera) {
-        if (!dead) {
-            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
+        BufferedImage frame = animations.get(state).getCurrentFrame();
+        if (facingLeft) {
+            g.drawImage(frame, (int)(x - camera.getX()), (int)(y - camera.getY()), size, size, null);
+        } else {
+            g.drawImage(frame, (int)(x - camera.getX() + size), (int)(y - camera.getY()), -size, size, null);
         }
     }
 }

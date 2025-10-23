@@ -1,7 +1,7 @@
 package states;
 
 import entities.player.Player;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

@@ -3,7 +3,7 @@ package entities;
 import java.awt.*;
 
 import utils.Camera;
-import utils.GameWorld;
+import core.GameWorld;
 
 public abstract class Entity{
     protected GameWorld gameWorld;
@@ -11,23 +11,44 @@ public abstract class Entity{
     protected double x, y;
     protected double dx, dy;
     protected int size;
+    protected double offsetWidth = 0;
+    protected double offsetHeight = 0;
 
     protected Rectangle hitBox;
+    public int width;
+    public int height;
+    public int xOffset;
+    public int yOffset;
 
     protected boolean active = true;
 
-    public Entity(GameWorld gameWorld, double x, double y, int size) {
+    // for animation
+    public boolean facingLeft = true;
+
+    public Entity(GameWorld gameWorld, double x, double y, int size, double offsetWidth, double offsetHeight) {
         this.gameWorld = gameWorld;
         this.x = x;
         this.y = y;
-        this.hitBox = new Rectangle((int) x, (int) y, size, size);
         this.size = size;
+        this.offsetWidth = offsetWidth;
+        this.offsetHeight = offsetHeight;
+
+//        this.hitBox = new Rectangle((int) x, (int) y, size, size);
+        initHitBox();
     }
 
     public abstract void update();
 
+    public void initHitBox() {
+        this.xOffset = (int) (size * offsetWidth);
+        this.yOffset = (int) (size * offsetHeight);
+        this.width = (int) (size * (1 - 2*offsetWidth));
+        this.height = (int) (size * (1 - 2*offsetHeight));
+        this.hitBox = new Rectangle((int)this.x +this.xOffset, (int)this.y + this.yOffset, this.width, this.height);
+    }
+
     protected void updateHitBox() {
-        hitBox.setLocation((int) this.x, (int) this.y);
+        hitBox.setLocation((int) this.x + this.xOffset, (int) this.y + this.yOffset);
     }
     public Rectangle getHitBox() {
         return hitBox;

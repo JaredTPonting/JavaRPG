@@ -4,11 +4,9 @@ import entities.enemies.Enemy;
 import lingeringzones.chaoszone.ChaosZone;
 import projectiles.Projectile;
 import utils.Camera;
-import utils.GameWorld;
+import core.GameWorld;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChaosOrb extends Projectile {
 
