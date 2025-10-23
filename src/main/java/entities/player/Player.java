@@ -5,11 +5,8 @@ import entities.Entity;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import utils.Camera;
-import core.GameWorld;
-import utils.Cooldown;
-import utils.SpriteLoader;
-import utils.VectorManipulation;
+
+import utils.*;
 
 public class Player extends Entity {
     // Position & movement
@@ -86,13 +83,15 @@ public class Player extends Entity {
         }
     }
 
+    public boolean isDashing() { return this.isDashing;}
+
 
     private enum State { IDLE, WALK, RUN }
     private State currentState = State.IDLE;
     private State previousState = State.IDLE;
 
     // Constructor
-    public Player(GameWorld gameWorld, int x, int y, int size, double xOffset, double yOffset) {
+    public Player(WorldContext gameWorld, int x, int y, int size, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
 
         this.playerStats = new PlayerStats(200.0, 20000.0, 0.5, 100.0, 5.0, 50, 50);
@@ -313,13 +312,14 @@ public class Player extends Entity {
     }
 
     // Stat upgrades
-    public void increaseMaxHealth() { this.playerStats.increaseMaxHealth(); }
-    public void increaseSpeed() { this.playerStats.increaseSpeed(); }
-    public void increaseEndurance() { this.playerStats.increaseEndurance();}
-    public void increaseRange() { range *= 1.1; range = Math.round(range * 100.0) / 100.0;}
-    public void increaseHealthRegen() { this.playerStats.increaseHealthRegen(); }
-    public void increaseDamage() { this.playerStats.increaseDamage(); }
-    public void increaseMagicDamage() { this.playerStats.increaseMagicDamage(); }
+    public void levelUpMaxHealth() { this.playerStats.increaseMaxHealth(); this.levelUp();}
+    public void levelUpSpeed() { this.playerStats.increaseSpeed(); this.levelUp();}
+    public void levelUpEndurance() { this.playerStats.increaseEndurance(); this.levelUp();}
+    public void levelUpStaminaRegen() { this.playerStats.increaseStaminaRegen(); this.levelUp();}
+    public void levelUpRange() { range *= 1.1; range = Math.round(range * 100.0) / 100.0;this.levelUp();}
+    public void levelUpHealthRegen() { this.playerStats.increaseHealthRegen(); this.levelUp();}
+    public void levelUpDamage() { this.playerStats.increaseDamage(); this.levelUp();}
+    public void levelUpMagicDamage() { this.playerStats.increaseMagicDamage(); this.levelUp();}
 
     public void levelUp() { if (this.playerLevel.canLevelUp()) this.playerLevel.levelUp(); }
 

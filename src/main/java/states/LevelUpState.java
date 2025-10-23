@@ -43,11 +43,11 @@ public class LevelUpState implements GameState {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_1 -> { player.increaseMaxHealth(); player.levelUp(); }
-            case KeyEvent.VK_2 -> { player.increaseHealthRegen(); player.levelUp(); }
-            case KeyEvent.VK_3 -> { player.increaseSpeed(); player.levelUp(); }
-            case KeyEvent.VK_4 -> { player.increaseDamage(); player.levelUp(); }
-            case KeyEvent.VK_5 -> { player.increaseMagicDamage(); player.levelUp(); }
+            case KeyEvent.VK_1 -> { player.levelUpMaxHealth(); }
+            case KeyEvent.VK_2 -> { player.levelUpHealthRegen(); }
+            case KeyEvent.VK_3 -> { player.levelUpSpeed(); }
+            case KeyEvent.VK_4 -> { player.levelUpDamage(); }
+            case KeyEvent.VK_5 -> { player.levelUpMagicDamage(); }
             case KeyEvent.VK_ESCAPE -> { gameWorld.getStateStack().pop(); }
         }
 

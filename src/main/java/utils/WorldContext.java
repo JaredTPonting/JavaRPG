@@ -1,21 +1,25 @@
 package utils;
 
 import entities.enemies.EnemySpawner;
-import enviroment.ChunkLoader;
 import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
-import ui.UI;
+import loot.LootManager;
+import utils.CollisionChecker;
+import utils.DeltaTimer;
 import weapons.WeaponManager;
 
 public interface WorldContext {
-    Player getPlayer();
-    EnemySpawner getEnemySpawner();
-    ChunkLoader getChunkLoader();
-    CollisionChecker getCollisionChecker();
-    UI getUi();
-    WeaponManager getWeaponManager();
-    LingeringZoneManager getLingeringZoneManager();
     int getGameWidth();
     int getGameHeight();
-    StateStack getStateStack();
+
+    DeltaTimer getDeltaTimer();
+    CollisionChecker getCollisionChecker();
+
+    LootManager getLootManager();
+    WeaponManager getWeaponManager();
+    LingeringZoneManager getLingeringZoneManager();
+
+    Player getPlayer();  // optional but convenient
+
+    EnemySpawner getEnemySpawner();
 }

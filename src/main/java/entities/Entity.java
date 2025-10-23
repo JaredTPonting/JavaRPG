@@ -5,9 +5,10 @@ import java.awt.*;
 import utils.Camera;
 import core.GameWorld;
 import utils.Renderable;
+import utils.WorldContext;
 
 public abstract class Entity implements Renderable {
-    protected GameWorld gameWorld;
+    protected WorldContext gameWorld;
 
     protected double x, y;
     protected double dx, dy;
@@ -26,7 +27,7 @@ public abstract class Entity implements Renderable {
     // for animation
     public boolean facingLeft = true;
 
-    public Entity(GameWorld gameWorld, double x, double y, int size, double offsetWidth, double offsetHeight) {
+    public Entity(WorldContext gameWorld, double x, double y, int size, double offsetWidth, double offsetHeight) {
         this.gameWorld = gameWorld;
         this.x = x;
         this.y = y;

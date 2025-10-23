@@ -22,6 +22,7 @@ public class PlayerStats {
     private double enduranceLevel = 1;
     private double currentStamina;
     private double staminaRegen;
+    private int staminaRegenLevel = 1;
 
     private double damage;
     private int damageLevel = 1;
@@ -113,11 +114,16 @@ public class PlayerStats {
         this.enduranceLevel += 1;
         this.maxStamina += 50;
     }
+
     public double getCurrentStamina() {
         return this.currentStamina;
     }
     public double getStaminaRegen() {
         return staminaRegen;
+    }
+    public void increaseStaminaRegen() {
+        this.staminaRegenLevel += 1;
+        this.staminaRegen = (5) + (9.5 * (this.staminaRegen/(this.staminaRegen + 6)));
     }
 
     public double getDamage() {

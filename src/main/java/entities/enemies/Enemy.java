@@ -33,7 +33,7 @@ public class Enemy extends Entity {
     private final Map<String, Animation> animations;
     private String state = "run";
 
-    public Enemy(GameWorld gameWorld, int x, int y, double attackSpeed, int size, Map<String, Animation> animations, double xOffset, double yOffset) {
+    public Enemy(WorldContext gameWorld, int x, int y, double attackSpeed, int size, Map<String, Animation> animations, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
         this.target = gameWorld.getPlayer();
         long baseDuration = 1000;
