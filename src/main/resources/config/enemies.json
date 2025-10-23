@@ -7,6 +7,7 @@
     "damage": 50.0,
     "attackSpeed": 1.0,
     "size": 120,
+    "boss": true,
     "animations": {
       "run": {
         "sheet": "/sprites/mushroom/Mushroom-Run.png",
@@ -33,6 +34,7 @@
     "damage": 50.0,
     "attackSpeed": 1.0,
     "size": 60,
+    "boss": false,
     "animations": {
       "run": {
         "sheet": "/sprites/smallDemon/FLYING.png",
@@ -59,6 +61,7 @@
     "damage": 50.0,
     "attackSpeed": 1.0,
     "size": 90,
+    "boss": false,
     "animations": {
       "run": {
         "sheet": "/sprites/round1/slime/walk.png",
@@ -85,6 +88,7 @@
     "damage": 50.0,
     "attackSpeed": 1.0,
     "size": 100,
+    "boss": false,
     "animations": {
       "run": {
         "sheet": "/sprites/round1/wolf/walk.png",
@@ -111,6 +115,7 @@
     "damage": 50.0,
     "attackSpeed": 1.0,
     "size": 100,
+    "boss": false,
     "animations": {
       "run": {
         "sheet": "/sprites/round1/goblin/walk.png",
