@@ -32,8 +32,6 @@ public class RoundManager {
                 rounds.put(round.getId(), round);
             }
 
-            System.out.println("[RoundManager] Loaded " + rounds.size() + " rounds.");
-
         } catch (Exception e) {
             throw new RuntimeException("Failed to load rounds JSON: " + e.getMessage(), e);
         }
@@ -48,7 +46,6 @@ public class RoundManager {
     public void nextRound() {
         if (rounds.containsKey(currentRound + 1)) {
             currentRound++;
-            System.out.println("[RoundManager] Advanced to Round " + currentRound);
         }
     }
 
