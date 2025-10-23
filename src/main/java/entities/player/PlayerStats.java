@@ -2,10 +2,6 @@ package entities.player;
 
 public class PlayerStats {
 
-    private int level;
-    private int xp = 0;
-    private double xpLevelUp;
-    private double xpTotal;
 
     private boolean dead = false;
 
@@ -35,9 +31,6 @@ public class PlayerStats {
     public PlayerStats(double speed, double maxHealth, double healthRegen, double maxStamina, double staminaRegen, double damage, double magicDamage) {
 
         this.lastRegenTime = System.currentTimeMillis();
-
-        this.level = 1;
-
         this.speed = speed;
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
@@ -48,16 +41,6 @@ public class PlayerStats {
         this.damage = damage;
         this.magicDamage = magicDamage;
 
-    }
-
-    public int getLevel() {
-        return level;
-    }
-    public void increaseLevel() {
-        level++;
-    }
-    public int getXp() {
-        return xp;
     }
 
     public boolean isDead() {

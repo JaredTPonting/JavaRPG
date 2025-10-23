@@ -327,7 +327,7 @@ public class Player extends Entity {
 
     // Debug
     public void printStats() {
-        System.out.println("Level: " + this.playerStats.getLevel() + ", XP: " + (int) this.playerLevel.getExperiencePoints() + "/" + (int) this.playerLevel.getNextLevelCost());
+        System.out.println("Level: " + this.playerLevel.getPlayerLevel() + ", XP: " + (int) this.playerLevel.getExperiencePoints() + "/" + (int) this.playerLevel.getNextLevelCost());
         System.out.println("Speed: " + this.playerStats.getSpeed() + ", Range: " + range);
         System.out.println("Max Health: " + this.playerStats.getMaxHealth() + ", Regen: " + this.playerStats.getHealthRegen());
         System.out.println("Unspent Points: " + this.playerLevel.getUpgradePoints());
