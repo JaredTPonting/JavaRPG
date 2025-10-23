@@ -28,14 +28,15 @@ public class DamageIndicator {
         this.dx = (r.nextDouble() - 0.5) * DRIFT_RANGE;
 
 
-        this.timer = new Cooldown(700);
+        this.timer = new Cooldown(0.7);
         int red = Math.min(255, 100 + damageValue * 5);
         int green = Math.max(0, 255 - damageValue * 8);
 
         baseColor = new Color(red, green, 0);
     }
 
-    public void update() {
+    public void update(double dt) {
+        this.timer.update(dt);
         if (timer.ready()) {this.finished = true;}
 
         this.y -= RISE_SPEED;
