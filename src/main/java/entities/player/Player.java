@@ -209,6 +209,7 @@ public class Player extends Entity {
 
         if (isDashing) {
             dashDuration.update(dt);
+            this.invunerable = true;
             double dashSpeed = playerManager.getSpeed() * dashSpeedMultiplier;
 
             // Diagonal Boost

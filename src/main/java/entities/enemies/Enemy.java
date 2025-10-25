@@ -103,7 +103,7 @@ public class Enemy extends Entity {
             vy = 0;
             updateHitBox();
             return;
-        } else if (gameWorld.getCollisionChecker().checkCollision(this, target)) {
+        } else if (gameWorld.getCollisionChecker().checkCollision(this, target) && !target.getInvunerable()) {
             setState("attack");
             vx=0;
             vy=0;

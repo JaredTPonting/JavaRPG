@@ -31,7 +31,7 @@ public class PlayerStats {
     public PlayerStats() {
         this.lastRegenTime = System.currentTimeMillis();
         this.speed = 200.0;
-        this.maxHealth = 10.0;
+        this.maxHealth = 100.0;
         this.currentHealth = maxHealth;
         this.healthRegen = 0.5;
         this.maxStamina = 10000.0;

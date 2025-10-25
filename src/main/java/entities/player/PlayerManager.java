@@ -37,11 +37,6 @@ public class PlayerManager {
         this.playerLevel.levelUp();
     }
 
-    public void levelUpHealth() {
-        this.playerStats.increaseMaxHealth();
-        this.levelUp();
-    }
-
     public boolean checkLevelUp() {
         if (this.playerLevel.canLevelUp()) {
             return true;
@@ -49,6 +44,14 @@ public class PlayerManager {
             return false;
         }
     }
+
+    public void levelUpHealth() {
+        if (checkLevelUp()) {
+            this.playerStats.increaseMaxHealth();
+            this.levelUp();
+        }
+    }
+
 
     public void levelUpHealthRegen() {
         if (checkLevelUp()){
