@@ -15,12 +15,8 @@ public class Player extends Entity {
     // util
     private final VectorManipulation vectorManipulation = new VectorManipulation();
 
-    // Stats
-    private final PlayerStats playerStats;
-    private double range = 600.0;
-
-    // XP system
-    private final PlayerLevel playerLevel;
+    // Player Manager
+    private final PlayerManager playerManager;
 
     // Sprites & animation
     private final BufferedImage[] idleSprites;
@@ -77,9 +73,9 @@ public class Player extends Entity {
     }
 
     public void dash() {
-        if (dashCooldown.ready() && (dashEnduranceCost < this.getCurrentStamina())) {
+        if (dashCooldown.ready() && (dashEnduranceCost < this.playerManager.getCurrentStamina())) {
             this.isDashing = true;
-            this.playerStats.exhaustStamia(this.dashEnduranceCost);
+            this.playerManager.getPlayerStats().exhaustStamia(this.dashEnduranceCost);
         }
     }
 
@@ -93,9 +89,7 @@ public class Player extends Entity {
     // Constructor
     public Player(WorldContext gameWorld, int x, int y, int size, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
-
-        this.playerStats = new PlayerStats(200.0, 20000.0, 0.5, 10000.0, 5.0, 50, 50);
-        this.playerLevel = new PlayerLevel();
+        this.playerManager = new PlayerManager();
 
         idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle_new.png", 6);
         walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk_new.png", 6);
@@ -137,29 +131,21 @@ public class Player extends Entity {
         this.right = false;
     }
 
+    // Manager Getter
+    public PlayerManager getPlayerManager() {
+        return this.playerManager;
+    }
+
     // Position getters
     public double getX() { return x; }
     public double getY() { return y; }
 
-    // Stat getters
-    public double getSpeed() { return this.playerStats.getSpeed(); }
-    public double getRange() { return range; }
-    public double getMaxHealth() { return this.playerStats.getMaxHealth(); }
-    public double getCurrentHealth() { return this.playerStats.getCurrentHealth(); }
-    public double getHealthRegen() { return this.playerStats.getHealthRegen(); }
-    public double getMaxStamina() { return this.playerStats.getMaxStamina(); };
-    public double getCurrentStamina() { return this.playerStats.getCurrentStamina(); }
     public boolean getInvunerable() { return this.invunerable; }
-    public int getLevel() { return this.playerLevel.getPlayerLevel(); }
-    public int getXP() { return (int) this.playerLevel.getExperiencePoints();}
-    public int getXPToNextLevel() { return (int) this.playerLevel.getNextLevelCost() - (int) this.playerLevel.getExperiencePoints();}
-    public int getMaxXP() { return (int) this.playerLevel.getNextLevelCost(); }
     public PlayerStats getPlayerStats() {
-        return this.playerStats;
+        return this.playerManager.getPlayerStats();
     }
-
     public void takeDamage(double damage) {
-        this.playerStats.takeDamage(damage);
+        this.playerManager.takeDamage(damage);
     }
 
 
@@ -222,9 +208,8 @@ public class Player extends Entity {
 
 
         if (isDashing) {
-            System.out.println("DASHING");
             dashDuration.update(dt);
-            double dashSpeed = playerStats.getSpeed() * dashSpeedMultiplier;
+            double dashSpeed = playerManager.getSpeed() * dashSpeedMultiplier;
 
             // Diagonal Boost
             if (dx != 0  && dy != 0) {
@@ -249,11 +234,11 @@ public class Player extends Entity {
 
         // Diagonal Boost
         if (dx != 0 && dy != 0) {
-            x += dx * this.playerStats.getSpeed() * diagonalBoost * dt;
-            y += dy * this.playerStats.getSpeed() * diagonalBoost * dt;
+            x += dx * playerManager.getSpeed() * diagonalBoost * dt;
+            y += dy * playerManager.getSpeed() * diagonalBoost * dt;
         } else {
-            x += dx * this.playerStats.getSpeed() * dt;
-            y += dy * this.playerStats.getSpeed() * dt;
+            x += dx * playerManager.getSpeed() * dt;
+            y += dy * playerManager.getSpeed() * dt;
         }
 
         // Facing & animation state
@@ -269,7 +254,7 @@ public class Player extends Entity {
             previousState = currentState;
         }
 
-        playerStats.update();
+        this.playerManager.getPlayerStats().update();
 
         // Frame animation
         long nowMillis = System.currentTimeMillis();
@@ -297,39 +282,7 @@ public class Player extends Entity {
         return this.y + size;
     }
 
-    // XP & level system
-    public void gainXP(int amount) {
-        this.playerLevel.addExperiencePoints(amount);
-        checkLevelUp();
-    }
 
-    public boolean checkLevelUp() {
-        if (this.playerLevel.canLevelUp()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
-    // Stat upgrades
-    public void levelUpMaxHealth() { this.playerStats.increaseMaxHealth(); this.levelUp();}
-    public void levelUpSpeed() { this.playerStats.increaseSpeed(); this.levelUp();}
-    public void levelUpEndurance() { this.playerStats.increaseEndurance(); this.levelUp();}
-    public void levelUpStaminaRegen() { this.playerStats.increaseStaminaRegen(); this.levelUp();}
-    public void levelUpRange() { range *= 1.1; range = Math.round(range * 100.0) / 100.0;this.levelUp();}
-    public void levelUpHealthRegen() { this.playerStats.increaseHealthRegen(); this.levelUp();}
-    public void levelUpDamage() { this.playerStats.increaseDamage(); this.levelUp();}
-    public void levelUpMagicDamage() { this.playerStats.increaseMagicDamage(); this.levelUp();}
-
-    public void levelUp() { if (this.playerLevel.canLevelUp()) this.playerLevel.levelUp(); }
-
-    public boolean isDead() { return this.playerStats.isDead();}
-
-    // Debug
-    public void printStats() {
-        System.out.println("Level: " + this.playerLevel.getPlayerLevel() + ", XP: " + (int) this.playerLevel.getExperiencePoints() + "/" + (int) this.playerLevel.getNextLevelCost());
-        System.out.println("Speed: " + this.playerStats.getSpeed() + ", Range: " + range);
-        System.out.println("Max Health: " + this.playerStats.getMaxHealth() + ", Regen: " + this.playerStats.getHealthRegen());
-        System.out.println("Unspent Points: " + this.playerLevel.getUpgradePoints());
-    }
+    public boolean isDead() { return this.playerManager.getPlayerStats().isDead();}
 }

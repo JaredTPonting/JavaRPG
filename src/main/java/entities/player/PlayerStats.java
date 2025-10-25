@@ -28,18 +28,17 @@ public class PlayerStats {
 
     private long lastRegenTime;
 
-    public PlayerStats(double speed, double maxHealth, double healthRegen, double maxStamina, double staminaRegen, double damage, double magicDamage) {
-
+    public PlayerStats() {
         this.lastRegenTime = System.currentTimeMillis();
-        this.speed = speed;
-        this.maxHealth = maxHealth;
+        this.speed = 200.0;
+        this.maxHealth = 10.0;
         this.currentHealth = maxHealth;
-        this.healthRegen = healthRegen;
-        this.maxStamina = maxStamina;
+        this.healthRegen = 0.5;
+        this.maxStamina = 10000.0;
         this.currentStamina = maxStamina;
-        this.staminaRegen = staminaRegen;
-        this.damage = damage;
-        this.magicDamage = magicDamage;
+        this.staminaRegen = 5.0;
+        this.damage = 50;
+        this.magicDamage = 50;
 
     }
 

@@ -15,6 +15,22 @@ public class CollisionChecker {
         return a.getHitBox().intersects(p.getHitBox());
     }
 
+    public boolean entityBaseCollision(Entity e, Projectile p) {
+        Rectangle entityHitBox = e.getHitBox();
+        Rectangle projectileHitBox = p.getHitBox();
+
+        // Define a thin rectangle at the bottom of the entity (e.g., 10% of height)
+        int baseHeight = Math.max(1, (int)(entityHitBox.height * 0.1));
+        Rectangle bottomRect = new Rectangle(
+                entityHitBox.x,
+                entityHitBox.y + entityHitBox.height - baseHeight,
+                entityHitBox.width,
+                baseHeight
+        );
+
+        return bottomRect.intersects(projectileHitBox);
+    }
+
     public boolean entityStandingInZone(Entity e, LingeringZone z) {
         Rectangle rect = e.getHitBox();
         double circleX = z.getX();

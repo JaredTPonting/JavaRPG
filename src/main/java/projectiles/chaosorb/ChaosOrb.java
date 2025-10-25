@@ -1,6 +1,7 @@
 package projectiles.chaosorb;
 
 import entities.enemies.Enemy;
+import entities.player.PlayerManager;
 import lingeringzones.chaoszone.ChaosZone;
 import projectiles.Projectile;
 import utils.Animation;
@@ -24,13 +25,14 @@ public class ChaosOrb extends Projectile {
         super(gameWorld);
         // random direction unit vector
         Random random = new Random();
+        PlayerManager playerManager = owner.getPlayerManager();
         double angle = random.nextDouble() * 2 * Math.PI;
         this.dx = Math.cos(angle);
         this.dy = Math.sin(angle);
         this.x = this.owner.getX();
         this.y = this.owner.getY();
         this.speed = 200;
-        this.damage = 50 + owner.getPlayerStats().getMagicDamage();
+        this.damage = 50 + playerManager.getMagicDamage();
         this.hitBox = new Rectangle((int) x, (int) y, 12, 12);
 
         if (SPRITE_SHEET == null) {

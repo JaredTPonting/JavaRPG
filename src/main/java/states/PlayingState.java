@@ -16,6 +16,7 @@ import weapons.eggcannon.EggCannon;
 import weapons.eggcannon.weaponmods.BackwardShot;
 import weapons.eggcannon.weaponmods.TripleEggMod;
 import weapons.fireballblaster.FireBallBlaster;
+import weapons.powerofzeus.PowerOfZeus;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -46,14 +47,15 @@ public class PlayingState implements GameState {
         this.lingeringZoneManager = gameWorld.getLingeringZoneManager();
         this.deltaTimer = this.gameWorld.getDeltaTimer();
         this.lootManager = gameWorld.getLootManager();
-        initWeapons();
+//        initWeapons();
     }
 
     private void initWeapons() {
+        weaponManager.addWeapon(new PowerOfZeus(player, 1, gameWorld));
         weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
-//        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
+        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
         weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
-        weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
+//        weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
 //        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
 //        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
     }
@@ -69,9 +71,9 @@ public class PlayingState implements GameState {
 
         player.update(dt);
         camera.centerOn(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
-        weaponManager.update(dt);
         lingeringZoneManager.update(dt);
         spawner.update(player, dt);
+        weaponManager.update(dt);
         lootManager.update(dt);
         chunkLoader.update();
         ui.update();
@@ -87,7 +89,6 @@ public class PlayingState implements GameState {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         chunkLoader.render(g, camera);
-        weaponManager.render(g, camera);
         lingeringZoneManager.render(g, camera);
         ArrayList<Renderable> depthObjects = new ArrayList<>();
         depthObjects.add(player);
@@ -97,7 +98,7 @@ public class PlayingState implements GameState {
         for (Renderable r : depthObjects) {
             r.render(g, camera);
         }
-
+        weaponManager.render(g, camera);
         spawner.renderDamageIndicators(g, camera);
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
     }

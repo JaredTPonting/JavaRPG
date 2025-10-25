@@ -49,7 +49,7 @@ public class EnemyFactory {
         Enemy e = new Enemy(gameWorld, x, y, cfg.attackSpeed, cfg.size, loadedAnimations, 0.1, 0.1);
         e.hp = cfg.hp;
         e.speed = cfg.speed;
-        e.XP = cfg.xpBase + (target.getLevel() * cfg.xpPerLevel);
+        e.XP = cfg.xpBase + (target.getPlayerManager().getLevel() * cfg.xpPerLevel);
         e.damage = cfg.damage;
         e.setBoss(cfg.boss);
         return e;

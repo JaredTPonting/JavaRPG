@@ -2,6 +2,7 @@ package entities.enemies;
 
 import entities.Entity;
 import entities.player.Player;
+import entities.player.PlayerManager;
 import utils.Camera;
 import core.GameWorld;
 import utils.DamageIndicatorManager;
@@ -49,12 +50,13 @@ public class EnemySpawner {
     // --- Main update loop ---
     public void update(Player player, double dt) {
         long now = System.currentTimeMillis();
+        PlayerManager playerManager = player.getPlayerManager();
 
         // Adjust spawn interval (faster spawns at higher level)
-        long spawnInterval = (long) (BASE_SPAWN_INTERVAL_MS / (1 + player.getLevel() * 0.05));
+        long spawnInterval = (long) (BASE_SPAWN_INTERVAL_MS / (1 + playerManager.getLevel() * 0.05));
 
         // Maintain minimum entities.enemies alive
-        int minEnemies = calculateMinEnemies(player.getLevel());
+        int minEnemies = calculateMinEnemies(playerManager.getLevel());
 
         if (enemies.size() < minEnemies && now - lastSpawnTime > spawnInterval) {
             spawnEnemy(player);
@@ -69,7 +71,7 @@ public class EnemySpawner {
         // Remove dead entities.enemies & give XP
         enemies.removeIf(enemy -> {
             if (enemy.isDead()) {
-                player.gainXP(enemy.getXP());
+                playerManager.gainXP(enemy.getXP());
                 return true;
             }
             return false;

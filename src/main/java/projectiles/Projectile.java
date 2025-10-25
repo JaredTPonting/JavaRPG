@@ -2,6 +2,7 @@ package projectiles;
 
 import entities.enemies.Enemy;
 import entities.player.Player;
+import entities.player.PlayerManager;
 import utils.Animation;
 import utils.Camera;
 import utils.DeltaTimer;

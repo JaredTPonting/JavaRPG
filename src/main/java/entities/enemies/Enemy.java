@@ -36,7 +36,7 @@ public class Enemy extends Entity {
     public Enemy(WorldContext gameWorld, int x, int y, double attackSpeed, int size, Map<String, Animation> animations, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
         this.target = gameWorld.getPlayer();
-        long baseDuration = 1000;
+        long baseDuration = 1;
         long adjustedDuration = (long) (baseDuration / attackSpeed);
         this.attackCooldown = new Cooldown(adjustedDuration);
         this.speedDebuff = 1;
@@ -108,7 +108,6 @@ public class Enemy extends Entity {
             vx=0;
             vy=0;
             animations.get(state).update();   // update attack animation
-
             target.takeDamage(this.attackPlayer());
 
             return;

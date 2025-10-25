@@ -51,7 +51,7 @@ public class GameWorld implements WorldContext {
         this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48, 0.22, 0.22);
         this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
         this.chunkLoader = new ChunkLoader(player, gameWidth, gameHeight, 1500);
-        this.ui = new UI(player);
+        this.ui = new UI(player.getPlayerManager());
         this.weaponManager = new WeaponManager();
         this.lingeringZoneManager = new LingeringZoneManager();
         this.deltaTimer = new DeltaTimer();

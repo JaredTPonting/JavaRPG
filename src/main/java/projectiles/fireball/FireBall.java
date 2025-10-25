@@ -28,7 +28,7 @@ public class FireBall extends Projectile {
         this.x = this.owner.getX();
         this.y = this.owner.getY();
         this.speed = 150;
-        this.damage = 50 + this.owner.getPlayerStats().getMagicDamage();
+        this.damage = 50 + this.owner.getPlayerManager().getMagicDamage();
         this.dx = 0;
         this.dy = 0;
 

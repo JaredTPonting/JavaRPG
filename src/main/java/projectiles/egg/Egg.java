@@ -28,7 +28,7 @@ public class Egg extends Projectile {
     public Egg(GameWorld gameWorld) {
         super(gameWorld);
         this.speed = 400;
-        this.damage = 50.0 + gameWorld.getPlayer().getPlayerStats().getDamage();
+        this.damage = 50.0 + gameWorld.getPlayer().getPlayerManager().getDamage();
         initEgg();
 
         this.setDxDy();

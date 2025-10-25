@@ -2,6 +2,7 @@ package states;
 
 import entities.player.Player;
 import core.GameWorld;
+import entities.player.PlayerManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 
 public class PauseState implements GameState {
 
+    private final PlayerManager playerManager;
     private final Player player;
     private final GameWorld gameWorld;
     private Point mousePosition;
@@ -32,6 +34,7 @@ public class PauseState implements GameState {
 
     public PauseState(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
+        this.playerManager = gameWorld.getPlayer().getPlayerManager();
         this.player = gameWorld.getPlayer();
     }
 
@@ -92,15 +95,15 @@ public class PauseState implements GameState {
 
         g2.drawString("Player Stats:", textX, textY);
         textY += lineSpacing;
-        g2.drawString("Level: " + player.getLevel(), textX, textY);
+        g2.drawString("Level: " + playerManager.getLevel(), textX, textY);
         textY += lineSpacing;
-        g2.drawString("Max Health: " + player.getMaxHealth(), textX, textY);
+        g2.drawString("Max Health: " + playerManager.getMaxHealth(), textX, textY);
         textY += lineSpacing;
-        g2.drawString("Speed: " + player.getSpeed(), textX, textY);
+        g2.drawString("Speed: " + playerManager.getSpeed(), textX, textY);
         textY += lineSpacing;
-        g2.drawString("Health Regen: " + player.getHealthRegen(), textX, textY);
+        g2.drawString("Health Regen: " + playerManager.getHealthRegen(), textX, textY);
         textY += lineSpacing;
-        g2.drawString("XP: " + player.getXP() + "/" + player.getMaxXP(), textX, textY);
+        g2.drawString("XP: " + playerManager.getXP() + "/" + playerManager.getMaxXP(), textX, textY);
     }
 
     @Override
@@ -138,7 +141,7 @@ public class PauseState implements GameState {
     }
 
     private void levelUpPlayer() {
-        if (player.checkLevelUp()) {
+        if (playerManager.checkLevelUp()) {
             gameWorld.getStateStack().push(new LevelUpState(gameWorld));
         }
     }

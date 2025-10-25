@@ -81,7 +81,7 @@ public class MenuState implements GameState {
     @Override
     public void mousePressed(MouseEvent e) {
         if (playButton.contains(e.getPoint())) {
-            gameWorld.getStateStack().push(new PlayingState(gameWorld));
+            gameWorld.getStateStack().push(new WeaponSelectState(gameWorld));
         }
     }
 }
