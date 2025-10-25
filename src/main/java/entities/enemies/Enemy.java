@@ -2,6 +2,7 @@ package entities.enemies;
 
 import core.GameWorld;
 import entities.Entity;
+import loot.BasicChest;
 import loot.Chest;
 import utils.*;
 
@@ -82,7 +83,7 @@ public class Enemy extends Entity {
 
     private void dropChest() {
         System.out.println("dropping chest");
-        this.gameWorld.getLootManager().addChest(new Chest(this.x + ((double) this.size / 2), this.y + this.size));
+        this.gameWorld.getLootManager().addChest(new BasicChest(this.x + ((double) this.size / 2), this.y + this.size));
     }
 
     @Override

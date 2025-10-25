@@ -6,9 +6,8 @@ import utils.SpriteLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
 
-public class Chest implements Renderable {
+public abstract class Chest implements Renderable {
     private boolean active = true;
     private boolean opened = false;
     private double x, y;
@@ -18,25 +17,40 @@ public class Chest implements Renderable {
     private int size = 60;
 
     // chest image
-    private static BufferedImage closedChest;
-    private static BufferedImage openChest;
-
-    static {
-        closedChest = SpriteLoader.load("/sprites/Chests/basic/closed.png");
-        openChest = SpriteLoader.load("/sprites/Chests/basic/open.png");
-        if (closedChest == null) {
-            System.err.println("NO CHEST IMAGE");
-        }
-    }
+    static BufferedImage Chests;
+    private static int w, h;
+    protected BufferedImage closedChest;
+    protected BufferedImage openChest;
 
     public Chest(double x, double y) {
+        if (Chests == null) {
+            Chests = SpriteLoader.load("/sprites/Chests/all_chests.png");
+        }
+
+        assert Chests != null;
+        w = Chests.getWidth() / 9;
+        h = Chests.getHeight() / 4;
+        System.out.println(w + "  " + h);
+
         this.x = x;
         this.y = y;
         this.renderY = this.y - 50;
     }
 
+    protected BufferedImage getSubImage(int x, int y) {
+        return Chests.getSubimage(x * w, y * h, w, h);
+    }
+
     public void deActivate() {
         this.active = false;
+    }
+
+    public static void preload() {
+        if (Chests == null) {
+            Chests = SpriteLoader.load("/sprites/Chests/all_chests.png");
+            w = Chests.getWidth() / 9;
+            h = Chests.getHeight() / 4;
+        }
     }
 
 
@@ -58,11 +72,10 @@ public class Chest implements Renderable {
     public void render(Graphics g, Camera c) {
         int drawX = (int) (x - c.getX());
         int drawY = (int) (renderY - c.getY());
-        if (opened) {
-            g.drawImage(openChest, drawX, drawY, this.size + 10, this.size, null);
-        } else {
-            g.drawImage(closedChest, drawX, drawY, this.size + 10, this.size, null);
-        }
+        BufferedImage img = opened ? openChest : closedChest;
+
+        if (img != null)
+            g.drawImage(img, drawX, drawY, this.size + 10, this.size, null);
     }
 
     @Override

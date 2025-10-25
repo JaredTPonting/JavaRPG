@@ -184,6 +184,36 @@ public class EnemySpawner {
         return this.enemies.get(random.nextInt(enemies.size()));
     }
 
+    public List<Entity> getEnemiesInRange(double x, double y, int range) {
+        List<Entity> enemiesInRange = new ArrayList<Entity>();
+        for (Entity e : enemies) {
+            double distX = (e.getX() - x) * (e.getX() - x);
+            double distY = (e.getY() - y) * (e.getY() - y);
+            if ((distX + distY) <= (range * range)) {
+                enemiesInRange.add(e);
+            }
+        }
+        if (enemiesInRange.isEmpty()) {
+            return null;
+        }
+        return enemiesInRange;
+    }
+
+    public Entity getRandomEnemyInRange(double x, double y, int range) {
+        List<Entity> enemiesInRange = new ArrayList<Entity>();
+        for (Entity e : enemies) {
+            double distX = (e.getX() - x) * (e.getX() - x);
+            double distY = (e.getY() - y) * (e.getY() - y);
+            if ((distX + distY) <= (range * range)) {
+                enemiesInRange.add(e);
+            }
+        }
+        if (enemiesInRange.isEmpty()) {
+            return null;
+        }
+        return enemiesInRange.get(random.nextInt(enemiesInRange.size()));
+    }
+
     public DamageIndicatorManager getDamageIndicators() {
         return this.damageIndicators;
     }

@@ -4,6 +4,7 @@ import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
 import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
+import loot.Chest;
 import loot.LootManager;
 import states.GameState;
 import states.MenuState;
@@ -56,6 +57,7 @@ public class GameWorld implements WorldContext {
         this.lingeringZoneManager = new LingeringZoneManager();
         this.deltaTimer = new DeltaTimer();
         this.lootManager = new LootManager();
+        Chest.preload();
     }
 
     /** Resets core gameplay components while preserving persistent state. */

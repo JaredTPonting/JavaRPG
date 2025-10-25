@@ -2,7 +2,8 @@
   "rounds": [
     {
       "id": 1,
-      "enemies": ["R1SLIME", "R1WOLF", "R1GOBLIN"]
+      "enemies": ["R1SLIME", "R1WOLF", "R1GOBLIN"],
+      "bossChance": 0.05
     },
     {
       "id": 2,

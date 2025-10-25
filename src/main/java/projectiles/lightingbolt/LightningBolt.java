@@ -17,6 +17,7 @@ public class LightningBolt extends Projectile {
     private final int frameWidth;
     private final int height;
     private Entity target;
+    private int size = 150;
 
     private List damagedEnemies;
 
@@ -24,12 +25,10 @@ public class LightningBolt extends Projectile {
     private static BufferedImage SPRITE_SHEET;
     private static final int FRAME_COUNT = 10;
 
-    public LightningBolt(GameWorld gameWorld) {
+    public LightningBolt(GameWorld gameWorld, Entity target) {
         super(gameWorld);
-        this.target = gameWorld.getEnemySpawner().getRandomEnemy();
+        this.target = target;
         this.damage = 80 + this.owner.getPlayerManager().getMagicDamage();
-//        this.damage = 0;
-        this.damagedEnemies = new ArrayList<Entity>();
 
         if (SPRITE_SHEET == null) {
             SPRITE_SHEET = SpriteLoader.load("/sprites/weapons/lightningbolt/lightningbolt.png");
@@ -42,13 +41,17 @@ public class LightningBolt extends Projectile {
         this.height = SPRITE_SHEET.getHeight();
 
 
-        this.x = target.getX();
-        this.y = target.getY() + target.getSize() - height;
-        this.hitBox = new Rectangle((int) x, (int) (y + (height * 0.9)), frameWidth, (int) (height * 0.1));
+        this.x = target.getX() - ((double) target.getSize() / 2) + ((double) this.size / 2);
+        this.y = target.getY() + target.getSize() - this.size;
+        this.hitBox = new Rectangle((int) x, (int) (y + (size * 0.9)), frameWidth, (int) (size * 0.1));
     }
 
     @Override
     public void update(double dt) {
+        if (target == null) {
+            destroyProjectile();
+            return;
+        }
         animation.update();
 
         checkEnemyCollision();
@@ -64,7 +67,7 @@ public class LightningBolt extends Projectile {
         int screenX = (int) (x - camera.getX());
         int screenY = (int) (y - camera.getY());
 
-        g.drawImage(animation.getCurrentFrame(), screenX, screenY, frameWidth, height, null);
+        g.drawImage(animation.getCurrentFrame(), screenX, screenY, size, size, null);
 
     }
 
