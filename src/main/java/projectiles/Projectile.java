@@ -2,9 +2,11 @@ package projectiles;
 
 import entities.enemies.Enemy;
 import entities.player.Player;
+import utils.Animation;
 import utils.Camera;
 import utils.DeltaTimer;
 import core.GameWorld;
+import utils.VectorManipulation;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -21,6 +23,14 @@ public abstract class Projectile {
     public Player owner;
     public int maxHits;
     public ArrayList<Enemy> enemiesHit = new ArrayList<>();
+
+    public static VectorManipulation vectorManipulation = new VectorManipulation();
+
+    // Animation Stuff
+    public static final boolean LOOP = true;
+    public static final long FRAME_TIME = 100;
+    public Animation animation;
+
 
     protected Rectangle hitBox;
 

@@ -3,17 +3,22 @@ package projectiles.chaosorb;
 import entities.enemies.Enemy;
 import lingeringzones.chaoszone.ChaosZone;
 import projectiles.Projectile;
+import utils.Animation;
 import utils.Camera;
 import core.GameWorld;
+import utils.SpriteLoader;
 
+import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.awt.*;
 
 public class ChaosOrb extends Projectile {
 
     private double radius = 10;
-    private long lifeTimeMillis = 1500; // projectile lifetime
-    private long spawnTime;
+
+    // static Aniamtion
+    private static BufferedImage SPRITE_SHEET;
+    private static final int FRAME_COUNT = 8;
 
     public ChaosOrb(GameWorld gameWorld) {
         super(gameWorld);
@@ -26,9 +31,14 @@ public class ChaosOrb extends Projectile {
         this.y = this.owner.getY();
         this.speed = 200;
         this.damage = 50 + owner.getPlayerStats().getMagicDamage();
-        this.spawnTime = System.currentTimeMillis();
         this.hitBox = new Rectangle((int) x, (int) y, 12, 12);
-        this.lastUpdateTime = System.nanoTime();
+
+        if (SPRITE_SHEET == null) {
+            SPRITE_SHEET = SpriteLoader.load("/sprites/weapons/chaosorb/chaosorb.png");
+        }
+
+        this.animation = new Animation(SPRITE_SHEET, FRAME_COUNT, FRAME_TIME, LOOP);
+
     }
 
     @Override
@@ -38,14 +48,14 @@ public class ChaosOrb extends Projectile {
         y += dy * speed * dt;
         updateHitBox();
         this.checkEnemyCollision();
+        animation.update();
     }
 
     @Override
     public void render(Graphics g, Camera camera) {
         // render projectile
         if (alive) {
-            g.setColor(Color.MAGENTA);
-            g.fillOval((int) (x - camera.getX()), (int) (y - camera.getY()), (int) radius * 2, (int) radius * 2);
+            g.drawImage(animation.getCurrentFrame(), (int) (x - camera.getX()), (int) (y - camera.getY()), 30, 30, null);
         }
     }
 

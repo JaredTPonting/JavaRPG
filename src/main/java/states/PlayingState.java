@@ -15,6 +15,7 @@ import weapons.chaosorbblaster.weaponmods.ExtraShot;
 import weapons.eggcannon.EggCannon;
 import weapons.eggcannon.weaponmods.BackwardShot;
 import weapons.eggcannon.weaponmods.TripleEggMod;
+import weapons.fireballblaster.FireBallBlaster;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -49,11 +50,12 @@ public class PlayingState implements GameState {
     }
 
     private void initWeapons() {
-        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
+        weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
+//        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
         weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
         weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
-        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
-        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
+//        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
+//        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
     }
 
     @Override

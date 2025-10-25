@@ -1,5 +1,6 @@
 package entities.enemies;
 
+import entities.Entity;
 import entities.player.Player;
 import utils.Camera;
 import core.GameWorld;
@@ -175,6 +176,10 @@ public class EnemySpawner {
                 enemy.resetVxVy();
             }
         }
+    }
+
+    public Entity getRandomEnemy() {
+        return this.enemies.get(random.nextInt(enemies.size()));
     }
 
     public DamageIndicatorManager getDamageIndicators() {

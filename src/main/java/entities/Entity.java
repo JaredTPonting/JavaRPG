@@ -68,4 +68,8 @@ public abstract class Entity implements Renderable {
 
     // Render
     public abstract void render(Graphics g, Camera camera);
+
+    public double getY() {
+        return this.y;
+    }
 }
