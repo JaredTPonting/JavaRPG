@@ -49,7 +49,6 @@ public class WaveFunctionCollapse {
             List<Tile> options = possibilities[y][x];
 
             if (options.isEmpty()) {
-                System.out.println("No options for (" + x + "," + y + "), forcing ERROR_TILE");
                 plane.setTile(x, y, ERROR_TILE);
                 possibilities[y][x].add(ERROR_TILE);
                 continue;
@@ -126,7 +125,6 @@ public class WaveFunctionCollapse {
                 neighborOptions.removeIf(t -> !edgesMatch(chosen, t, directions[finalI]));
 
                 if (neighborOptions.isEmpty()) {
-                    System.out.println("Contradiciton at(" + nx + ", " + ny + "), inserting ERROR TILE");
                     neighborOptions.add(ERROR_TILE);
                     plane.setTile(nx, ny, ERROR_TILE);
                 }

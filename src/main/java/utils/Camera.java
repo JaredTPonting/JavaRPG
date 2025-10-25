@@ -1,16 +1,13 @@
 package utils;
 
-import player.Player;
-
-import java.awt.*;
-import java.util.Random;
+import entities.player.Player;
 
 public class Camera {
     double camX, camY;
     int screenWidth;
     int screenHeight;
 
-    public void centerOn(Player player, int screenWidth, int screenHeight, int mapWidth, int mapHeight) {
+    public void centerOn(Player player, int screenWidth, int screenHeight) {
         camX = player.getX() - (double) screenWidth / 2;
         camY = player.getY() - (double) screenHeight / 2;
         this.screenHeight = screenHeight;

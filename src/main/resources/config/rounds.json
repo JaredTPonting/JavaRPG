@@ -1,0 +1,18 @@
+{
+  "rounds": [
+    {
+      "id": 1,
+      "enemies": ["R1SLIME", "R1WOLF", "R1GOBLIN"]
+    },
+    {
+      "id": 2,
+      "enemies": ["MUSHROOM", "R1WOLF"],
+      "spawnRate": 1.5
+    },
+    {
+      "id": 3,
+      "enemies": ["SMALLDEMON"],
+      "bossChance": 0.05
+    }
+  ]
+}

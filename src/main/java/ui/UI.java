@@ -1,26 +1,27 @@
 package ui;
 
 import java.awt.*;
-import player.Player;
+import entities.player.Player;
+import entities.player.PlayerManager;
 
 public class UI {
-    private Player player;
+    private PlayerManager playerManager;
 
     private float displayedHealth;
     private float displayedXP;
     private float displayedStamina;
 
-    public UI(Player player) {
-        this.player = player;
-        this.displayedHealth = player.getMaxXP();
-        this.displayedStamina = (float) player.getMaxStamina();
-        this.displayedXP = player.getXP();
+    public UI(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+        this.displayedHealth = playerManager.getMaxXP();
+        this.displayedStamina = (float) playerManager.getMaxStamina();
+        this.displayedXP = playerManager.getXP();
     }
 
     public void update() {
-        displayedHealth = lerp(displayedHealth, (float) player.getCurrentHealth(), 0.1f);
-        displayedStamina = lerp(displayedStamina, (float) player.getCurrentStamina(), 0.1f);
-        displayedXP = lerp(displayedXP, (float) player.getXP(), 0.1f);
+        displayedHealth = lerp(displayedHealth, (float) playerManager.getCurrentHealth(), 0.1f);
+        displayedStamina = lerp(displayedStamina, (float) playerManager.getCurrentStamina(), 0.1f);
+        displayedXP = lerp(displayedXP, (float) playerManager.getXP(), 0.1f);
     }
 
     private float lerp(float a, float b, float f) {
@@ -38,13 +39,13 @@ public class UI {
         g.setColor(new Color(0, 0, 0, 120));
         g.fillRoundRect(x - 10, y - 10, barWidth + 20, (barHeight + spacing) * 3 + 20, arc, arc);
 
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedHealth / player.getMaxHealth()), new Color(200, 50, 50), "HP");
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedHealth / playerManager.getMaxHealth()), new Color(200, 50, 50), "HP");
 
         y += barHeight + spacing;
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedStamina / player.getMaxStamina()), new Color(38, 156, 31), "STAMINA");
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedStamina / playerManager.getMaxStamina()), new Color(38, 156, 31), "STAMINA");
 
         y += barHeight + spacing;
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedXP / player.getMaxXP()), new Color(38, 156, 215), "XP");
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedXP / playerManager.getMaxXP()), new Color(38, 156, 215), playerManager.checkLevelUp() ? "CAN LEVEL UP" : "XP");
 
 
     }

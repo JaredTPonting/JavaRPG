@@ -1,5 +1,5 @@
 # Chicken Run
-Chicken run is a 2D bullet heaven style game im developing as a challenge to learn some java. You play as a magical chicken, starting off by fending off foxes, then as your power and fame grows, all sorts of creatures will be coming after you! Survive waves of enemies, gain experience, level up, and unlock items to further you rpower!
+Chicken run is a 2D bullet heaven style game im developing as a challenge to learn some java. You play as a magical chicken, starting off by fending off foxes, then as your power and fame grows, all sorts of creatures will be coming after you! Survive waves of entities.enemies, gain experience, level up, and unlock items to further you rpower!
 
 ## Features
 - Play as a Magical Chicken: start small but grow stronger

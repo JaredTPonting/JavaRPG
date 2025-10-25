@@ -25,5 +25,10 @@ public class WfcChunk extends Chunk {
         int worldX = chunkX * size - (int) camera.getX();
         int worldY = chunkY * size - (int) camera.getY();
         g.drawImage(chunkImage, worldX, worldY, null);
+
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setColor(new Color(0, 0, 0, 100));
+        g2d.fillRect(worldX, worldY, chunkImage.getWidth(), chunkImage.getHeight());
+        g2d.dispose();
     }
 }
