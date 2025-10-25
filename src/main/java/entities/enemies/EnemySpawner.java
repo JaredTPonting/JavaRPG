@@ -181,6 +181,10 @@ public class EnemySpawner {
         return this.damageIndicators;
     }
 
+    public void renderDamageIndicators(Graphics g, Camera c) {
+        this.damageIndicators.render(g, c);
+    }
+
     public void render(Graphics g, Camera camera) {
         enemies.forEach(enemy -> enemy.render(g, camera));
         this.damageIndicators.render(g, camera);

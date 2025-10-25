@@ -94,12 +94,12 @@ public class Player extends Entity {
     public Player(WorldContext gameWorld, int x, int y, int size, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
 
-        this.playerStats = new PlayerStats(200.0, 20000.0, 0.5, 100.0, 5.0, 50, 50);
+        this.playerStats = new PlayerStats(200.0, 20000.0, 0.5, 10000.0, 5.0, 50, 50);
         this.playerLevel = new PlayerLevel();
 
-        idleSprites = loadSprites("/sprites/cute_chicken_idle.png", 6);
-        walkSprites = loadSprites("/sprites/cute_chicken_walk.png", 6);
-        runSprites = loadSprites("/sprites/cute_chicken_run.png", 2);
+        idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle_new.png", 6);
+        walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk_new.png", 6);
+        runSprites = loadSprites("/sprites/chicken/cute_chicken_run_new.png", 2);
     }
 
     private BufferedImage[] loadSprites(String path, int frameCount) {

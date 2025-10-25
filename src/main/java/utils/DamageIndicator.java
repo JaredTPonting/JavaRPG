@@ -1,47 +1,47 @@
 package utils;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.Random;
-
-import java.awt.Color;
 
 public class DamageIndicator {
     private static final double RISE_SPEED = 0.5;
     private static final double DRIFT_RANGE = 0.5;
 
     private int damageValue;
-    private double x;
-    private double y;
+    private double x, y;
     private double dx;
     private boolean finished = false;
     private Cooldown timer;
 
     private final Color baseColor;
-    private final Font font = new Font("Arial", Font.BOLD, 16);
+    private final Font font = new Font("Franklin Gothic Heavy", Font.BOLD, 18); // prettier font
+    private final Random random = new Random();
+    private final double rotation; // slight random rotation
+    private final double scale; // scaling effect
 
-    public DamageIndicator(int damageValue, int x, int y){
+    public DamageIndicator(int damageValue, int x, int y) {
         this.damageValue = damageValue;
         this.x = x;
         this.y = y;
 
-        Random r = new Random();
-        this.dx = (r.nextDouble() - 0.5) * DRIFT_RANGE;
-
+        this.dx = (random.nextDouble() - 0.5) * DRIFT_RANGE;
+        this.rotation = (random.nextDouble() - 0.5) * 20; // rotate up to ±20 degrees
+        this.scale = 1 + random.nextDouble() * 0.5; // initial scale between 1 and 1.5
 
         this.timer = new Cooldown(0.7);
-        int red = Math.min(255, 100 + damageValue * 5);
-        int green = Math.max(0, 255 - damageValue * 8);
 
-        baseColor = new Color(red, green, 0);
+        int red = Math.min(255, 150 + damageValue * 3);
+        int green = Math.max(0, 255 - damageValue * 8);
+        this.baseColor = new Color(red, green, 0);
     }
 
     public void update(double dt) {
-        this.timer.update(dt);
-        if (timer.ready()) {this.finished = true;}
+        timer.update(dt);
+        if (timer.ready()) finished = true;
 
-        this.y -= RISE_SPEED;
-        this.x += dx;
-
+        y -= RISE_SPEED;
+        x += dx;
     }
 
     public void render(Graphics g, Camera camera) {
@@ -53,21 +53,35 @@ public class DamageIndicator {
 
         Graphics2D g2d = (Graphics2D) g;
         Composite oldComp = g2d.getComposite();
+        AffineTransform oldTransform = g2d.getTransform();
 
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        g2d.setFont(this.font);
+        g2d.setFont(font);
 
+        // Apply rotation and scaling
+        g2d.translate(screenX, screenY);
+        double currentScale = scale * (1.0 - timer.percentDone() * 0.5);
+        g2d.scale(currentScale, currentScale);
+        g2d.rotate(Math.toRadians(rotation * (1 - timer.percentDone())));
+
+        // Black outline (draw shadow in 4 directions for stronger outline)
         g2d.setColor(Color.BLACK);
-        g2d.drawString(String.valueOf(damageValue), screenX + 1, screenY + 1);
+        int offset = 2;
+        g2d.drawString(String.valueOf(damageValue), 0 + offset, 0);
+        g2d.drawString(String.valueOf(damageValue), 0 - offset, 0);
+        g2d.drawString(String.valueOf(damageValue), 0, 0 + offset);
+        g2d.drawString(String.valueOf(damageValue), 0, 0 - offset);
 
-        g2d.setColor(baseColor);
-        g2d.drawString(String.valueOf(damageValue), screenX, screenY);
+        // Main pale red number
+        g2d.setColor(new Color(255, 150, 150));
+        g2d.drawString(String.valueOf(damageValue), 0, 0);
 
+        // Restore
+        g2d.setTransform(oldTransform);
         g2d.setComposite(oldComp);
-
     }
 
     public boolean isFinished() {
-        return this.finished;
+        return finished;
     }
 }

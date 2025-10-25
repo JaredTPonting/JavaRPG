@@ -96,6 +96,7 @@ public class PlayingState implements GameState {
             r.render(g, camera);
         }
 
+        spawner.renderDamageIndicators(g, camera);
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
     }
 

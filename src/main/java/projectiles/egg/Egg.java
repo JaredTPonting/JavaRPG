@@ -8,6 +8,7 @@ import utils.SpriteLoader;
 import utils.VectorManipulation;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -20,6 +21,9 @@ public class Egg extends Projectile {
     private static final Random rand = new Random();
     boolean up, down, left, right;
     VectorManipulation vectorManipulation = new VectorManipulation();
+
+    private double rotation = 0;          // Current rotation in radians
+    private final double rotationSpeed = Math.toRadians(180); // 180 degrees per second
 
     public Egg(GameWorld gameWorld) {
         super(gameWorld);
@@ -71,8 +75,8 @@ public class Egg extends Projectile {
         double diagonalBoost = 1.05;
         if (dx != 0 && dy != 0) {
             double diagonal = Math.sqrt(2);
-            x += ( dx / diagonal) * this.speed * diagonalBoost * dt;
-            y += ( dy / diagonal) * this.speed * diagonalBoost * dt;
+            x += (dx / diagonal) * this.speed * diagonalBoost * dt;
+            y += (dy / diagonal) * this.speed * diagonalBoost * dt;
         } else {
             x += dx * this.speed * dt;
             y += dy * this.speed * dt;
@@ -80,11 +84,14 @@ public class Egg extends Projectile {
         this.checkEnemyCollision();
 
         updateHitBox();
+
+        // Increment rotation
+        rotation += rotationSpeed * dt;
     }
 
     protected void loadSprite() {
         if (!loaded) {
-            BufferedImage sheet = SpriteLoader.load("/sprites/eggBulletSpriteSheet.png");
+            BufferedImage sheet = SpriteLoader.load("/sprites/weapons/eggs/eggBulletSpriteSheet.png");
             int i = 0;
             for (int t = 0; t < 5; t++) {
                 for (int k = 0; k < 6; k++) {
@@ -100,7 +107,17 @@ public class Egg extends Projectile {
     @Override
     public void render(Graphics g, Camera camera) {
         if (sprite != null) {
-            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), spriteSize, spriteSize, null);
+            Graphics2D g2d = (Graphics2D) g;
+            AffineTransform old = g2d.getTransform();
+
+            int drawX = (int) (x - camera.getX());
+            int drawY = (int) (y - camera.getY());
+
+            // Rotate around the center of the sprite
+            g2d.rotate(rotation, drawX + spriteSize / 2.0, drawY + spriteSize / 2.0);
+            g2d.drawImage(sprite, drawX, drawY, spriteSize, spriteSize, null);
+
+            g2d.setTransform(old);
         }
     }
 
