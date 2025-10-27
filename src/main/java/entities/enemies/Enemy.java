@@ -82,8 +82,7 @@ public class Enemy extends Entity {
     }
 
     private void dropChest() {
-        System.out.println("dropping chest");
-        this.gameWorld.getLootManager().addChest(new BasicChest(this.x + ((double) this.size / 2), this.y + this.size));
+        this.gameWorld.getLootManager().addChest(new BasicChest(this.x + ((double) this.size / 2), this.y + this.size, gameWorld));
     }
 
     @Override
@@ -164,6 +163,9 @@ public class Enemy extends Entity {
         }
 
         // --- Apply movement ---
+        if (speedDebuff != 1){
+            System.out.println(speedDebuff);
+        }
         x += (vx * dt) * speedDebuff;
         y += (vy * dt) * speedDebuff;
 
@@ -183,7 +185,7 @@ public class Enemy extends Entity {
     public void takeDamage(double amount) {
         if (!triggeredDeath) {
             hp -= amount;
-            this.addDamageIndicator((int) amount, (int) this.x, (int) this.y);
+            this.addDamageIndicator((int) amount, (int) (this.x + ((double) this.size / 2)), (int) (this.y + ((double) this.size / 2)));
             if (hp <= 0) {
                 startDeath();
                 setState("die");
@@ -203,7 +205,7 @@ public class Enemy extends Entity {
     }
 
     public void startDeath() {
-        this.deathTimer = new Cooldown(2);
+        this.deathTimer = new Cooldown(1);
         triggeredDeath = true;
         if (this.isBoss) {
             dropChest();
@@ -226,6 +228,7 @@ public class Enemy extends Entity {
         this.gameWorld.getEnemySpawner().getDamageIndicators().addIndicator(damage, x, y);
     }
 
+
     @Override
     public void render(Graphics g, Camera camera) {
         BufferedImage frame = animations.get(state).getCurrentFrame();
@@ -233,6 +236,10 @@ public class Enemy extends Entity {
             g.drawImage(frame, (int)(x - camera.getX()), (int)(y - camera.getY()), size, size, null);
         } else {
             g.drawImage(frame, (int)(x - camera.getX() + size), (int)(y - camera.getY()), -size, size, null);
+        }
+
+        if (gameWorld.isDebugMode()) {
+            drawHitBox(g, camera);
         }
     }
 

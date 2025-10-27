@@ -1,11 +1,15 @@
 package entities.player;
 
+import loot.ItemManager;
+
 public class PlayerManager {
     private PlayerStats playerStats;
     private PlayerLevel playerLevel;
+    private ItemManager playerItems;
 
     public PlayerManager() {
-        this.playerStats = new PlayerStats();
+        this.playerItems = new ItemManager();
+        this.playerStats = new PlayerStats(playerItems);
         this.playerLevel = new PlayerLevel();
     }
 
@@ -15,6 +19,9 @@ public class PlayerManager {
     }
     public PlayerLevel getPlayerLevel() {
         return this.playerLevel;
+    }
+    public ItemManager getPlayerItems() {
+        return this.playerItems;
     }
 
     // Stat methods
@@ -107,35 +114,35 @@ public class PlayerManager {
     }
 
     public double getMaxHealth() {
-        return this.playerStats.getMaxHealth();
+        return this.playerStats.getMaxHealth() + playerItems.getItemHP();
     }
     public double getHealthRegen() {
-        return this.playerStats.getHealthRegen();
+        return this.playerStats.getHealthRegen() + playerStats.getHealthRegen();
     }
     public double getCurrentHealth() {
         return this.playerStats.getCurrentHealth();
     }
 
     public double getSpeed() {
-        return this.playerStats.getSpeed();
+        return this.playerStats.getSpeed() + playerItems.getItemSpeed();
     }
 
 
     public double getMaxStamina() {
-        return this.playerStats.getMaxStamina();
+        return this.playerStats.getMaxStamina() + playerItems.getItemStamina();
     }
     public double getStaminaRegen() {
-        return this.playerStats.getStaminaRegen();
+        return this.playerStats.getStaminaRegen() + playerItems.getItemStaminaRegen();
     }
     public double getCurrentStamina() {
         return this.playerStats.getCurrentStamina();
     }
 
     public double getDamage(){
-        return this.playerStats.getDamage();
+        return this.playerStats.getDamage() + playerItems.getItemDamage();
     }
     public double getMagicDamage() {
-        return this.playerStats.getMagicDamage();
+        return this.playerStats.getMagicDamage() + playerItems.getItemMagicDamage();
     }
 
     // Damage

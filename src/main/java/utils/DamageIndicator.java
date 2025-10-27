@@ -15,7 +15,7 @@ public class DamageIndicator {
     private Cooldown timer;
 
     private final Color baseColor;
-    private final Font font = new Font("Franklin Gothic Heavy", Font.BOLD, 18); // prettier font
+    private final Font font = new Font("Franklin Gothic Heavy", Font.BOLD, 18);
     private final Random random = new Random();
     private final double rotation; // slight random rotation
     private final double scale; // scaling effect

@@ -14,6 +14,10 @@ public class LootManager {
     }
 
     public void update(double dt) {
+        updateChests(dt);
+    }
+
+    public void updateChests(double dt) {
         List<Chest> toRemove = new ArrayList<>();
         for (Chest chest : chests) {
             chest.update(dt);

@@ -24,6 +24,11 @@
         "frames": 15,
         "loop": false
       }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.8,
+      "radiusPercent": 0.35
     }
   },
   "SMALLDEMON": {
@@ -78,6 +83,11 @@
         "frames": 6,
         "loop": false
       }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
     }
   },
   "R1WOLF": {
@@ -105,6 +115,11 @@
         "frames": 6,
         "loop": false
       }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.6,
+      "radiusPercent": 0.35
     }
   },
   "R1GOBLIN": {
@@ -132,6 +147,11 @@
         "frames": 6,
         "loop": false
       }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
     }
   }
 }

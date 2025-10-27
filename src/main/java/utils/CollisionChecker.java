@@ -8,18 +8,15 @@ import java.awt.*;
 
 public class CollisionChecker {
     public boolean checkCollision(Entity a, Entity b) {
-        return a.getHitBox().intersects(b.getHitBox());
+        return circleCollision(a, b);
     }
 
     public boolean entityProjectileCollision(Entity a, Projectile p) {
-        return a.getHitBox().intersects(p.getHitBox());
+        return circleRectCollision(a, p.getHitBox());
     }
 
     public boolean entityBaseCollision(Entity e, Projectile p) {
         Rectangle entityHitBox = e.getHitBox();
-        Rectangle projectileHitBox = p.getHitBox();
-
-        // Define a thin rectangle at the bottom of the entity (e.g., 10% of height)
         int baseHeight = Math.max(1, (int)(entityHitBox.height * 0.1));
         Rectangle bottomRect = new Rectangle(
                 entityHitBox.x,
@@ -28,32 +25,52 @@ public class CollisionChecker {
                 baseHeight
         );
 
-        return bottomRect.intersects(projectileHitBox);
+        if (e.getHitBoxRadius() > 0)
+            return circleRectCollision(e, p.getHitBox());
+        else
+            return bottomRect.intersects(p.getHitBox());
     }
 
     public boolean entityStandingInZone(Entity e, LingeringZone z) {
-        Rectangle rect = e.getHitBox();
-        double circleX = z.getX();
-        double circleY = z.getY();
-        double radius = z.getRadius();
+        // Bottom half of enemy circle
+        double ex = e.getHitBoxCenterX();
+        double ey = e.getHitBoxCenterY() + e.getHitBoxRadius() * 0.5; // bottom half
+        double er = e.getHitBoxRadius() * 0.5;
 
-        // Bottom edge of the entity's hitbox
-        double x1 = rect.getX();
-        double x2 = rect.getX() + rect.getWidth();
-        double y = rect.getY() + rect.getHeight(); // bottom edge Y coordinate
+        // Quick bounding check using ellipse formula
+        double dx = (ex - z.getX()) / (z.getWidth() / 2.0);
+        double dy = (ey - z.getY()) / (z.getHeight() / 2.0);
+        double insideEllipse = dx * dx + dy * dy;
 
-        // Step 1: Clamp the circle center’s X to the segment representing the bottom edge
-        double closestX = clamp(x1, x2, circleX);
-
-        // Step 2: Compute distance from the circle center to the closest point on the bottom edge
-        double dx = circleX - closestX;
-        double dy = circleY - y;
-
-        // Step 3: Check if the distance is less than the radius
-        return (dx * dx + dy * dy) < (radius * radius);
+        // Consider enemy "standing in zone" if its bottom overlaps the ellipse boundary
+        return insideEllipse <= 1.0 + (er / Math.max(z.getWidth(), z.getHeight()));
     }
+
+    // Helper
 
     private double clamp(double min, double max, double value) {
         return Math.max(min, Math.min(max, value));
+    }
+
+    public boolean circleCollision(Entity a, Entity b) {
+        double dx = a.getHitBoxCenterX() - b.getHitBoxCenterX();
+        double dy = a.getHitBoxCenterY() - b.getHitBoxCenterY();
+        double distSq = dx * dx + dy * dy;
+        double radiusSum = a.getHitBoxRadius() + b.getHitBoxRadius();
+        return distSq <= radiusSum * radiusSum;
+    }
+
+    public boolean circleRectCollision(Entity circleEntity, Rectangle rect) {
+        double circleX = circleEntity.getHitBoxCenterX();
+        double circleY = circleEntity.getHitBoxCenterY();
+        double radius = circleEntity.getHitBoxRadius();
+
+        double closestX = clamp(rect.getX(), rect.getX() + rect.getWidth(), circleX);
+        double closestY = clamp(rect.getY(), rect.getY() + rect.getHeight(), circleY);
+
+        double dx = circleX - closestX;
+        double dy = circleY - closestY;
+
+        return (dx * dx + dy * dy) <= (radius * radius);
     }
 }

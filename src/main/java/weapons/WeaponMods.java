@@ -6,5 +6,11 @@ import core.GameWorld;
 import java.util.List;
 
 public abstract class WeaponMods {
-    public abstract List<Projectile> addProjectile(GameWorld gameWorld, List<Projectile> projectiles);
+    public List<Projectile> addProjectile(GameWorld gameWorld, List<Projectile> projectiles){
+        return projectiles;
+    }
+
+    public List<Projectile> modifyProjectiles(GameWorld gameWorld, List<Projectile> projectiles){
+        return projectiles;
+    }
 }

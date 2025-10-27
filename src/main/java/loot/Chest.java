@@ -1,20 +1,26 @@
 package loot;
 
+import core.GameWorld;
+import entities.player.Player;
+import states.LootSelectionState;
 import utils.Camera;
 import utils.Renderable;
 import utils.SpriteLoader;
+import utils.WorldContext;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Chest implements Renderable {
     private boolean active = true;
-    private boolean opened = false;
+    public boolean opened = false;
     private double x, y;
     private double renderY;
     private double despwanTimer = 30;
     private double openedTimer = 3;
-    private int size = 60;
+    private int size = 80;
+    protected WorldContext gameWorld;
+    private Player player;
 
     // chest image
     static BufferedImage Chests;
@@ -22,7 +28,10 @@ public abstract class Chest implements Renderable {
     protected BufferedImage closedChest;
     protected BufferedImage openChest;
 
-    public Chest(double x, double y) {
+    // Hitbox
+    public Rectangle hitBox;
+
+    public Chest(double x, double y, WorldContext gameWorld) {
         if (Chests == null) {
             Chests = SpriteLoader.load("/sprites/Chests/all_chests.png");
         }
@@ -30,11 +39,14 @@ public abstract class Chest implements Renderable {
         assert Chests != null;
         w = Chests.getWidth() / 9;
         h = Chests.getHeight() / 4;
-        System.out.println(w + "  " + h);
 
         this.x = x;
         this.y = y;
         this.renderY = this.y - 50;
+
+        this.gameWorld = gameWorld;
+        this.player = gameWorld.getPlayer();
+        this.hitBox = new Rectangle((int) this.x, (int) this.y, size, size);
     }
 
     protected BufferedImage getSubImage(int x, int y) {
@@ -53,8 +65,11 @@ public abstract class Chest implements Renderable {
         }
     }
 
+    protected abstract void onUpdate();
+
 
     public void update(double dt) {
+        onUpdate();
         despwanTimer -= dt;
         if (despwanTimer <= 0) {
             deActivate();
@@ -67,6 +82,7 @@ public abstract class Chest implements Renderable {
         }
         this.renderY = Math.min(this.y, this.renderY + 10);
 
+
     }
 
     public void render(Graphics g, Camera c) {
@@ -75,7 +91,11 @@ public abstract class Chest implements Renderable {
         BufferedImage img = opened ? openChest : closedChest;
 
         if (img != null)
-            g.drawImage(img, drawX, drawY, this.size + 10, this.size, null);
+            g.drawImage(img, drawX, drawY, this.size, this.size, null);
+    }
+
+    public void openChest(){
+        this.opened = true;
     }
 
     @Override

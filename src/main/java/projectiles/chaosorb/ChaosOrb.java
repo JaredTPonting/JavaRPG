@@ -15,9 +15,7 @@ import java.awt.*;
 
 public class ChaosOrb extends Projectile {
 
-    private double radius = 10;
-
-    // static Aniamtion
+    // static Animation
     private static BufferedImage SPRITE_SHEET;
     private static final int FRAME_COUNT = 8;
 
@@ -32,8 +30,10 @@ public class ChaosOrb extends Projectile {
         this.x = this.owner.getX();
         this.y = this.owner.getY();
         this.speed = 200;
-        this.damage = 50 + playerManager.getMagicDamage();
-        this.hitBox = new Rectangle((int) x, (int) y, 12, 12);
+//        this.damage = 50 + playerManager.getMagicDamage();
+        this.damage = 0;
+        this.size = 40;
+        this.hitBox = new Rectangle((int) x, (int) y, size, size);
 
         if (SPRITE_SHEET == null) {
             SPRITE_SHEET = SpriteLoader.load("/sprites/weapons/chaosorb/chaosorb.png");
@@ -44,7 +44,7 @@ public class ChaosOrb extends Projectile {
     }
 
     @Override
-    public void update(double dt) {
+    public void onUpdate(double dt) {
 
         x += dx * speed * dt;
         y += dy * speed * dt;
@@ -56,8 +56,9 @@ public class ChaosOrb extends Projectile {
     @Override
     public void render(Graphics g, Camera camera) {
         // render projectile
+        drawHitbox(g, camera);
         if (alive) {
-            g.drawImage(animation.getCurrentFrame(), (int) (x - camera.getX()), (int) (y - camera.getY()), 30, 30, null);
+            g.drawImage(animation.getCurrentFrame(), (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
         }
     }
 
@@ -68,7 +69,7 @@ public class ChaosOrb extends Projectile {
 
     @Override
     protected void onDeletionEffect() {
-        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x, this.y, 30, 2));
+        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x, this.y, 80, 3.5));
     }
 
 

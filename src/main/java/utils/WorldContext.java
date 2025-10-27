@@ -8,6 +8,8 @@ import utils.CollisionChecker;
 import utils.DeltaTimer;
 import weapons.WeaponManager;
 
+import java.awt.*;
+
 public interface WorldContext {
     int getGameWidth();
     int getGameHeight();
@@ -22,4 +24,8 @@ public interface WorldContext {
     Player getPlayer();  // optional but convenient
 
     EnemySpawner getEnemySpawner();
+
+    boolean isDebugMode();
+
+    StateStack getStateStack();
 }

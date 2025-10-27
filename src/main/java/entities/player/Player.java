@@ -90,6 +90,7 @@ public class Player extends Entity {
     public Player(WorldContext gameWorld, int x, int y, int size, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
         this.playerManager = new PlayerManager();
+        this.setHitBox(0.5, 0.5, 0.5);
 
         idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle_new.png", 6);
         walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk_new.png", 6);
@@ -139,6 +140,12 @@ public class Player extends Entity {
     // Position getters
     public double getX() { return x; }
     public double getY() { return y; }
+
+    public Point getCenter() {
+        int centerX = (int) (this.x + (this.size / 2));
+        int centerY = (int) (this.y + (this.size / 2));
+        return new Point(centerX, centerY);
+    }
 
     public boolean getInvunerable() { return this.invunerable; }
     public PlayerStats getPlayerStats() {
@@ -275,6 +282,9 @@ public class Player extends Entity {
             g.drawImage(sprite, (int) (x + this.size - camera.getX()), (int) (y - camera.getY()), -this.size, this.size, null);
         } else {
             g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
+        }
+        if (gameWorld.isDebugMode()) {
+            drawHitBox(g, camera);
         }
     }
 

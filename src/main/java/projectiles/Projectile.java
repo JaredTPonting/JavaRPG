@@ -3,11 +3,8 @@ package projectiles;
 import entities.enemies.Enemy;
 import entities.player.Player;
 import entities.player.PlayerManager;
-import utils.Animation;
-import utils.Camera;
-import utils.DeltaTimer;
+import utils.*;
 import core.GameWorld;
-import utils.VectorManipulation;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,6 +16,7 @@ public abstract class Projectile {
     protected double speed;
     protected double damage;
     protected boolean alive = true;
+    protected int size;
     protected GameWorld gameWorld;
     public long lastUpdateTime;
     public Player owner;
@@ -32,6 +30,9 @@ public abstract class Projectile {
     public static final long FRAME_TIME = 100;
     public Animation animation;
 
+    // LifeSpan
+    public Cooldown lifeSpan;
+
 
     protected Rectangle hitBox;
 
@@ -39,6 +40,7 @@ public abstract class Projectile {
         this.gameWorld = gameWorld;
         this.owner = gameWorld.getPlayer();
         this.maxHits = 1;
+        this.lifeSpan = new Cooldown(10);
     }
 
     public void checkEnemyCollision() {
@@ -54,7 +56,22 @@ public abstract class Projectile {
         }
     }
 
-    public abstract void update(double dt);
+    public void updateLifeSpan(double dt) {
+        lifeSpan.update(dt);
+        if (lifeSpan.ready()) {
+            this.destroyProjectile();
+        }
+    }
+
+    public final void update(double dt) {
+        updateLifeSpan(dt);
+        if (alive) {
+            onUpdate(dt);
+        }
+    }
+
+    protected abstract void onUpdate(double dt);
+
     protected void updateHitBox() {
         hitBox.setLocation((int) this.x, (int) this.y);
     }
@@ -88,4 +105,28 @@ public abstract class Projectile {
     public double getY() { return y; }
     public double getDamage() { return damage; }
     public GameWorld getGameWorld() { return gameWorld; }
+
+    // Debugging
+    public void drawHitbox(Graphics g, Camera c) {
+        if (gameWorld.isDebugMode()) {
+            g.drawRect((int) (hitBox.x - c.getX()), (int) (hitBox.y - c.getY()), hitBox.width, hitBox.height);
+        }
+    }
+
+    public void increaseMaxHits(int amount) {
+        this.maxHits += amount;
+    }
+
+    public int getSize() {
+        return this.size;
+    }
+
+    public void scaleSize(double scaleFactor) {
+        this.size = (int) (this.size * scaleFactor);
+        resetHitBox();
+    }
+
+    public void resetHitBox() {
+        this.hitBox = new Rectangle((int) x, (int) y, size, size);
+    }
 }

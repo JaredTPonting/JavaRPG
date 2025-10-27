@@ -12,10 +12,11 @@ import utils.Renderable;
 import weapons.WeaponManager;
 import weapons.chaosorbblaster.ChaosOrbBlaster;
 import weapons.chaosorbblaster.weaponmods.ExtraShot;
+import weapons.chaosorbblaster.weaponmods.IncreaseChaosOrbSize;
 import weapons.eggcannon.EggCannon;
-import weapons.eggcannon.weaponmods.BackwardShot;
-import weapons.eggcannon.weaponmods.TripleEggMod;
+import weapons.eggcannon.weaponmods.*;
 import weapons.fireballblaster.FireBallBlaster;
+import weapons.fireballblaster.weaponmods.ExtraFireBall;
 import weapons.powerofzeus.PowerOfZeus;
 
 import java.awt.*;
@@ -47,17 +48,23 @@ public class PlayingState implements GameState {
         this.lingeringZoneManager = gameWorld.getLingeringZoneManager();
         this.deltaTimer = this.gameWorld.getDeltaTimer();
         this.lootManager = gameWorld.getLootManager();
-//        initWeapons();
+        initWeapons();
     }
 
     private void initWeapons() {
-        weaponManager.addWeapon(new PowerOfZeus(player, 1, gameWorld));
-        weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
+//        weaponManager.addWeapon(new PowerOfZeus(player, 1, gameWorld));
+//        weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
         weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
-        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
+//        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
 //        weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
-//        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
-//        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
+//        weaponManager.addWeaponMod("chaosorbblaster", new IncreaseChaosOrbSize());
+        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
+        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
+        weaponManager.addWeaponMod("eggCannon", new RightShot());
+        weaponManager.addWeaponMod("eggCannon", new LeftShot());
+        weaponManager.addWeaponMod("eggcannon", new PiercingEggs());
+//        weaponManager.addWeaponMod("FireBallBlaster", new ExtraFireBall());
+//        weaponManager.addWeaponMod("FireBallBlaster", new LeftShot());
     }
 
     @Override
@@ -117,6 +124,7 @@ public class PlayingState implements GameState {
             case KeyEvent.VK_A -> player.setLeft(true);
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.dash();
+            case KeyEvent.VK_F3 -> gameWorld.toggleDebugMode();
         }
     }
 

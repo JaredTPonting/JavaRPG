@@ -24,6 +24,9 @@ public class ChaosOrbBlaster extends Weapon {
         for (WeaponMods mod : this.weaponMods) {
             mod.addProjectile(this.gameWorld, newOrbs);
         }
+        for (WeaponMods mod : this.weaponMods) {
+            mod.modifyProjectiles(this.gameWorld, newOrbs);
+        }
         return newOrbs;
     }
 }

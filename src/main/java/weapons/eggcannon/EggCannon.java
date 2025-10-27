@@ -23,6 +23,9 @@ public class EggCannon extends Weapon {
         for (WeaponMods mod : this.weaponMods) {
             mod.addProjectile(this.gameWorld, newEggs);
         }
+        for (WeaponMods mod : this.weaponMods) {
+            mod.modifyProjectiles(this.gameWorld, newEggs);
+        }
         return newEggs;
     }
 }

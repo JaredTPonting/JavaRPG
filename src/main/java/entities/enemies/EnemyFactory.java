@@ -52,6 +52,7 @@ public class EnemyFactory {
         e.XP = cfg.xpBase + (target.getPlayerManager().getLevel() * cfg.xpPerLevel);
         e.damage = cfg.damage;
         e.setBoss(cfg.boss);
+        e.setHitBox(cfg.hitBox.offsetXPercent, cfg.hitBox.offsetYPercent, cfg.hitBox.radiusPercent);
         return e;
 
     }
@@ -67,5 +68,12 @@ public class EnemyFactory {
         public int size;
         public boolean boss;
         public Map<String, AnimationInfo> animations;
+        public HitBoxInfo hitBox;
+
+        public static class HitBoxInfo {
+            public double offsetXPercent;
+            public double offsetYPercent;
+            public double radiusPercent;
+        }
     }
 }

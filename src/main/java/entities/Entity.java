@@ -27,6 +27,11 @@ public abstract class Entity implements Renderable {
     // for animation
     public boolean facingLeft = true;
 
+    // For Hitbox
+    private double hitBoxOffsetXPercent = 0.5;
+    private double hitBoxOffsetYPercent = 0.5;
+    private double hitBoxRadiusPercent = 0.5;
+
     public Entity(WorldContext gameWorld, double x, double y, int size, double offsetWidth, double offsetHeight) {
         this.gameWorld = gameWorld;
         this.x = x;
@@ -34,12 +39,13 @@ public abstract class Entity implements Renderable {
         this.size = size;
         this.offsetWidth = offsetWidth;
         this.offsetHeight = offsetHeight;
-
-//        this.hitBox = new Rectangle((int) x, (int) y, size, size);
         initHitBox();
     }
 
     public abstract void update(double dt);
+
+
+    // HitBox
 
     public void initHitBox() {
         this.xOffset = (int) (size * offsetWidth);
@@ -55,6 +61,36 @@ public abstract class Entity implements Renderable {
     public Rectangle getHitBox() {
         return hitBox;
     }
+
+    public void setHitBox(double xPercent, double yPercent, double radiusPercent) {
+        this.hitBoxOffsetXPercent = xPercent;
+        this.hitBoxOffsetYPercent = yPercent;
+        this.hitBoxRadiusPercent = radiusPercent;
+    }
+
+    public double getHitBoxCenterX() {
+        return x + (size * hitBoxOffsetXPercent);
+    }
+
+    public double getHitBoxCenterY() {
+        return y + (size * hitBoxOffsetYPercent);
+    }
+    public double getHitBoxRadius() {
+        return size * hitBoxRadiusPercent;
+    }
+    public void drawHitBox(Graphics g, Camera c) {
+        Color old = g.getColor();
+        g.setColor(new Color(0, 100, 155, 100));
+        int drawX = (int) (getHitBoxCenterX() - getHitBoxRadius() - c.getX());
+        int drawY = (int) (getHitBoxCenterY() - getHitBoxRadius() - c.getY());
+        int diameter = (int) (getHitBoxRadius() * 2);
+
+        g.fillOval(drawX, drawY, diameter, diameter);
+        g.setColor(old);
+    }
+
+
+    //
     public double getX() {
         return x;
     }

@@ -22,9 +22,9 @@ public class FireBall extends Projectile {
     private static final int FRAME_COUNT = 8;
 
 
-    public FireBall(GameWorld gameWorld) {
+    public FireBall(GameWorld gameWorld, Entity target) {
         super(gameWorld);
-        this.target = gameWorld.getEnemySpawner().getRandomEnemy();
+        this.target = target;
         this.x = this.owner.getX();
         this.y = this.owner.getY();
         this.speed = 150;
@@ -40,7 +40,7 @@ public class FireBall extends Projectile {
 
         this.frameWidth = SPRITE_SHEET.getWidth() / FRAME_COUNT;
         this.height = SPRITE_SHEET.getHeight();
-        this.hitBox = new Rectangle((int) x, (int) y, frameWidth, height);
+        this.hitBox = new Rectangle((int) (x + frameWidth * 0.4), (int) (y*0.5), (int) (frameWidth * 0.6), (int) (height * 0.5));
 
     }
 
@@ -54,7 +54,7 @@ public class FireBall extends Projectile {
     }
 
     @Override
-    public void update(double dt) {
+    public void onUpdate(double dt) {
         this.updateDxDY();
         x += this.dx * speed * dt;
         y += this.dy * speed * dt;
@@ -62,6 +62,17 @@ public class FireBall extends Projectile {
         updateHitBox();
         this.checkEnemyCollision();
         animation.update();
+    }
+
+    @Override
+    public void updateHitBox() {
+        int hitBoxWidth = (int) (frameWidth * 0.5);
+        int hitBoxHeight = (int) (height * 0.5);
+
+        int hitBoxX = (int) (x + (frameWidth - hitBoxWidth) / 2.0);
+        int hitBoxY = (int) (y + (height - hitBoxHeight) / 2.0);
+
+        this.hitBox.setBounds(hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight);
     }
 
     @Override
@@ -77,6 +88,7 @@ public class FireBall extends Projectile {
         g2d.rotate(angle);
         g2d.drawImage(animation.getCurrentFrame(), -frameWidth/2, -height/2, null);
         g2d.dispose();
+        drawHitbox(g, camera);
     }
 
     @Override

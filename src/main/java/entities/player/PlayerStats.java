@@ -1,5 +1,7 @@
 package entities.player;
 
+import loot.ItemManager;
+
 public class PlayerStats {
 
 
@@ -25,10 +27,12 @@ public class PlayerStats {
     private double magicDamage;
     private int magicDamageLevel = 1;
 
+    private ItemManager items;
+
 
     private long lastRegenTime;
 
-    public PlayerStats() {
+    public PlayerStats(ItemManager items) {
         this.lastRegenTime = System.currentTimeMillis();
         this.speed = 200.0;
         this.maxHealth = 1000000.0;
@@ -39,7 +43,7 @@ public class PlayerStats {
         this.staminaRegen = 5.0;
         this.damage = 50;
         this.magicDamage = 50;
-
+        this.items = items;
     }
 
     public boolean isDead() {
@@ -120,11 +124,11 @@ public class PlayerStats {
         if (now - lastRegenTime > 1000) {
             lastRegenTime = now;
             if (this.currentHealth < this.maxHealth) {
-                currentHealth = Math.min(maxHealth, currentHealth + healthRegen);
+                currentHealth = Math.min(maxHealth, currentHealth + healthRegen + items.getItemHealthRegen());
             }
 
             if  (this.currentStamina < this.maxStamina) {
-                currentStamina = Math.min(maxStamina, currentStamina + staminaRegen);
+                currentStamina = Math.min(maxStamina, currentStamina + staminaRegen + items.getItemStaminaRegen());
             }
         }
     }

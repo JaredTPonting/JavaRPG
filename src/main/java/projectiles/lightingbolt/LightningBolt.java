@@ -43,11 +43,11 @@ public class LightningBolt extends Projectile {
 
         this.x = target.getX() - ((double) target.getSize() / 2) + ((double) this.size / 2);
         this.y = target.getY() + target.getSize() - this.size;
-        this.hitBox = new Rectangle((int) x, (int) (y + (size * 0.9)), frameWidth, (int) (size * 0.1));
+        this.hitBox = new Rectangle((int) x, (int) (y + (size * 0.8)), size, (int) (size * 0.2));
     }
 
     @Override
-    public void update(double dt) {
+    public void onUpdate(double dt) {
         if (target == null) {
             destroyProjectile();
             return;
@@ -66,7 +66,7 @@ public class LightningBolt extends Projectile {
     public void render(Graphics g, Camera camera) {
         int screenX = (int) (x - camera.getX());
         int screenY = (int) (y - camera.getY());
-
+        drawHitbox(g, camera);
         g.drawImage(animation.getCurrentFrame(), screenX, screenY, size, size, null);
 
     }

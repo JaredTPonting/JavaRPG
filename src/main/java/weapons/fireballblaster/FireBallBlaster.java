@@ -9,8 +9,10 @@ import weapons.WeaponMods;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FireBallBlaster extends Weapon {
+    private Random random = new Random();
 
     public FireBallBlaster(Entity owner, long cooldownMillis, GameWorld gameWorld) {
         super(owner, cooldownMillis, gameWorld);
@@ -18,12 +20,16 @@ public class FireBallBlaster extends Weapon {
 
     @Override
     protected List<Projectile> createProjectiles() {
-        List<Projectile> newFireBalls = new ArrayList<>();
-        newFireBalls.add(new FireBall(gameWorld));
-        for (WeaponMods mod : this.weaponMods) {
-            mod.addProjectile(this.gameWorld, newFireBalls);
+        List<Entity> enemiesInRange = gameWorld.getEnemySpawner().getEnemiesInRange(owner.getX(), owner.getY(), 300);
+        if (enemiesInRange != null) {
+            List<Projectile> newFireBalls = new ArrayList<>();
+            newFireBalls.add(new FireBall(gameWorld, enemiesInRange.get(random.nextInt(enemiesInRange.size()))));
+            for (WeaponMods mod : this.weaponMods) {
+                mod.addProjectile(this.gameWorld, newFireBalls);
+            }
+            return newFireBalls;
         }
-        return newFireBalls;
+        else return List.of();
     }
 
 }

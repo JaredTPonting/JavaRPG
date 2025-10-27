@@ -6,6 +6,7 @@ import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
 import loot.Chest;
 import loot.LootManager;
+import projectiles.egg.Egg;
 import states.GameState;
 import states.MenuState;
 import ui.UI;
@@ -36,6 +37,15 @@ public class GameWorld implements WorldContext {
     private final int gameWidth;
     private final int gameHeight;
 
+    // DEBUG
+    public static boolean DEBUG_MODE = false;
+    public boolean isDebugMode() {
+        return DEBUG_MODE;
+    }
+    public void toggleDebugMode() {
+        DEBUG_MODE = !DEBUG_MODE;
+    }
+
     // constructor
     public GameWorld(int gameWidth, int gameHeight) {
         this.gameWidth = gameWidth;
@@ -58,6 +68,7 @@ public class GameWorld implements WorldContext {
         this.deltaTimer = new DeltaTimer();
         this.lootManager = new LootManager();
         Chest.preload();
+        Egg.init();
     }
 
     /** Resets core gameplay components while preserving persistent state. */
