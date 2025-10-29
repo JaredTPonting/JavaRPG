@@ -46,7 +46,8 @@ public abstract class Chest implements Renderable {
 
         this.gameWorld = gameWorld;
         this.player = gameWorld.getPlayer();
-        this.hitBox = new Rectangle((int) this.x, (int) this.y, size, size);
+        double hitBoxScale = 0.2;
+        this.hitBox = new Rectangle((int) (this.x + (hitBoxScale * this.size)), (int) (this.y + (hitBoxScale * this.size)), (int) (size * 3 *hitBoxScale), (int) (size * 3 * hitBoxScale));
     }
 
     protected BufferedImage getSubImage(int x, int y) {
@@ -88,10 +89,17 @@ public abstract class Chest implements Renderable {
     public void render(Graphics g, Camera c) {
         int drawX = (int) (x - c.getX());
         int drawY = (int) (renderY - c.getY());
+        drawHitBox(g, c);
         BufferedImage img = opened ? openChest : closedChest;
 
         if (img != null)
             g.drawImage(img, drawX, drawY, this.size, this.size, null);
+    }
+
+    public void drawHitBox(Graphics g, Camera c) {
+        if (gameWorld.isDebugMode()) {
+            g.drawRect((int) (hitBox.x - c.getX()), (int) (hitBox.y - c.getY()), hitBox.width, hitBox.height);
+        }
     }
 
     public void openChest(){

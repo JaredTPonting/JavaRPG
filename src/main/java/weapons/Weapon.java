@@ -45,6 +45,8 @@ public abstract class Weapon {
         activeProjectiles.removeAll(toRemove);
     }
 
+    public abstract List<Class<? extends WeaponMods>> getAvailableModClasses();
+
     public void addWeaponMod(WeaponMods mod){
         this.weaponMods.add(mod);
     }

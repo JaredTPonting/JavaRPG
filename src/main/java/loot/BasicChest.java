@@ -17,7 +17,7 @@ public class BasicChest extends Chest{
         if (!opened && gameWorld.getCollisionChecker().circleRectCollision(gameWorld.getPlayer(), this.hitBox)){
             openChest();
             gameWorld.getPlayer().resetInput();
-            gameWorld.getStateStack().push(new LootSelectionState((GameWorld) gameWorld));
+            gameWorld.getStateStack().push(new BasicLootSelectionState((GameWorld) gameWorld));
         }
     }
 }

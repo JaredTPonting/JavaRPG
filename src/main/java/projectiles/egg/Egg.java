@@ -84,7 +84,7 @@ public class Egg extends Projectile {
 
     private BufferedImage getRandomEggSprite() {
         if (eggSprites == null) {
-            init(); // fallback: load them now
+            init();
         }
         return eggSprites[rand.nextInt(eggSprites.length)];
     }

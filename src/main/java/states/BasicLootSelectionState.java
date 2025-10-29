@@ -31,31 +31,62 @@ public class BasicLootSelectionState implements GameState {
         initButtons();
     }
 
-    private void initButtons() {
-        List<Item> allWeapons = new ArrayList<>();
-        allWeapons.add(new WoodenSword());
-        allWeapons.add(new WoodenWand());
-        allWeapons.add(new LeatherBoots());
+    private static class WeaponModChoice {
+        Weapon weapon;
+        Class<? extends WeaponMods> modClass;
 
-        // Shuffle and pick 3 random weapons
-        Collections.shuffle(allWeapons);
-        List<Item> lootChoices = allWeapons.subList(0, 3);
+        WeaponModChoice(Weapon weapon, Class<? extends WeaponMods> modClass) {
+            this.weapon = weapon;
+            this.modClass = modClass;
+        }
+    }
+
+    private void initButtons() {
+        WeaponManager weaponManager = gameWorld.getWeaponManager();
+        List<Weapon> ownedWeapons = weaponManager.getOwnedWeapons();
+        List<WeaponModChoice> allChoices = new ArrayList<>();
+
+        // Get ellegible mods from owned weapons
+        for (Weapon w : ownedWeapons) {
+            for (Class<? extends  WeaponMods> modClass : w.getAvailableModClasses()) {
+                boolean alreadyApplied = w.weaponMods.stream().anyMatch(m -> m.getClass().equals(modClass));
+                if (!alreadyApplied) {
+                    allChoices.add(new WeaponModChoice(w, modClass));
+                }
+            }
+        }
+
+        Collections.shuffle(allChoices);
+        List<WeaponModChoice> lootChoices = allChoices.subList(0, Math.min(3, allChoices.size()));
+
 
         int startY = 150;
         int spacing = 60;
 
         for (int i = 0; i < lootChoices.size(); i++) {
-            Item item = lootChoices.get(i);
-            String name = item.getClass().getSimpleName().replaceAll("([A-Z])", " $1").trim(); // pretty name
-            int y = startY + i * spacing;
+            WeaponModChoice choice = lootChoices.get(i);
+            String modName = choice.modClass.getSimpleName().replaceAll("([A-Z])", " $1").trim();
+            String weaponName = choice.weapon.getName();
+            int y = startY + i*spacing;
 
-            buttons.add(new Button(200, y, 200, 40, name, () -> selectWeapon(item)));
+            buttons.add(
+                    new Button(200, y, 400,40, weaponName + ": " + modName, () -> selectMod(choice)
+                    )
+            );
         }
     }
 
-    private void selectWeapon(Item item) {
-        itemManager.addItem(item);
-        gameWorld.getStateStack().pop(); // remove LootSelectionState
+    private void selectMod(WeaponModChoice choice) {
+        try {
+            WeaponMods modInstance = choice.modClass
+                    .getDeclaredConstructor()
+                    .newInstance();
+            choice.weapon.addWeaponMod(modInstance);
+            System.out.println("Applied " + modInstance.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        gameWorld.getStateStack().pop();
     }
 
     @Override
@@ -68,7 +99,7 @@ public class BasicLootSelectionState implements GameState {
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("You Found a Chest! Pick a Weapon", 100, 100);
+        g.drawString("You Found a Chest! Pick a Weapon Mod", 100, 100);
 
         for (Button b : buttons) {
             b.render(g);

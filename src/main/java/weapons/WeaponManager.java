@@ -21,6 +21,10 @@ public class WeaponManager {
         return null;
     }
 
+    public ArrayList<Weapon> getOwnedWeapons() {
+        return this.weapons;
+    }
+
     public void addWeaponMod(String name, WeaponMods mod) {
         Weapon weapon = getWeaponByName(name);
         weapon.addWeaponMod(mod);

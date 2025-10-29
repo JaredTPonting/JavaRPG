@@ -30,8 +30,7 @@ public class ChaosOrb extends Projectile {
         this.x = this.owner.getX();
         this.y = this.owner.getY();
         this.speed = 200;
-//        this.damage = 50 + playerManager.getMagicDamage();
-        this.damage = 0;
+        this.damage = 50 + playerManager.getMagicDamage();
         this.size = 40;
         this.hitBox = new Rectangle((int) x, (int) y, size, size);
 

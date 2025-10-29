@@ -54,15 +54,15 @@ public class PlayingState implements GameState {
     private void initWeapons() {
 //        weaponManager.addWeapon(new PowerOfZeus(player, 1, gameWorld));
 //        weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
-        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
+//        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
 //        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
 //        weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
 //        weaponManager.addWeaponMod("chaosorbblaster", new IncreaseChaosOrbSize());
-        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
-        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
-        weaponManager.addWeaponMod("eggCannon", new RightShot());
-        weaponManager.addWeaponMod("eggCannon", new LeftShot());
-        weaponManager.addWeaponMod("eggcannon", new PiercingEggs());
+//        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
+//        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
+//        weaponManager.addWeaponMod("eggCannon", new RightShot());
+//        weaponManager.addWeaponMod("eggCannon", new LeftShot());
+//        weaponManager.addWeaponMod("eggcannon", new PiercingEggs());
 //        weaponManager.addWeaponMod("FireBallBlaster", new ExtraFireBall());
 //        weaponManager.addWeaponMod("FireBallBlaster", new LeftShot());
     }

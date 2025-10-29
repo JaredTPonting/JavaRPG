@@ -6,6 +6,7 @@ import projectiles.Projectile;
 import projectiles.fireball.FireBall;
 import weapons.Weapon;
 import weapons.WeaponMods;
+import weapons.fireballblaster.weaponmods.ExtraFireBall;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,13 @@ public class FireBallBlaster extends Weapon {
 
     public FireBallBlaster(Entity owner, long cooldownMillis, GameWorld gameWorld) {
         super(owner, cooldownMillis, gameWorld);
+    }
+
+    @Override
+    public List<Class<? extends WeaponMods>> getAvailableModClasses() {
+        List<Class<? extends WeaponMods>> mods = new ArrayList<>();
+        mods.add(ExtraFireBall.class);
+        return mods;
     }
 
     @Override

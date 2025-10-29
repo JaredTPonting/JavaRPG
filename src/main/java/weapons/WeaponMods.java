@@ -13,4 +13,8 @@ public abstract class WeaponMods {
     public List<Projectile> modifyProjectiles(GameWorld gameWorld, List<Projectile> projectiles){
         return projectiles;
     }
+
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
 }

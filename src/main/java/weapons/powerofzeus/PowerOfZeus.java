@@ -5,6 +5,8 @@ import entities.Entity;
 import projectiles.Projectile;
 import projectiles.lightingbolt.LightningBolt;
 import weapons.Weapon;
+import weapons.WeaponMods;
+import weapons.fireballblaster.weaponmods.ExtraFireBall;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,12 @@ public class PowerOfZeus extends Weapon {
     private Random random = new Random();
     public PowerOfZeus(Entity owner, long cooldownMillis, GameWorld gameWorld) {
         super(owner, cooldownMillis, gameWorld);
+    }
+
+    @Override
+    public List<Class<? extends WeaponMods>> getAvailableModClasses() {
+        List<Class<? extends WeaponMods>> mods = new ArrayList<>();
+        return mods;
     }
 
     @Override

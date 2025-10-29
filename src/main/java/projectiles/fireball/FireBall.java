@@ -33,7 +33,7 @@ public class FireBall extends Projectile {
         this.dy = 0;
 
         if (SPRITE_SHEET == null) {
-            SPRITE_SHEET = SpriteLoader.load("/sprites/weapons/fireball/fireball.png");
+            SPRITE_SHEET = SpriteLoader.load("/sprites/weapons/fireball/fireball_centered.png");
         }
 
         this.animation = new Animation(SPRITE_SHEET, FRAME_COUNT, FRAME_TIME, LOOP);
