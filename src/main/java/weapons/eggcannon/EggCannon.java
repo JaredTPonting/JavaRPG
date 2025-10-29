@@ -19,7 +19,7 @@ public class EggCannon extends Weapon {
 
     @Override
     public List<Class<? extends WeaponMods>> getAvailableModClasses() {
-        List<Class<? extends WeaponMods>> mods = new ArrayList<>(); // TODO: if mod already owned remove from this list
+        List<Class<? extends WeaponMods>> mods = new ArrayList<>();
         mods.add(BackwardShot.class);
         mods.add(LeftShot.class);
         mods.add(RightShot.class);

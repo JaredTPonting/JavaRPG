@@ -22,7 +22,7 @@ public class ChaosOrbBlaster extends Weapon {
 
     @Override
     public List<Class<? extends WeaponMods>> getAvailableModClasses() {
-        List<Class<? extends WeaponMods>> mods = new ArrayList<>(); // TODO: if mod already owned remove from this list
+        List<Class<? extends WeaponMods>> mods = new ArrayList<>();
         mods.add(ExtraShot.class);
         mods.add(IncreaseChaosOrbSize.class);
         return mods;
