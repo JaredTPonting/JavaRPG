@@ -48,6 +48,9 @@ public class RoundManager {
             currentRound++;
         }
     }
+    public void setCurrentRound(int round) {
+        this.currentRound = round;
+    }
 
     public int getCurrentRound() {
         return currentRound;

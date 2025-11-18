@@ -6,13 +6,12 @@ import projectiles.chaosorb.ChaosOrb;
 import core.GameWorld;
 import weapons.Weapon;
 import weapons.WeaponMods;
-import weapons.chaosorbblaster.weaponmods.ExtraShot;
+import weapons.chaosorbblaster.weaponmods.ExtraChaosOrb;
 import weapons.chaosorbblaster.weaponmods.IncreaseChaosOrbSize;
-import weapons.eggcannon.weaponmods.*;
+import weapons.chaosorbblaster.weaponmods.IncreaseChaosZoneSize;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ChaosOrbBlaster extends Weapon {
 
@@ -23,8 +22,9 @@ public class ChaosOrbBlaster extends Weapon {
     @Override
     public List<Class<? extends WeaponMods>> getAvailableModClasses() {
         List<Class<? extends WeaponMods>> mods = new ArrayList<>();
-        mods.add(ExtraShot.class);
+        mods.add(ExtraChaosOrb.class);
         mods.add(IncreaseChaosOrbSize.class);
+        mods.add(IncreaseChaosZoneSize.class);
         return mods;
     }
 

@@ -9,10 +9,20 @@ Chicken run is a 2D bullet heaven style game im developing as a challenge to lea
 - Chunks generated randomly and go on forever
 
 ## TODO
-- Add UI: display health etc
-- Add damage
-- add dash mechanic
-- add minibosses
-- add item drop
-- add stored ineventory
-- add money management and shop along with farmour
+- Add Bosses
+  - mobs run away on boss spawn
+  - boss locks camera movement so stuck to screen
+  - health bar at top
+  - Every 10 levels or so
+  - drops chest with new weapon
+- Track score
+  - mix of level, run length, xp gained
+- Add inventory to hold your weapons
+  - increasing stamina means you can hole more weapons
+  - when you select a weapon you chose what spot in inventory it takes (can overwrite old weapons)
+- Gold
+  - slowly accumulate gold through runs
+  - can be spent in shop outside of runs on like skins, armour (with effects), or flat boosts (more exp, more mobs, etc)
+- Balance the game
+- Make Game Pretty
+- Performance

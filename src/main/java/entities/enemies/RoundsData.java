@@ -7,6 +7,7 @@ public class RoundsData {
     private List<String> enemies;
     private double spawnRate = 1.0;
     private double bossChance = 0.0;
+    private List<String> bosses;
 
     // Getters & Setters
     public int getId() { return id; }
@@ -20,6 +21,9 @@ public class RoundsData {
 
     public double getBossChance() { return bossChance; }
     public void setBossChance(double bossChance) { this.bossChance = bossChance; }
+
+    public List<String> getBosses() { return this.bosses; }
+    public void setBosses(List<String> bosses) { this.bosses = bosses; }
 
     @Override
     public String toString() {

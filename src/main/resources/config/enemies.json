@@ -31,56 +31,349 @@
       "radiusPercent": 0.35
     }
   },
-  "SMALLDEMON": {
+  "BASICGREENSLIME": {
+    "hp": 100,
+    "speed": 90,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 150,
+    "boss": true,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/slimes/basicGreenSlime/walk.png",
+        "frames": 6,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/slimes/basicGreenSlime/attack.png",
+        "frames": 6,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/slimes/basicGreenSlime/death.png",
+        "frames": 6,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.25
+    }
+  },
+  "BOMBSLIME": {
+    "hp": 80,
+    "speed": 80,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 120,
+    "boss": false,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/slimes/bombSlime/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/slimes/bombSlime/attack.png",
+        "frames": 10,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/slimes/bombSlime/die.png",
+        "frames": 8,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.25
+    }
+  },
+  "FIRESLIME": {
+    "hp": 80,
+    "speed": 80,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 120,
+    "boss": false,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/slimes/fireSlime/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/slimes/fireSlime/attack.png",
+        "frames": 10,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/slimes/fireSlime/die.png",
+        "frames": 10,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.25
+    }
+  },
+  "PURPLESLIME": {
+    "hp": 80,
+    "speed": 80,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 120,
+    "boss": false,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/slimes/purpleSlime/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/slimes/purpleSlime/attack.png",
+        "frames": 9,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/slimes/purpleSlime/die.png",
+        "frames": 10,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.25
+    }
+  },
+  "BASICGREENGOBLIN": {
     "hp": 80,
     "speed": 200,
     "xpBase": 30,
     "xpPerLevel": 2,
     "damage": 50.0,
     "attackSpeed": 1.0,
-    "size": 60,
+    "size": 120,
     "boss": false,
     "animations": {
       "run": {
-        "sheet": "/sprites/smallDemon/FLYING.png",
-        "frames": 4,
+        "sheet": "/sprites/enemies/goblins/basicGreen/walk.png",
+        "frames": 8,
         "loop": true
       },
       "attack": {
-        "sheet": "/sprites/smallDemon/ATTACK.png",
+        "sheet": "/sprites/enemies/goblins/basicGreen/attack.png",
+        "frames": 5,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/goblins/basicGreen/die.png",
+        "frames": 6,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
+    }
+  },
+  "BASICYELLOWGOBLIN": {
+    "hp": 80,
+    "speed": 200,
+    "xpBase": 30,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 120,
+    "boss": false,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/goblins/basicYellow/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/goblins/basicYellow/attack.png",
+        "frames": 5,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/goblins/basicYellow/die.png",
+        "frames": 6,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
+    }
+  },
+  "BASICDARKGREENGOBLIN": {
+    "hp": 100,
+    "speed": 180,
+    "xpBase": 50,
+    "xpPerLevel": 2,
+    "damage": 80.0,
+    "attackSpeed": 1.0,
+    "size": 140,
+    "boss": false,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/goblins/basicDarkGreen/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/goblins/basicDarkGreen/attack.png",
+        "frames": 5,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/goblins/basicDarkGreen/die.png",
+        "frames": 6,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
+    }
+  },
+  "BOSSGOBLIN": {
+    "hp": 80,
+    "speed": 200,
+    "xpBase": 90,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 180,
+    "boss": true,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/goblins/bossGoblin/walk.png",
+        "frames": 6,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/goblins/bossGoblin/attack.png",
+        "frames": 6,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/goblins/bossGoblin/death.png",
+        "frames": 6,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
+    }
+  },
+  "GREENORC": {
+    "hp": 100,
+    "speed": 200,
+    "xpBase": 40,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 120,
+    "boss": false,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/orcs/basicGreen/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/orcs/basicGreen/attack.png",
         "frames": 8,
         "loop": true
       },
       "die": {
-        "sheet": "/sprites/smallDemon/DEATH.png",
-        "frames": 7,
+        "sheet": "/sprites/enemies/orcs/basicGreen/die.png",
+        "frames": 8,
         "loop": false
       }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
     }
   },
-  "R1SLIME": {
-    "hp": 80,
+  "BLUEORC": {
+    "hp": 100,
     "speed": 200,
-    "xpBase": 30,
+    "xpBase": 40,
     "xpPerLevel": 2,
     "damage": 50.0,
     "attackSpeed": 1.0,
-    "size": 90,
+    "size": 120,
     "boss": false,
     "animations": {
       "run": {
-        "sheet": "/sprites/round1/slime/walk.png",
-        "frames": 6,
+        "sheet": "/sprites/enemies/orcs/basicBlue/walk.png",
+        "frames": 8,
         "loop": true
       },
       "attack": {
-        "sheet": "/sprites/round1/slime/attack.png",
-        "frames": 6,
+        "sheet": "/sprites/enemies/orcs/basicBlue/attack.png",
+        "frames": 8,
         "loop": true
       },
       "die": {
-        "sheet": "/sprites/round1/slime/death.png",
-        "frames": 6,
+        "sheet": "/sprites/enemies/orcs/basicBlue/die.png",
+        "frames": 8,
+        "loop": false
+      }
+    },
+    "hitBox": {
+      "offsetXPercent": 0.5,
+      "offsetYPercent": 0.5,
+      "radiusPercent": 0.35
+    }
+  },
+  "BOSSORC": {
+    "hp": 100,
+    "speed": 200,
+    "xpBase": 40,
+    "xpPerLevel": 2,
+    "damage": 50.0,
+    "attackSpeed": 1.0,
+    "size": 180,
+    "boss": true,
+    "animations": {
+      "run": {
+        "sheet": "/sprites/enemies/orcs/bossOrc/walk.png",
+        "frames": 8,
+        "loop": true
+      },
+      "attack": {
+        "sheet": "/sprites/enemies/orcs/bossOrc/attack.png",
+        "frames": 8,
+        "loop": true
+      },
+      "die": {
+        "sheet": "/sprites/enemies/orcs/bossOrc/die.png",
+        "frames": 8,
         "loop": false
       }
     },

@@ -10,14 +10,6 @@ import core.GameWorld;
 import utils.DeltaTimer;
 import utils.Renderable;
 import weapons.WeaponManager;
-import weapons.chaosorbblaster.ChaosOrbBlaster;
-import weapons.chaosorbblaster.weaponmods.ExtraShot;
-import weapons.chaosorbblaster.weaponmods.IncreaseChaosOrbSize;
-import weapons.eggcannon.EggCannon;
-import weapons.eggcannon.weaponmods.*;
-import weapons.fireballblaster.FireBallBlaster;
-import weapons.fireballblaster.weaponmods.ExtraFireBall;
-import weapons.powerofzeus.PowerOfZeus;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -40,6 +32,7 @@ public class PlayingState implements GameState {
     public PlayingState(GameWorld gameWorld) {
         this.camera = new Camera();
         this.gameWorld = gameWorld;
+        gameWorld.setCamera(camera);
         this.player = gameWorld.getPlayer();
         this.spawner = gameWorld.getEnemySpawner();
         this.chunkLoader = gameWorld.getChunkLoader();
@@ -56,7 +49,7 @@ public class PlayingState implements GameState {
 //        weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
 //        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
 //        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
-//        weaponManager.addWeaponMod("chaosorbblaster", new ExtraShot());
+//        weaponManager.addWeaponMod("chaosorbblaster", new ExtraChaosOrb());
 //        weaponManager.addWeaponMod("chaosorbblaster", new IncreaseChaosOrbSize());
 //        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
 //        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
@@ -77,7 +70,7 @@ public class PlayingState implements GameState {
         }
 
         player.update(dt);
-        camera.centerOn(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
+        camera.update(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         lingeringZoneManager.update(dt);
         spawner.update(player, dt);
         weaponManager.update(dt);

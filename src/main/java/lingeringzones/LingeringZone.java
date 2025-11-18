@@ -37,8 +37,10 @@ public abstract class LingeringZone {
             destroy();
             return;
         }
-
         updateEnemies();
+        if (tick.ready()) {
+            tick.reset();
+        }
     }
 
     public abstract void affectEnemy(Enemy e);
@@ -49,7 +51,6 @@ public abstract class LingeringZone {
             if (gameWorld.getCollisionChecker().entityStandingInZone(e, this)) {
                 if (tick.ready()) {
                     tickAffectEnemy(e);
-                    tick.reset();
                 }
                 affectEnemy(e);
             }

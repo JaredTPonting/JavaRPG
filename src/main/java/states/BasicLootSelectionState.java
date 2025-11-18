@@ -1,16 +1,8 @@
 package states;
 
 import core.GameWorld;
-import loot.Item;
 import loot.ItemManager;
-import loot.items.LeatherBoots;
-import loot.items.WoodenSword;
-import loot.items.WoodenWand;
 import weapons.*;
-import weapons.chaosorbblaster.ChaosOrbBlaster;
-import weapons.eggcannon.EggCannon;
-import weapons.fireballblaster.FireBallBlaster;
-import weapons.powerofzeus.PowerOfZeus;
 import ui.Button;
 
 import java.awt.*;
@@ -49,11 +41,23 @@ public class BasicLootSelectionState implements GameState {
         // Get ellegible mods from owned weapons
         for (Weapon w : ownedWeapons) {
             for (Class<? extends  WeaponMods> modClass : w.getAvailableModClasses()) {
-                boolean alreadyApplied = w.weaponMods.stream().anyMatch(m -> m.getClass().equals(modClass));
+                boolean alreadyApplied = w.weaponMods.stream().anyMatch(m -> m.getClass().equals(modClass) && !m.isMultiple());
                 if (!alreadyApplied) {
                     allChoices.add(new WeaponModChoice(w, modClass));
                 }
             }
+        }
+
+        if (allChoices.isEmpty()) {
+            buttons.add(new Button(
+                    200,
+                    200,
+                    400,
+                    40,
+                    "No available mods — click to continue",
+                    () -> gameWorld.getStateStack().pop()
+            ));
+            return;
         }
 
         Collections.shuffle(allChoices);

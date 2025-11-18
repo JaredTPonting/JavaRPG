@@ -7,9 +7,9 @@ import weapons.WeaponMods;
 
 import java.util.List;
 
-public class IncreaseChaosOrbSize extends WeaponMods {
+public class IncreaseChaosZoneSize extends WeaponMods {
 
-    public IncreaseChaosOrbSize() {
+    public IncreaseChaosZoneSize() {
         this.multiple = true;
     }
 
@@ -17,7 +17,7 @@ public class IncreaseChaosOrbSize extends WeaponMods {
     public List<Projectile> modifyProjectiles(GameWorld gameWorld, List<Projectile> projectiles) {
         for (Projectile proj : projectiles) {
             if (proj instanceof ChaosOrb) {
-                proj.scaleSize(1.5);
+                ((ChaosOrb) proj).increaseZoneSize(1.5);
             }
         }
         return projectiles;

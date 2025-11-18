@@ -13,7 +13,22 @@ import java.util.List;
 
 public class EnemySpawner {
 
-    public enum EnemyType { FOX, WOLF, FOXMINIBOSS, MUSHROOM, SMALLDEMON, R1SLIME, R1WOLF, R1GOBLIN }
+    public enum EnemyType {
+        MUSHROOM,
+        BASICGREENSLIME,
+        R1WOLF,
+        R1GOBLIN,
+        BOMBSLIME,
+        FIRESLIME,
+        PURPLESLIME,
+        BASICGREENGOBLIN,
+        BASICYELLOWGOBLIN,
+        BASICDARKGREENGOBLIN,
+        BOSSGOBLIN,
+        GREENORC,
+        BLUEORC,
+        BOSSORC
+    }
     private GameWorld gameWorld;
 
     private final List<Enemy> enemies = new ArrayList<>();
@@ -34,6 +49,9 @@ public class EnemySpawner {
 
     // Round manager
     private RoundManager roundManager;
+    private boolean active = true;
+    public void setActive(boolean newActive) { this.active = newActive;}
+    public boolean isActive() { return this.active; }
 
     public EnemySpawner(GameWorld gameWorld, int screenWidth, int screenHeight) {
         this.SCREEN_WIDTH = screenWidth;
@@ -51,6 +69,12 @@ public class EnemySpawner {
     public void update(Player player, double dt) {
         long now = System.currentTimeMillis();
         PlayerManager playerManager = player.getPlayerManager();
+        if (playerManager.getLevel() < 20 && playerManager.getLevel() >= 10 && roundManager.getCurrentRound() != 2) {
+            roundManager.setCurrentRound(2);
+        }
+        if (playerManager.getLevel() < 30 && playerManager.getLevel() >= 20 && roundManager.getCurrentRound() != 3) {
+            roundManager.setCurrentRound(3);
+        }
 
         // Adjust spawn interval (faster spawns at higher level)
         long spawnInterval = (long) (BASE_SPAWN_INTERVAL_MS / (1 + playerManager.getLevel() * 0.05));
@@ -58,7 +82,7 @@ public class EnemySpawner {
         // Maintain minimum entities.enemies alive
         int minEnemies = calculateMinEnemies(playerManager.getLevel());
 
-        if (enemies.size() < minEnemies && now - lastSpawnTime > spawnInterval) {
+        if (enemies.size() < minEnemies && now - lastSpawnTime > spawnInterval && active) {
             spawnEnemy(player);
             lastSpawnTime = now;
         }
@@ -72,6 +96,8 @@ public class EnemySpawner {
         enemies.removeIf(enemy -> {
             if (enemy.isDead()) {
                 playerManager.gainXP(enemy.getXP());
+                return true;
+            } else if (enemy.despawned()) {
                 return true;
             }
             return false;
@@ -97,11 +123,20 @@ public class EnemySpawner {
         }
     }
 
+    public void makeEnemiesFlee() {
+        for (Enemy e : enemies) {
+            e.flee();
+        }
+        setActive(false);
+    }
+
     // --- Enemy selection logic ---
     private EnemyType selectEnemyType(Player player) {
         RoundsData round = roundManager.getCurrentRoundData();
         if (roundManager.shouldSpawnMiniBoss(random)) {
-            return EnemyType.MUSHROOM;
+            List<String> pool = round.getBosses();
+            String chosen = pool.get(random.nextInt(pool.size()));
+            return EnemyType.valueOf(chosen);
         }
 
         List<String> pool = round.getEnemies();

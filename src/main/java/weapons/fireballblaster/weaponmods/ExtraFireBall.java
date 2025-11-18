@@ -9,6 +9,9 @@ import weapons.WeaponMods;
 import java.util.List;
 
 public class ExtraFireBall extends WeaponMods {
+    public ExtraFireBall() {
+        this.multiple = true;
+    }
     @Override
     public List<Projectile> addProjectile(GameWorld gameWorld, List<Projectile> projectiles) {
         projectiles.add(new FireBall(gameWorld, gameWorld.getEnemySpawner().getRandomEnemyInRange(gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY(), 300)));

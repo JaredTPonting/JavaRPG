@@ -19,6 +19,8 @@ public class ChaosOrb extends Projectile {
     private static BufferedImage SPRITE_SHEET;
     private static final int FRAME_COUNT = 8;
 
+    private int zoneSize = 80;
+
     public ChaosOrb(GameWorld gameWorld) {
         super(gameWorld);
         // random direction unit vector
@@ -30,9 +32,11 @@ public class ChaosOrb extends Projectile {
         this.x = this.owner.getX();
         this.y = this.owner.getY();
         this.speed = 200;
-        this.damage = 50 + playerManager.getMagicDamage();
+//        this.damage = 50 + playerManager.getMagicDamage();
+        this.damage = 0;
         this.size = 40;
         this.hitBox = new Rectangle((int) x, (int) y, size, size);
+
 
         if (SPRITE_SHEET == null) {
             SPRITE_SHEET = SpriteLoader.load("/sprites/weapons/chaosorb/chaosorb.png");
@@ -40,6 +44,10 @@ public class ChaosOrb extends Projectile {
 
         this.animation = new Animation(SPRITE_SHEET, FRAME_COUNT, FRAME_TIME, LOOP);
 
+    }
+
+    public void increaseZoneSize(double factor) {
+        this.zoneSize = (int) (factor * this.zoneSize);
     }
 
     @Override
@@ -68,7 +76,7 @@ public class ChaosOrb extends Projectile {
 
     @Override
     protected void onDeletionEffect() {
-        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x, this.y, 80, 3.5));
+        this.gameWorld.getLingeringZoneManager().addLingeringZone(new ChaosZone(gameWorld, this.x + (double) this.size / 2, this.y + (double) this.size / 2, zoneSize, 3.5));
     }
 
 

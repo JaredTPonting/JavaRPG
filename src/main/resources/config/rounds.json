@@ -1,19 +1,23 @@
 {
   "rounds": [
     {
-      "id": 1,
-      "enemies": ["R1SLIME", "R1WOLF", "R1GOBLIN"],
-      "bossChance": 0.99
-    },
-    {
       "id": 2,
-      "enemies": ["MUSHROOM", "R1WOLF"],
-      "spawnRate": 1.5
+      "enemies": ["BASICGREENGOBLIN", "BASICYELLOWGOBLIN", "BASICDARKGREENGOBLIN"],
+      "bossChance": 0.05,
+      "bosses": ["BOSSGOBLIN"]
     },
     {
       "id": 3,
-      "enemies": ["SMALLDEMON"],
-      "bossChance": 0.05
+      "enemies": ["GREENORC", "BLUEORC"],
+      "spawnRate": 1.5,
+      "bossChance": 0.05,
+      "bosses": ["BOSSORC"]
+    },
+    {
+      "id": 1,
+      "enemies": ["BOMBSLIME", "PURPLESLIME", "FIRESLIME"],
+      "bossChance": 0.05,
+      "bosses": ["BASICGREENSLIME"]
     }
   ]
 }

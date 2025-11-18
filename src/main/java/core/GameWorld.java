@@ -1,5 +1,6 @@
 package core;
 
+import bosses.BossManager;
 import entities.enemies.EnemySpawner;
 import enviroment.ChunkLoader;
 import entities.player.Player;
@@ -10,10 +11,7 @@ import projectiles.egg.Egg;
 import states.GameState;
 import states.MenuState;
 import ui.UI;
-import utils.CollisionChecker;
-import utils.DeltaTimer;
-import utils.StateStack;
-import utils.WorldContext;
+import utils.*;
 import weapons.WeaponManager;
 
 import java.awt.*;
@@ -21,6 +19,7 @@ import java.awt.*;
 public class GameWorld implements WorldContext {
 
     private Player player;
+    private BossManager bossManager;
     private EnemySpawner enemySpawner;
     private ChunkLoader chunkLoader;
     private LootManager lootManager;
@@ -30,6 +29,7 @@ public class GameWorld implements WorldContext {
     private WeaponManager weaponManager;
     private LingeringZoneManager lingeringZoneManager;
     private Point mousePosition = new Point(0, 0);
+    private Camera camera;
 
     private DeltaTimer deltaTimer;
 
@@ -44,6 +44,11 @@ public class GameWorld implements WorldContext {
     }
     public void toggleDebugMode() {
         DEBUG_MODE = !DEBUG_MODE;
+        if (DEBUG_MODE) {
+            this.bossManager.triggerBossFight(3);
+        } else {
+            this.bossManager.endBossFight();
+        }
     }
 
     // constructor
@@ -61,6 +66,7 @@ public class GameWorld implements WorldContext {
     private void initWorld() {
         this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48, 0.22, 0.22);
         this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
+        this.bossManager = new BossManager(this);
         this.chunkLoader = new ChunkLoader(player, gameWidth, gameHeight, 1500);
         this.ui = new UI(player.getPlayerManager());
         this.weaponManager = new WeaponManager();
@@ -101,9 +107,13 @@ public class GameWorld implements WorldContext {
 
     public Player getPlayer() { return player; }
     public EnemySpawner getEnemySpawner() { return enemySpawner; }
+    public BossManager getBossManager() { return this.bossManager; }
     public ChunkLoader getChunkLoader() { return chunkLoader; }
     public CollisionChecker getCollisionChecker() { return collisionChecker; }
     public UI getUi() { return ui; }
     public WeaponManager getWeaponManager() { return weaponManager; }
     public LingeringZoneManager getLingeringZoneManager() { return lingeringZoneManager; }
+
+    public void setCamera(Camera camera) { this.camera = camera;}
+    public Camera getCamera() { return this.camera; }
 }

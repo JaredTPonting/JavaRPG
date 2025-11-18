@@ -19,7 +19,7 @@ public class ChaosZone extends LingeringZone {
 
     @Override
     public void tickAffectEnemy(Enemy e) {
-        e.takeDamage(60.0 + (gameWorld.getPlayer().getPlayerStats().getMagicDamage() * 0.5));
+        e.takeDamage(600.0 + (gameWorld.getPlayer().getPlayerStats().getMagicDamage() * 0.5));
     }
 
     @Override

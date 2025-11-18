@@ -17,7 +17,7 @@ public class Game extends Canvas implements Runnable, InputHandler.GameStateProv
     public GameWorld gameWorld;
 
     public Game() {
-        Display display = new Display("Chicken Run", SCREEN_WIDTH, SCREEN_HEIGHT, this);
+        Display display = new Display("Chicken Isekai Attack", SCREEN_WIDTH, SCREEN_HEIGHT, this);
         this.gameWorld = new GameWorld(getWidth(), getHeight());
         InputHandler input = new InputHandler(this::getGameState);
         addKeyListener(input);

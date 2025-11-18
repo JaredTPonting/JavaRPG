@@ -1,9 +1,7 @@
 package entities.enemies;
 
-import core.GameWorld;
 import entities.Entity;
 import loot.BasicChest;
-import loot.Chest;
 import utils.*;
 
 import java.awt.*;
@@ -19,12 +17,13 @@ public class Enemy extends Entity {
     protected double hp;
     protected double speed;
     protected boolean dead = false;
+    protected boolean despawn = false;
     public boolean triggeredDeath = false;
     protected int XP;
     protected double damage;
     protected Cooldown attackCooldown;
     public double speedDebuff;
-    public Cooldown deathTimer;
+    private boolean fleeing = false;
 
     public boolean isBoss = false;
 
@@ -61,6 +60,8 @@ public class Enemy extends Entity {
         this.y = newY;
     }
 
+    public void flee() { this.fleeing = true; }
+
     public int getXP() {
         return this.XP;
     }
@@ -82,7 +83,7 @@ public class Enemy extends Entity {
     }
 
     private void dropChest() {
-        this.gameWorld.getLootManager().addChest(new BasicChest(this.x + ((double) this.size / 2), this.y + this.size, gameWorld));
+        this.gameWorld.getLootManager().addChest(new BasicChest(this.x + ((double) this.size / 2), this.y + ((double) this.size / 2), gameWorld));
     }
 
     @Override
@@ -95,15 +96,47 @@ public class Enemy extends Entity {
 
         if (triggeredDeath) {
             animations.get(state).update();
-            deathTimer.update(dt);
-            if (deathTimer.ready()){
+            if (animations.get(state).isFinished()){
                 die();
             }
             vx = 0;
             vy = 0;
             updateHitBox();
             return;
-        } else if (gameWorld.getCollisionChecker().checkCollision(this, target) && !target.getInvunerable()) {
+        } else if (fleeing) {
+            setState("run");
+            // Vector **away** from player
+            double fdx = x - target.getX();
+            double fdy = y - target.getY();
+            double dist = Math.hypot(fdx, fdy);
+            if (dist > 0) {
+                // Accelerate away (slightly weaker than chasing)
+                double fleeAccel = 700; // tweakable
+                vx += (fdx / dist) * fleeAccel * dt;
+                vy += (fdy / dist) * fleeAccel * dt;
+            }
+            if (dist > gameWorld.getGameWidth() * 0.6) {
+                this.despawn();
+                return;
+            }
+            double fleeFriction = 0.92;
+            vx *= Math.pow(fleeFriction, dt * 60);
+            vy *= Math.pow(fleeFriction, dt * 60);
+            double fleeSpeed = speed * 1.4; // runaway panic speed
+            double mag = Math.hypot(vx, vy);
+            if (mag > fleeSpeed) {
+                vx = (vx / mag) * fleeSpeed;
+                vy = (vy / mag) * fleeSpeed;
+            }
+
+            x += vx * dt;
+            y += vy * dt;
+            animations.get(state).update();
+            facingLeft = !(vx > 0);
+            updateHitBox();
+            return;
+        }
+        else if (gameWorld.getCollisionChecker().checkCollision(this, target) && !target.getInvunerable()) {
             setState("attack");
             vx=0;
             vy=0;
@@ -170,10 +203,10 @@ public class Enemy extends Entity {
         y += (vy * dt) * speedDebuff;
 
         updateHitBox();
-        resetSpeeddebuff();
+        resetSpeedDebuff();
     }
 
-    public void resetSpeeddebuff() {
+    public void resetSpeedDebuff() {
         this.speedDebuff = 1;
     }
 
@@ -190,8 +223,6 @@ public class Enemy extends Entity {
                 startDeath();
                 setState("die");
             }
-        } else if (deathTimer.ready()) {
-            die();
         }
     }
 
@@ -205,7 +236,6 @@ public class Enemy extends Entity {
     }
 
     public void startDeath() {
-        this.deathTimer = new Cooldown(1);
         triggeredDeath = true;
         if (this.isBoss) {
             dropChest();
@@ -214,6 +244,14 @@ public class Enemy extends Entity {
 
     protected void die() {
         dead = true;
+    }
+
+    protected void despawn() {
+        despawn = true;
+    }
+
+    public boolean despawned() {
+        return this.despawn;
     }
 
     public boolean isDead() {
