@@ -8,6 +8,7 @@ import core.GameWorld;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class Projectile {
@@ -44,7 +45,8 @@ public abstract class Projectile {
     }
 
     public void checkEnemyCollision() {
-        for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
+        List<Enemy> potentialColliders = gameWorld.getCollisionGrid().getPotentialColliders(this.getHitBox());
+        for (Enemy e : potentialColliders) {
             if (!enemiesHit.contains(e) & !e.triggeredDeath) {
                 if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
                     e.takeDamage(this.getDamage());

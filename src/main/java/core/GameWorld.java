@@ -30,6 +30,7 @@ public class GameWorld implements WorldContext {
     private LingeringZoneManager lingeringZoneManager;
     private Point mousePosition = new Point(0, 0);
     private Camera camera;
+    private CollisionGrid collisionGrid;
 
     private DeltaTimer deltaTimer;
 
@@ -64,6 +65,7 @@ public class GameWorld implements WorldContext {
 
     // Init
     private void initWorld() {
+        this.collisionGrid = new CollisionGrid(100);
         this.player = new Player(this, gameWidth / 2, gameHeight / 2, 48, 0.22, 0.22);
         this.enemySpawner = new EnemySpawner(this, gameWidth, gameHeight);
         this.bossManager = new BossManager(this);
@@ -110,6 +112,7 @@ public class GameWorld implements WorldContext {
     public BossManager getBossManager() { return this.bossManager; }
     public ChunkLoader getChunkLoader() { return chunkLoader; }
     public CollisionChecker getCollisionChecker() { return collisionChecker; }
+    public CollisionGrid getCollisionGrid() { return collisionGrid; }
     public UI getUi() { return ui; }
     public WeaponManager getWeaponManager() { return weaponManager; }
     public LingeringZoneManager getLingeringZoneManager() { return lingeringZoneManager; }

@@ -17,6 +17,10 @@ public class Camera {
         this.screenWidth = screenWidth;
     }
 
+    int getWidth() { return this.screenWidth; }
+    int getHeight() { return this.screenHeight; }
+
+
     public void freeze(Player player) {
         camX = player.getX() - (double) screenWidth / 2;
         camY = player.getY() - (double) screenHeight / 2;

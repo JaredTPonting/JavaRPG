@@ -92,9 +92,9 @@ public class Player extends Entity {
         this.playerManager = new PlayerManager();
         this.setHitBox(0.5, 0.5, 0.5);
 
-        idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle_new.png", 6);
-        walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk_new.png", 6);
-        runSprites = loadSprites("/sprites/chicken/cute_chicken_run_new.png", 2);
+        idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle.png", 6);
+        walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk.png", 6);
+        runSprites = loadSprites("/sprites/chicken/cute_chicken_run.png", 2);
     }
 
     private BufferedImage[] loadSprites(String path, int frameCount) {

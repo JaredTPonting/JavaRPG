@@ -1,4 +1,5 @@
 package states;// states.PlayingState.java
+import entities.enemies.Enemy;
 import entities.enemies.EnemySpawner;
 import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
@@ -7,6 +8,7 @@ import utils.Camera;
 import enviroment.ChunkLoader;
 import ui.UI;
 import core.GameWorld;
+import utils.CollisionGrid;
 import utils.DeltaTimer;
 import utils.Renderable;
 import weapons.WeaponManager;
@@ -68,6 +70,13 @@ public class PlayingState implements GameState {
             handleDeath();
             return;
         }
+        CollisionGrid grid = gameWorld.getCollisionGrid();
+        grid.clear();
+        for (Enemy enemy : gameWorld.getEnemySpawner().getEnemies()) {
+            if (!enemy.isDead()) { // Only add active enemies
+                grid.add(enemy);
+            }
+        }
 
         player.update(dt);
         camera.update(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
@@ -101,6 +110,7 @@ public class PlayingState implements GameState {
         weaponManager.render(g, camera);
         spawner.renderDamageIndicators(g, camera);
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
+        gameWorld.getCollisionGrid().draw(g, camera);
     }
 
     @Override
