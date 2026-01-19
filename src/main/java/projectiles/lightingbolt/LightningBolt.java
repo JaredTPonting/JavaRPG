@@ -89,7 +89,7 @@ public class LightningBolt extends Projectile {
     @Override
     public void checkEnemyCollision() {
         for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
-            if (!enemiesHit.contains(e) & !e.triggeredDeath) {
+            if (!enemiesHit.contains(e) && !e.isTriggeredDeath()) {
                 if (gameWorld.getCollisionChecker().entityBaseCollision(e, this)) {
                     e.takeDamage(this.getDamage());
                     this.onHitEffect(e);

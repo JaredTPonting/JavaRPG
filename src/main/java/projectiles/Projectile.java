@@ -47,7 +47,7 @@ public abstract class Projectile {
     public void checkEnemyCollision() {
         List<Enemy> potentialColliders = gameWorld.getCollisionGrid().getPotentialColliders(this.getHitBox());
         for (Enemy e : potentialColliders) {
-            if (!enemiesHit.contains(e) & !e.triggeredDeath) {
+            if (!enemiesHit.contains(e) && !e.isTriggeredDeath()) {
                 if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
                     e.takeDamage(this.getDamage());
                     this.onHitEffect(e);

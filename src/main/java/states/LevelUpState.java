@@ -67,10 +67,6 @@ public class LevelUpState implements GameState {
         for (Button btn : buttons) {
             if (btn.contains(mx, my)) {
                 btn.click();
-//                if (!playerManager.checkLevelUp()) {
-//                    player.resetInput();
-//                    gameWorld.getStateStack().pop(); // resume gameplay
-//                }
                 break;
             }
         }

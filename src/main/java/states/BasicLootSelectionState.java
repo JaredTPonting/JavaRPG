@@ -86,7 +86,6 @@ public class BasicLootSelectionState implements GameState {
                     .getDeclaredConstructor()
                     .newInstance();
             choice.weapon.addWeaponMod(modInstance);
-            System.out.println("Applied " + modInstance.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }

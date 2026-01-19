@@ -16,6 +16,7 @@ public interface WorldContext {
 
     DeltaTimer getDeltaTimer();
     CollisionChecker getCollisionChecker();
+    CollisionGrid getCollisionGrid();
 
     LootManager getLootManager();
     WeaponManager getWeaponManager();

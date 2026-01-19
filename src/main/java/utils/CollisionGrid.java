@@ -30,6 +30,13 @@ public class CollisionGrid {
     }
 
     /**
+     * Gets the grid cell point for a given position.
+     */
+    public Point getCellFor(double x, double y) {
+        return new Point((int) (x / cellSize), (int) (y / cellSize));
+    }
+
+    /**
      * Adds an enemy to the appropriate grid cell.
      */
     public void add(Enemy enemy) {
@@ -43,6 +50,19 @@ public class CollisionGrid {
         // This is the magic of the HashMap approach.
         List<Enemy> cellEnemies = grid.computeIfAbsent(cellPoint, k -> new ArrayList<>());
         cellEnemies.add(enemy);
+    }
+
+    /**
+     * Removes an enemy from a specific grid cell.
+     */
+    public void remove(Enemy enemy, Point cell) {
+        List<Enemy> cellList = grid.get(cell);
+        if (cellList != null) {
+            cellList.remove(enemy);
+            if (cellList.isEmpty()) {
+                grid.remove(cell);
+            }
+        }
     }
 
     /**

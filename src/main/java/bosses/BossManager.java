@@ -15,35 +15,33 @@ public class BossManager {
         if (bossActive) return;
         bossActive = true;
 
-        // 1. Stop enemy spawns
-        world.getEnemySpawner().setActive(false);
-
-        // 2. Make all mobs run away
+        // Make all enemies flee and stop spawning (makeEnemiesFlee also disables spawner)
         world.getEnemySpawner().makeEnemiesFlee();
 
-        // 3. Lock camera
+        // Lock camera to current position
         world.getCamera().freeze(world.getPlayer());
 
-        // 4. Spawn boss
-//        activeBoss = BossFactory.createBossForLevel(level, world);
-//        world.addEntity(activeBoss);
-//
-//        // 5. Show health bar
-//        world.getUI().showBossHealthBar(activeBoss);
+        // TODO: Spawn boss entity
+        // activeBoss = BossFactory.createBossForLevel(level, world);
     }
 
     public void update() {
-//        if (bossActive && activeBoss != null && activeBoss.isDead()) {
-//            endBossFight();
-//        }
+        if (!bossActive) return;
+
+        // TODO: Check if boss is dead
+        // if (activeBoss != null && activeBoss.isDead()) {
+        //     endBossFight();
+        // }
     }
 
     public void endBossFight() {
+        if (!bossActive) return;
         bossActive = false;
+
         world.getCamera().unfreeze();
         world.getEnemySpawner().setActive(true);
-//        world.getUI().hideBossHealthBar();
-//        world.spawnChest(activeBoss.getX(), activeBoss.getY()); // drop weapon chest
+
+        // TODO: Drop loot, show victory UI, etc.
     }
 
     public boolean isBossActive() {

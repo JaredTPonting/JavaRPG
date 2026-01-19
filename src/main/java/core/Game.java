@@ -7,19 +7,20 @@ import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas implements Runnable, InputHandler.GameStateProvider {
 
-    // Screen dimensions
-    public static final int SCREEN_WIDTH = 1200;
-    public static final int SCREEN_HEIGHT = 900;
+    // Default windowed dimensions
+    public static final int DEFAULT_WIDTH = 1200;
+    public static final int DEFAULT_HEIGHT = 900;
 
     private Thread thread;
     private boolean running = false;
+    private Display display;
 
     public GameWorld gameWorld;
 
     public Game() {
-        Display display = new Display("Chicken Isekai Attack", SCREEN_WIDTH, SCREEN_HEIGHT, this);
-        this.gameWorld = new GameWorld(getWidth(), getHeight());
-        InputHandler input = new InputHandler(this::getGameState);
+        display = new Display("Chicken Isekai Attack", DEFAULT_WIDTH, DEFAULT_HEIGHT, this);
+        this.gameWorld = new GameWorld(this);
+        InputHandler input = new InputHandler(this::getGameState, this);
         addKeyListener(input);
         addMouseListener(input);
         addMouseMotionListener(input);
@@ -29,12 +30,25 @@ public class Game extends Canvas implements Runnable, InputHandler.GameStateProv
         return gameWorld.getGameState();
     }
 
-    public int getWidth() {
-        return SCREEN_WIDTH;
+    public void toggleFullscreen() {
+        display.toggleFullscreen();
     }
 
+    public boolean isFullscreen() {
+        return display.isFullscreen();
+    }
+
+    @Override
+    public int getWidth() {
+        // Use actual canvas size (works for both windowed and fullscreen)
+        int w = super.getWidth();
+        return w > 0 ? w : DEFAULT_WIDTH;
+    }
+
+    @Override
     public int getHeight() {
-        return SCREEN_HEIGHT;
+        int h = super.getHeight();
+        return h > 0 ? h : DEFAULT_HEIGHT;
     }
 
     public synchronized void start() {

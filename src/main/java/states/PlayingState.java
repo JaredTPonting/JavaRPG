@@ -5,10 +5,9 @@ import entities.player.Player;
 import lingeringzones.LingeringZoneManager;
 import loot.LootManager;
 import utils.Camera;
-import enviroment.ChunkLoader;
+import environment.ChunkLoader;
 import ui.UI;
 import core.GameWorld;
-import utils.CollisionGrid;
 import utils.DeltaTimer;
 import utils.Renderable;
 import weapons.WeaponManager;
@@ -47,19 +46,7 @@ public class PlayingState implements GameState {
     }
 
     private void initWeapons() {
-//        weaponManager.addWeapon(new PowerOfZeus(player, 1, gameWorld));
-//        weaponManager.addWeapon(new FireBallBlaster(player, 1, gameWorld));
-//        weaponManager.addWeapon(new EggCannon(player, 1, gameWorld));
-//        weaponManager.addWeapon(new ChaosOrbBlaster(player, 1, gameWorld));
-//        weaponManager.addWeaponMod("chaosorbblaster", new ExtraChaosOrb());
-//        weaponManager.addWeaponMod("chaosorbblaster", new IncreaseChaosOrbSize());
-//        weaponManager.addWeaponMod("eggCannon", new TripleEggMod());
-//        weaponManager.addWeaponMod("eggCannon", new BackwardShot());
-//        weaponManager.addWeaponMod("eggCannon", new RightShot());
-//        weaponManager.addWeaponMod("eggCannon", new LeftShot());
-//        weaponManager.addWeaponMod("eggcannon", new PiercingEggs());
-//        weaponManager.addWeaponMod("FireBallBlaster", new ExtraFireBall());
-//        weaponManager.addWeaponMod("FireBallBlaster", new LeftShot());
+        // Weapons are added via loot selection, not hardcoded here
     }
 
     @Override
@@ -69,13 +56,6 @@ public class PlayingState implements GameState {
         if (player.isDead()) {
             handleDeath();
             return;
-        }
-        CollisionGrid grid = gameWorld.getCollisionGrid();
-        grid.clear();
-        for (Enemy enemy : gameWorld.getEnemySpawner().getEnemies()) {
-            if (!enemy.isDead()) { // Only add active enemies
-                grid.add(enemy);
-            }
         }
 
         player.update(dt);
@@ -91,6 +71,15 @@ public class PlayingState implements GameState {
     private void handleDeath() {
         gameWorld.refresh();
         gameWorld.getStateStack().push(new GameOverState(gameWorld));
+    }
+
+    private void toggleBossMode() {
+        var bossManager = gameWorld.getBossManager();
+        if (bossManager.isBossActive()) {
+            bossManager.endBossFight();
+        } else {
+            bossManager.triggerBossFight(player.getPlayerManager().getLevel());
+        }
     }
 
     @Override
@@ -128,6 +117,7 @@ public class PlayingState implements GameState {
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.dash();
             case KeyEvent.VK_F3 -> gameWorld.toggleDebugMode();
+            case KeyEvent.VK_F5 -> toggleBossMode();
         }
     }
 

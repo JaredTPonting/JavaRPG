@@ -9,10 +9,32 @@ import java.awt.image.BufferedImage;
 import utils.*;
 
 public class Player extends Entity {
-    // Position & movement
+    // 8-directional facing for weapons/projectiles
+    public enum Direction {
+        UP(0, -1), DOWN(0, 1), LEFT(-1, 0), RIGHT(1, 0),
+        UP_LEFT(-1, -1), UP_RIGHT(1, -1), DOWN_LEFT(-1, 1), DOWN_RIGHT(1, 1),
+        NONE(0, 0);
+
+        public final int dx, dy;
+        Direction(int dx, int dy) { this.dx = dx; this.dy = dy; }
+
+        public static Direction fromInput(int dx, int dy) {
+            if (dx == 0 && dy == -1) return UP;
+            if (dx == 0 && dy == 1) return DOWN;
+            if (dx == -1 && dy == 0) return LEFT;
+            if (dx == 1 && dy == 0) return RIGHT;
+            if (dx == -1 && dy == -1) return UP_LEFT;
+            if (dx == 1 && dy == -1) return UP_RIGHT;
+            if (dx == -1 && dy == 1) return DOWN_LEFT;
+            if (dx == 1 && dy == 1) return DOWN_RIGHT;
+            return NONE;
+        }
+    }
+
+    // Movement input flags
     private boolean up, down, left, right;
 
-    // util
+    // Utilities
     private final VectorManipulation vectorManipulation = new VectorManipulation();
 
     // Player Manager
@@ -24,62 +46,36 @@ public class Player extends Entity {
     private final BufferedImage[] runSprites;
     private int currentFrame = 0;
     private long lastFrameTime = 0;
-    private final int frameDelay = 100;
+    private static final int FRAME_DELAY_MS = 100;
     private boolean facingLeft = true;
 
-    private boolean lastFacingLeft = true;
-    private boolean lastFacingRight = false;
-    private boolean lastFacingUp = false;
-    private boolean lastFacingDown = false;
-    private boolean invunerable = false;
+    // Direction tracking
+    private Direction lastDirection = Direction.LEFT;
+    private boolean invulnerable = false;
 
-    // Dash values
+    // Dash configuration
     private boolean isDashing = false;
-    private Cooldown dashDuration = new Cooldown(0.15);
-    private Cooldown dashCooldown = new Cooldown(0.95);
-    private double dashSpeedMultiplier = 4.0;
-    private double dashEnduranceCost = 50.0;
+    private final Cooldown dashDuration = new Cooldown(0.15);
+    private final Cooldown dashCooldown = new Cooldown(0.95);
+    private static final double DASH_SPEED_MULTIPLIER = 4.0;
+    private static final double DASH_STAMINA_COST = 50.0;
+    private static final double DIAGONAL_SPEED_BOOST = 1.05;
 
-    public boolean isLastFacingLeft() {
-        return lastFacingLeft;
-    }
-
-    public void setLastFacingLeft(boolean lastFacingLeft) {
-        this.lastFacingLeft = lastFacingLeft;
-    }
-
-    public boolean isLastFacingRight() {
-        return lastFacingRight;
-    }
-
-    public void setLastFacingRight(boolean lastFacingRight) {
-        this.lastFacingRight = lastFacingRight;
-    }
-
-    public boolean isLastFacingUp() {
-        return lastFacingUp;
-    }
-
-    public void setLastFacingUp(boolean lastFacingUp) {
-        this.lastFacingUp = lastFacingUp;
-    }
-
-    public boolean isLastFacingDown() {
-        return lastFacingDown;
-    }
-
-    public void setLastFacingDown(boolean lastFacingDown) {
-        this.lastFacingDown = lastFacingDown;
-    }
+    // Direction getters for external systems (weapons, etc.)
+    public Direction getLastDirection() { return lastDirection; }
+    public boolean isLastFacingLeft() { return lastDirection == Direction.LEFT || lastDirection == Direction.UP_LEFT || lastDirection == Direction.DOWN_LEFT; }
+    public boolean isLastFacingRight() { return lastDirection == Direction.RIGHT || lastDirection == Direction.UP_RIGHT || lastDirection == Direction.DOWN_RIGHT; }
+    public boolean isLastFacingUp() { return lastDirection == Direction.UP || lastDirection == Direction.UP_LEFT || lastDirection == Direction.UP_RIGHT; }
+    public boolean isLastFacingDown() { return lastDirection == Direction.DOWN || lastDirection == Direction.DOWN_LEFT || lastDirection == Direction.DOWN_RIGHT; }
 
     public void dash() {
-        if (dashCooldown.ready() && (dashEnduranceCost < this.playerManager.getCurrentStamina())) {
+        if (dashCooldown.ready() && playerManager.getCurrentStamina() >= DASH_STAMINA_COST) {
             this.isDashing = true;
-            this.playerManager.getPlayerStats().exhaustStamia(this.dashEnduranceCost);
+            this.playerManager.getPlayerStats().exhaustStamina(DASH_STAMINA_COST);
         }
     }
 
-    public boolean isDashing() { return this.isDashing;}
+    public boolean isDashing() { return this.isDashing; }
 
 
     private enum State { IDLE, WALK, RUN }
@@ -147,7 +143,7 @@ public class Player extends Entity {
         return new Point(centerX, centerY);
     }
 
-    public boolean getInvunerable() { return this.invunerable; }
+    public boolean isInvulnerable() { return this.invulnerable; }
     public PlayerStats getPlayerStats() {
         return this.playerManager.getPlayerStats();
     }
@@ -156,102 +152,63 @@ public class Player extends Entity {
     }
 
 
-    // Update method
     @Override
     public void update(double dt) {
-        double dx = 0;
-        double dy = 0;
-        double diagonalBoost = 1.05;
+        // Calculate input direction
+        int inputDx = (right ? 1 : 0) - (left ? 1 : 0);
+        int inputDy = (down ? 1 : 0) - (up ? 1 : 0);
 
-        if (up) {dy -= 1;}
-        if (down) {dy += 1;}
-        if (left) {dx -= 1;}
-        if (right) {dx += 1;}
-
-        if (dx == 0 & dy == 1) { // down
-            setLastFacingDown(true);
-            setLastFacingUp(false);
-            setLastFacingLeft(false);
-            setLastFacingRight(false);
-        } else if (dx == 0 & dy == -1) { // up
-            setLastFacingDown(false);
-            setLastFacingUp(true);
-            setLastFacingLeft(false);
-            setLastFacingRight(false);
-        } else if (dx == 1 & dy == -1) { // right up
-            setLastFacingDown(false);
-            setLastFacingUp(true);
-            setLastFacingLeft(false);
-            setLastFacingRight(true);
-        } else if (dx == -1 & dy == 1) { // left down
-            setLastFacingDown(true);
-            setLastFacingUp(false);
-            setLastFacingLeft(true);
-            setLastFacingRight(false);
-        } else if (dx == 1 & dy == 0) { // right
-            setLastFacingDown(false);
-            setLastFacingUp(false);
-            setLastFacingLeft(false);
-            setLastFacingRight(true);
-        } else if (dx == -1 & dy == 0) { // left
-            setLastFacingDown(false);
-            setLastFacingUp(false);
-            setLastFacingLeft(true);
-            setLastFacingRight(false);
-        } else if (dx == 1 & dy == 1) { // right down
-            setLastFacingDown(true);
-            setLastFacingUp(false);
-            setLastFacingLeft(false);
-            setLastFacingRight(true);
-        } else if (dx == -1 & dy == -1) { // left up
-            setLastFacingDown(false);
-            setLastFacingUp(true);
-            setLastFacingLeft(true);
-            setLastFacingRight(false);
+        // Update last facing direction (only when moving)
+        Direction inputDirection = Direction.fromInput(inputDx, inputDy);
+        if (inputDirection != Direction.NONE) {
+            lastDirection = inputDirection;
         }
-        Point2D.Double dxDy = vectorManipulation.normalise(dx, dy);
-        dx = dxDy.getX();
-        dy = dxDy.getY();
 
+        // Normalize for diagonal movement
+        Point2D.Double normalized = vectorManipulation.normalise(inputDx, inputDy);
+        double dx = normalized.getX();
+        double dy = normalized.getY();
 
+        // Handle dash or normal movement
         if (isDashing) {
-            dashDuration.update(dt);
-            this.invunerable = true;
-            double dashSpeed = playerManager.getSpeed() * dashSpeedMultiplier;
-
-            // Diagonal Boost
-            if (dx != 0  && dy != 0) {
-                x += dx * dashSpeed * diagonalBoost * dt;
-                y += dy * dashSpeed * diagonalBoost * dt;
-            } else {
-                x += dx * dashSpeed * dt;
-                y += dy * dashSpeed * dt;
-            }
-
-            updateHitBox();
-
-            if (dashDuration.ready()) {
-                dashDuration.reset();
-                this.isDashing = false;
-                this.invunerable = false;
-            }
+            updateDash(dt, dx, dy);
             return;
         }
 
         dashCooldown.update(dt);
+        applyMovement(dt, dx, dy, playerManager.getSpeed());
+        updateAnimationState();
+        updateAnimationFrame();
 
-        // Diagonal Boost
-        if (dx != 0 && dy != 0) {
-            x += dx * playerManager.getSpeed() * diagonalBoost * dt;
-            y += dy * playerManager.getSpeed() * diagonalBoost * dt;
-        } else {
-            x += dx * playerManager.getSpeed() * dt;
-            y += dy * playerManager.getSpeed() * dt;
+        this.playerManager.getPlayerStats().update();
+        updateHitBox();
+    }
+
+    private void updateDash(double dt, double dx, double dy) {
+        dashDuration.update(dt);
+        this.invulnerable = true;
+
+        double dashSpeed = playerManager.getSpeed() * DASH_SPEED_MULTIPLIER;
+        applyMovement(dt, dx, dy, dashSpeed);
+        updateHitBox();
+
+        if (dashDuration.ready()) {
+            dashDuration.reset();
+            this.isDashing = false;
+            this.invulnerable = false;
         }
+    }
 
-        // Facing & animation state
-        if (left){ facingLeft = true;}
-        if (right){ facingLeft = false;}
+    private void applyMovement(double dt, double dx, double dy, double speed) {
+        boolean isDiagonal = dx != 0 && dy != 0;
+        double effectiveSpeed = isDiagonal ? speed * DIAGONAL_SPEED_BOOST : speed;
+        x += dx * effectiveSpeed * dt;
+        y += dy * effectiveSpeed * dt;
+    }
+
+    private void updateAnimationState() {
+        if (left) facingLeft = true;
+        if (right) facingLeft = false;
 
         boolean isMoving = up || down || left || right;
         boolean isRunning = left || right;
@@ -261,16 +218,14 @@ public class Player extends Entity {
             currentFrame = 0;
             previousState = currentState;
         }
+    }
 
-        this.playerManager.getPlayerStats().update();
-
-        // Frame animation
+    private void updateAnimationFrame() {
         long nowMillis = System.currentTimeMillis();
-        if (nowMillis - lastFrameTime > frameDelay) {
+        if (nowMillis - lastFrameTime > FRAME_DELAY_MS) {
             currentFrame = (currentFrame + 1) % getCurrentSprites().length;
             lastFrameTime = nowMillis;
         }
-        updateHitBox();
     }
 
 

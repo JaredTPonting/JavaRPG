@@ -117,7 +117,7 @@ public class PlayerManager {
         return this.playerStats.getMaxHealth() + playerItems.getItemHP();
     }
     public double getHealthRegen() {
-        return this.playerStats.getHealthRegen() + playerStats.getHealthRegen();
+        return this.playerStats.getHealthRegen() + playerItems.getItemHealthRegen();
     }
     public double getCurrentHealth() {
         return this.playerStats.getCurrentHealth();

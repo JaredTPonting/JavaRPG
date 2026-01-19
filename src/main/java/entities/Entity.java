@@ -55,7 +55,7 @@ public abstract class Entity implements Renderable {
         this.hitBox = new Rectangle((int)this.x +this.xOffset, (int)this.y + this.yOffset, this.width, this.height);
     }
 
-    protected void updateHitBox() {
+    public void updateHitBox() {
         hitBox.setLocation((int) this.x + this.xOffset, (int) this.y + this.yOffset);
     }
     public Rectangle getHitBox() {

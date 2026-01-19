@@ -13,7 +13,7 @@ public class UI {
 
     public UI(PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.displayedHealth = playerManager.getMaxXP();
+        this.displayedHealth = (float) playerManager.getMaxHealth();
         this.displayedStamina = (float) playerManager.getMaxStamina();
         this.displayedXP = playerManager.getXP();
     }

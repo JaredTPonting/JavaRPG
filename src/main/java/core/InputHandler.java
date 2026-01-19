@@ -5,13 +5,15 @@ import java.awt.event.*;
 
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener {
     private final GameStateProvider stateProvider;
+    private final Game game;
 
     public interface GameStateProvider {
         GameState getGameState();
     }
 
-    public InputHandler(GameStateProvider provider) {
+    public InputHandler(GameStateProvider provider, Game game) {
         this.stateProvider = provider;
+        this.game = game;
     }
 
     private GameState getState() {
@@ -20,6 +22,12 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // Global keybinds (work in any state)
+        if (e.getKeyCode() == KeyEvent.VK_F11) {
+            game.toggleFullscreen();
+            return;
+        }
+
         if (getState() != null) getState().keyPressed(e);
     }
 

@@ -37,7 +37,8 @@ public class WeaponSelectState implements GameState {
     }
 
     private void selectWeapon(Weapon weapon) {
-        weaponManager.addWeapon(weapon); // store choice in GameWorld
+        weaponManager.addWeapon(weapon);
+        gameWorld.getEnemySpawner().setActive(true);  // Start spawning now
         gameWorld.getStateStack().push(new PlayingState(gameWorld));
     }
 

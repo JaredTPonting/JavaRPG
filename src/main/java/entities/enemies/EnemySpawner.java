@@ -49,7 +49,7 @@ public class EnemySpawner {
 
     // Round manager
     private RoundManager roundManager;
-    private boolean active = true;
+    private boolean active = false;  // Starts inactive until weapon is selected
     public void setActive(boolean newActive) { this.active = newActive;}
     public boolean isActive() { return this.active; }
 
@@ -94,10 +94,14 @@ public class EnemySpawner {
 
         // Remove dead entities.enemies & give XP
         enemies.removeIf(enemy -> {
-            if (enemy.isDead()) {
-                playerManager.gainXP(enemy.getXP());
-                return true;
-            } else if (enemy.despawned()) {
+            if (enemy.isDead() || enemy.despawned()) {
+                // Remove from collision grid before removing from list
+                if (enemy.getCurrentGridCell() != null) {
+                    gameWorld.getCollisionGrid().remove(enemy, enemy.getCurrentGridCell());
+                }
+                if (enemy.isDead()) {
+                    playerManager.gainXP(enemy.getXP());
+                }
                 return true;
             }
             return false;
@@ -109,13 +113,13 @@ public class EnemySpawner {
 
     public void checkEnemyDamage(List<Enemy> enemies, Player player) {
         for (Enemy e : enemies) {
-            if (e.isDead() | e.triggeredDeath) {
+            if (e.isDead() || e.isTriggeredDeath()) {
                 continue;
             }
 
             if (gameWorld.getCollisionChecker().checkCollision(e, player)) {
                 double damage = e.attackPlayer();
-                if (damage > 0 && !player.getInvunerable()) {
+                if (damage > 0 && !player.isInvulnerable()) {
                     player.takeDamage(damage);
                 }
             }
@@ -211,6 +215,8 @@ public class EnemySpawner {
                 enemy.setX(newPos.x);
                 enemy.setY(newPos.y);
                 enemy.resetVxVy();
+                enemy.updateHitBox();
+                enemy.updateGridPosition(gameWorld.getCollisionGrid());
             }
         }
     }

@@ -35,7 +35,7 @@ public class PlayerStats {
     public PlayerStats(ItemManager items) {
         this.lastRegenTime = System.currentTimeMillis();
         this.speed = 200.0;
-        this.maxHealth = 1000000.0;
+        this.maxHealth = 100000.0;
         this.currentHealth = maxHealth;
         this.healthRegen = 0.5;
         this.maxStamina = 10000.0;
@@ -95,7 +95,7 @@ public class PlayerStats {
     public double getMaxStamina() {
         return maxStamina;
     }
-    public void exhaustStamia(double staminaUsed) { this.currentStamina -= staminaUsed;}
+    public void exhaustStamina(double staminaUsed) { this.currentStamina -= staminaUsed; }
     public void increaseEndurance() {
         this.enduranceLevel += 1;
         this.maxStamina += 50;
