@@ -88,7 +88,7 @@ public class PlayingState implements GameState {
         Profiler.get().end("Loot");
 
         Profiler.get().start("Chunks");
-        chunkLoader.update();
+        chunkLoader.update(camera);
         Profiler.get().end("Chunks");
 
         Profiler.get().start("UI");

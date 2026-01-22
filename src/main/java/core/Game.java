@@ -14,6 +14,7 @@ public class Game extends Canvas implements Runnable, InputHandler.GameStateProv
     private Thread thread;
     private boolean running = false;
     private Display display;
+    private volatile boolean needsBufferRecreate = false;
 
     public GameWorld gameWorld;
 
@@ -32,6 +33,7 @@ public class Game extends Canvas implements Runnable, InputHandler.GameStateProv
 
     public void toggleFullscreen() {
         display.toggleFullscreen();
+        needsBufferRecreate = true;
     }
 
     public boolean isFullscreen() {
@@ -69,14 +71,30 @@ public class Game extends Canvas implements Runnable, InputHandler.GameStateProv
     }
 
     public void run() {
-        this.createBufferStrategy(3);
-        BufferStrategy bs = this.getBufferStrategy();
+        createBufferStrategy(3);
 
         long lastTime = System.nanoTime();
         double nsPerUpdate = 1000000000.0 / 60.0;
         double delta = 0;
 
         while (running) {
+            // Recreate buffer strategy after fullscreen toggle
+            if (needsBufferRecreate) {
+                try {
+                    Thread.sleep(100); // Give the window time to stabilize
+                    createBufferStrategy(3);
+                    needsBufferRecreate = false;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            BufferStrategy bs = getBufferStrategy();
+            if (bs == null) {
+                createBufferStrategy(3);
+                continue;
+            }
+
             long now = System.nanoTime();
             delta += (now - lastTime) / nsPerUpdate;
             lastTime = now;

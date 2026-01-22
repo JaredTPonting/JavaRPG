@@ -46,6 +46,8 @@ public class Enemy extends Entity {
 
     // Reusable array for separation calculation - avoids allocation every frame
     private final double[] separationResult = new double[2];
+    // Reusable list for nearby enemies lookup - avoids allocation every frame
+    private final java.util.ArrayList<Enemy> nearbyEnemies = new java.util.ArrayList<>();
 
     protected Player target;
 
@@ -230,7 +232,10 @@ public class Enemy extends Entity {
         double separationRadius = size * SEPARATION_RADIUS_MULTIPLIER;
         double separationRadiusSq = separationRadius * separationRadius;
 
-        for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
+        // Use spatial grid for O(1) neighbor lookup instead of O(n) full list scan
+        gameWorld.getCollisionGrid().fillNearbyEnemies(x, y, nearbyEnemies);
+
+        for (Enemy e : nearbyEnemies) {
             if (e == this || e.isDead() || e.isTriggeredDeath()) continue;
 
             double dx = x - e.getX();

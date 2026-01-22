@@ -82,9 +82,17 @@ public class CollisionGrid {
      * More efficient when called repeatedly as it avoids allocation.
      */
     public void fillPotentialColliders(Rectangle hitbox, List<Enemy> result) {
+        fillNearbyEnemies(hitbox.getCenterX(), hitbox.getCenterY(), result);
+    }
+
+    /**
+     * Fills the provided list with enemies near the given world coordinates.
+     * Uses the 3x3 grid cell neighborhood for fast spatial lookup.
+     */
+    public void fillNearbyEnemies(double worldX, double worldY, List<Enemy> result) {
         result.clear();
-        int centerX = (int) (hitbox.getCenterX() / cellSize);
-        int centerY = (int) (hitbox.getCenterY() / cellSize);
+        int centerX = (int) (worldX / cellSize);
+        int centerY = (int) (worldY / cellSize);
 
         // Iterate through the 3x3 block of cells.
         for (int i = -1; i <= 1; i++) {
