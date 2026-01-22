@@ -62,7 +62,7 @@ public class EnemySpawner {
     }
 
     public List<Enemy> getEnemies() {
-        return new ArrayList<>(enemies);
+        return enemies;  // Return direct reference to avoid allocation
     }
 
     // --- Main update loop ---

@@ -9,6 +9,7 @@ import environment.ChunkLoader;
 import ui.UI;
 import core.GameWorld;
 import utils.DeltaTimer;
+import utils.Profiler;
 import utils.Renderable;
 import weapons.WeaponManager;
 
@@ -29,6 +30,9 @@ public class PlayingState implements GameState {
     private final LingeringZoneManager lingeringZoneManager;
     private final DeltaTimer deltaTimer;
     private final LootManager lootManager;
+
+    // Reusable list for depth sorting - avoids allocation every frame
+    private final ArrayList<Renderable> depthObjects = new ArrayList<>();
 
     public PlayingState(GameWorld gameWorld) {
         this.camera = new Camera();
@@ -88,7 +92,7 @@ public class PlayingState implements GameState {
         g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         chunkLoader.render(g, camera);
         lingeringZoneManager.render(g, camera);
-        ArrayList<Renderable> depthObjects = new ArrayList<>();
+        depthObjects.clear();
         depthObjects.add(player);
         depthObjects.addAll(spawner.getEnemies());
         depthObjects.addAll(lootManager.getChests());

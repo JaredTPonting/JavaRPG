@@ -44,6 +44,9 @@ public class Enemy extends Entity {
     // Grid cell tracking for incremental collision updates
     private Point currentGridCell = null;
 
+    // Reusable array for separation calculation - avoids allocation every frame
+    private final double[] separationResult = new double[2];
+
     protected Player target;
 
     // Animations
@@ -148,14 +151,16 @@ public class Enemy extends Entity {
 
         double fdx = x - target.getX();
         double fdy = y - target.getY();
-        double dist = Math.hypot(fdx, fdy);
+        double distSq = fdx * fdx + fdy * fdy;
+        double despawnDist = gameWorld.getGameWidth() * DESPAWN_DISTANCE_MULTIPLIER;
 
-        if (dist > gameWorld.getGameWidth() * DESPAWN_DISTANCE_MULTIPLIER) {
+        if (distSq > despawnDist * despawnDist) {
             despawn();
             return;
         }
 
-        if (dist > 0) {
+        if (distSq > 0) {
+            double dist = Math.sqrt(distSq);
             vx += (fdx / dist) * ACCELERATION_FORCE * dt;
             vy += (fdy / dist) * ACCELERATION_FORCE * dt;
         }
@@ -182,7 +187,7 @@ public class Enemy extends Entity {
 
         double dx = target.getX() - x;
         double dy = target.getY() - y;
-        double distance = Math.hypot(dx, dy);
+        double distSq = dx * dx + dy * dy;
 
         facingLeft = dx <= 0;
 
@@ -190,15 +195,16 @@ public class Enemy extends Entity {
         double ax = 0, ay = 0;
 
         // Attraction toward player
-        if (distance > 0) {
+        if (distSq > 0) {
+            double distance = Math.sqrt(distSq);
             ax += (dx / distance) * ACCELERATION_FORCE;
             ay += (dy / distance) * ACCELERATION_FORCE;
         }
 
-        // Separation from nearby enemies
-        double[] separation = calculateSeparation();
-        ax += separation[0];
-        ay += separation[1];
+        // Separation from nearby enemies (fills separationResult)
+        calculateSeparation();
+        ax += separationResult[0];
+        ay += separationResult[1];
 
         // Random jitter for organic movement
         ax += (Math.random() - 0.5) * JITTER_FORCE;
@@ -216,23 +222,26 @@ public class Enemy extends Entity {
         resetSpeedDebuff();
     }
 
-    private double[] calculateSeparation() {
+    private void calculateSeparation() {
         double ax = 0, ay = 0;
         double separationRadius = size * SEPARATION_RADIUS_MULTIPLIER;
+        double separationRadiusSq = separationRadius * separationRadius;
 
         for (Enemy e : gameWorld.getEnemySpawner().getEnemies()) {
             if (e == this || e.isDead() || e.isTriggeredDeath()) continue;
 
             double dx = x - e.getX();
             double dy = y - e.getY();
-            double dist = Math.hypot(dx, dy);
+            double distSq = dx * dx + dy * dy;
 
-            if (dist < separationRadius && dist > 0) {
+            if (distSq < separationRadiusSq && distSq > 0) {
+                double dist = Math.sqrt(distSq);
                 ax += (dx / dist) * SEPARATION_FORCE;
                 ay += (dy / dist) * SEPARATION_FORCE;
             }
         }
-        return new double[]{ax, ay};
+        separationResult[0] = ax;
+        separationResult[1] = ay;
     }
 
     private void applyFriction(double dt, double friction) {
@@ -243,8 +252,10 @@ public class Enemy extends Entity {
     }
 
     private void clampSpeed(double maxSpeed) {
-        double mag = Math.hypot(vx, vy);
-        if (mag > maxSpeed) {
+        double magSq = vx * vx + vy * vy;
+        double maxSpeedSq = maxSpeed * maxSpeed;
+        if (magSq > maxSpeedSq) {
+            double mag = Math.sqrt(magSq);
             vx = (vx / mag) * maxSpeed;
             vy = (vy / mag) * maxSpeed;
         }

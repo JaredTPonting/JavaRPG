@@ -18,14 +18,10 @@ public class LootManager {
     }
 
     public void updateChests(double dt) {
-        List<Chest> toRemove = new ArrayList<>();
-        for (Chest chest : chests) {
+        chests.removeIf(chest -> {
             chest.update(dt);
-            if (!chest.isActive()){
-                toRemove.add(chest);
-            }
-        }
-        this.chests.removeAll(toRemove);
+            return !chest.isActive();
+        });
     }
 
     public void render(Graphics g, Camera c) {

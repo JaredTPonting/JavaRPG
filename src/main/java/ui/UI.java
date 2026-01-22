@@ -11,6 +11,14 @@ public class UI {
     private float displayedXP;
     private float displayedStamina;
 
+    // Cached colors to avoid allocation every frame
+    private static final Color OVERLAY_COLOR = new Color(0, 0, 0, 120);
+    private static final Color BAR_BACKGROUND = new Color(50, 50, 50);
+    private static final Color HEALTH_COLOR = new Color(200, 50, 50);
+    private static final Color STAMINA_COLOR = new Color(38, 156, 31);
+    private static final Color XP_COLOR = new Color(38, 156, 215);
+    private static final Font BAR_FONT = new Font("Arial", Font.BOLD, 12);
+
     public UI(PlayerManager playerManager) {
         this.playerManager = playerManager;
         this.displayedHealth = (float) playerManager.getMaxHealth();
@@ -36,31 +44,29 @@ public class UI {
         int spacing = 10;
         int arc = 10;
 
-        g.setColor(new Color(0, 0, 0, 120));
+        g.setColor(OVERLAY_COLOR);
         g.fillRoundRect(x - 10, y - 10, barWidth + 20, (barHeight + spacing) * 3 + 20, arc, arc);
 
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedHealth / playerManager.getMaxHealth()), new Color(200, 50, 50), "HP");
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedHealth / playerManager.getMaxHealth()), HEALTH_COLOR, "HP");
 
         y += barHeight + spacing;
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedStamina / playerManager.getMaxStamina()), new Color(38, 156, 31), "STAMINA");
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedStamina / playerManager.getMaxStamina()), STAMINA_COLOR, "STAMINA");
 
         y += barHeight + spacing;
-        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedXP / playerManager.getMaxXP()), new Color(38, 156, 215), playerManager.checkLevelUp() ? "CAN LEVEL UP" : "XP");
-
-
+        drawBar(g, x, y, barWidth, barHeight, arc, (float) (displayedXP / playerManager.getMaxXP()), XP_COLOR, playerManager.checkLevelUp() ? "CAN LEVEL UP" : "XP");
     }
 
     private void drawBar(Graphics2D g, int x, int y, int width, int height, int arc, float fillPercent, Color colour, String label) {
         fillPercent = Math.max(0, Math.min(1, fillPercent));
 
-        g.setColor(new Color(50, 50, 50));
+        g.setColor(BAR_BACKGROUND);
         g.fillRoundRect(x, y, width, height, arc, arc);
 
         int fillWidth = (int) (width * fillPercent);
         g.setColor(colour);
         g.fillRoundRect(x, y, fillWidth, height, arc, arc);
 
-        g.setFont(new Font("Arial", Font.BOLD, 12));
+        g.setFont(BAR_FONT);
         g.setColor(Color.WHITE);
         g.drawString(label, x + 5, y + height - 5);
     }

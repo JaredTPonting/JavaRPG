@@ -65,26 +65,39 @@ public class CollisionGrid {
         }
     }
 
+    // Reusable Point for lookups - avoids 9 Point allocations per query
+    private final Point lookupPoint = new Point();
+
     /**
      * Retrieves a list of potential colliders near the given hitbox.
      */
     public List<Enemy> getPotentialColliders(Rectangle hitbox) {
         List<Enemy> potentialColliders = new ArrayList<>();
+        fillPotentialColliders(hitbox, potentialColliders);
+        return potentialColliders;
+    }
+
+    /**
+     * Fills the provided list with potential colliders near the given hitbox.
+     * More efficient when called repeatedly as it avoids allocation.
+     */
+    public void fillPotentialColliders(Rectangle hitbox, List<Enemy> result) {
+        result.clear();
         int centerX = (int) (hitbox.getCenterX() / cellSize);
         int centerY = (int) (hitbox.getCenterY() / cellSize);
 
         // Iterate through the 3x3 block of cells.
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                Point cellPoint = new Point(centerX + j, centerY + i);
+                lookupPoint.setLocation(centerX + j, centerY + i);
 
                 // If a cell exists in our map for this coordinate, add its enemies.
-                if (grid.containsKey(cellPoint)) {
-                    potentialColliders.addAll(grid.get(cellPoint));
+                List<Enemy> cellEnemies = grid.get(lookupPoint);
+                if (cellEnemies != null) {
+                    result.addAll(cellEnemies);
                 }
             }
         }
-        return potentialColliders;
     }
 
     /**

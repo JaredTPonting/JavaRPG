@@ -26,6 +26,9 @@ public abstract class Projectile {
 
     public static VectorManipulation vectorManipulation = new VectorManipulation();
 
+    // Reusable list for collision checks - avoids allocation every frame
+    private final List<Enemy> collisionCheckList = new ArrayList<>();
+
     // Animation Stuff
     public static final boolean LOOP = true;
     public static final long FRAME_TIME = 100;
@@ -45,8 +48,8 @@ public abstract class Projectile {
     }
 
     public void checkEnemyCollision() {
-        List<Enemy> potentialColliders = gameWorld.getCollisionGrid().getPotentialColliders(this.getHitBox());
-        for (Enemy e : potentialColliders) {
+        gameWorld.getCollisionGrid().fillPotentialColliders(this.getHitBox(), collisionCheckList);
+        for (Enemy e : collisionCheckList) {
             if (!enemiesHit.contains(e) && !e.isTriggeredDeath()) {
                 if (gameWorld.getCollisionChecker().entityProjectileCollision(e, this)) {
                     e.takeDamage(this.getDamage());
