@@ -187,7 +187,7 @@ public class MenuState implements GameState {
 
         // Draw chicken running at bottom
         int chickenY = groundY - CHICKEN_SIZE + 10;
-        BufferedImage chickenFrame = movingRight ? chickenSpritesFlipped[currentFrame] : chickenSprites[currentFrame];
+        BufferedImage chickenFrame = movingRight ? chickenSprites[currentFrame] : chickenSpritesFlipped[currentFrame];
         g2.drawImage(chickenFrame, (int) chickenX, chickenY, null);
 
         // Instructions at bottom
