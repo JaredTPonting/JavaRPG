@@ -52,6 +52,7 @@ public class Enemy extends Entity {
     // Animations
     private final Map<String, Animation> animations;
     private String state = "run";
+    private Animation currentAnimation; // Cached to avoid HashMap lookup every frame
 
     public Enemy(WorldContext gameWorld, int x, int y, double attackSpeed, int size, Map<String, Animation> animations, double xOffset, double yOffset) {
         super(gameWorld, x, y, size, xOffset, yOffset);
@@ -62,6 +63,7 @@ public class Enemy extends Entity {
         this.speedDebuff = 1;
         this.size = size;
         this.animations = animations;
+        this.currentAnimation = animations.get(state); // Cache initial animation
     }
 
     public void setSpeed(int speed) {
@@ -105,8 +107,9 @@ public class Enemy extends Entity {
 
     public String getState() { return this.state; }
     public void setState(String newState) {
-        if (animations.containsKey(newState)) {
+        if (!newState.equals(state) && animations.containsKey(newState)) {
             this.state = newState;
+            this.currentAnimation = animations.get(newState); // Update cached animation
         }
     }
 
@@ -137,8 +140,8 @@ public class Enemy extends Entity {
     }
 
     private void updateDeathAnimation() {
-        animations.get(state).update();
-        if (animations.get(state).isFinished()) {
+        currentAnimation.update();
+        if (currentAnimation.isFinished()) {
             die();
         }
         vx = 0;
@@ -169,7 +172,7 @@ public class Enemy extends Entity {
         clampSpeed(speed * FLEE_SPEED_MULTIPLIER);
         applyMovement(dt);
 
-        animations.get(state).update();
+        currentAnimation.update();
         facingLeft = vx <= 0;
         finalizePosition();
     }
@@ -178,7 +181,7 @@ public class Enemy extends Entity {
         setState("attack");
         vx = 0;
         vy = 0;
-        animations.get(state).update();
+        currentAnimation.update();
         target.takeDamage(attackPlayer());
     }
 
@@ -217,7 +220,7 @@ public class Enemy extends Entity {
         clampSpeed(speed);
         applyMovement(dt);
 
-        animations.get(state).update();
+        currentAnimation.update();
         finalizePosition();
         resetSpeedDebuff();
     }
@@ -351,12 +354,21 @@ public class Enemy extends Entity {
 
     @Override
     public void render(Graphics g, Camera camera) {
-        BufferedImage frame = animations.get(state).getCurrentFrame();
-        if (facingLeft) {
-            g.drawImage(frame, (int)(x - camera.getX()), (int)(y - camera.getY()), size, size, null);
-        } else {
-            g.drawImage(frame, (int)(x - camera.getX() + size), (int)(y - camera.getY()), -size, size, null);
+        int drawX = (int)(x - camera.getX());
+        int drawY = (int)(y - camera.getY());
+
+        // Skip drawing if completely off-screen (culling)
+        if (drawX + size < 0 || drawX > camera.getWidth() ||
+            drawY + size < 0 || drawY > camera.getHeight()) {
+            return;
         }
+
+        // Use pre-scaled, pre-flipped frames - no runtime scaling or flipping
+        BufferedImage frame = facingLeft
+            ? currentAnimation.getCurrentFrame()
+            : currentAnimation.getCurrentFrameFlipped();
+
+        g.drawImage(frame, drawX, drawY, null); // No scaling needed - already pre-scaled
 
         if (gameWorld.isDebugMode()) {
             drawHitBox(g, camera);

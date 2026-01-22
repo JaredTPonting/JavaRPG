@@ -41,4 +41,12 @@ public class WeaponManager {
             weapon.render(g, camera);
         }
     }
+
+    public int getProjectileCount() {
+        int count = 0;
+        for (Weapon weapon : weapons) {
+            count += weapon.getProjectileCount();
+        }
+        return count;
+    }
 }

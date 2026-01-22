@@ -43,11 +43,11 @@ public class GameWorld implements WorldContext {
     }
     public void toggleDebugMode() {
         DEBUG_MODE = !DEBUG_MODE;
-        if (DEBUG_MODE) {
-            this.bossManager.triggerBossFight(3);
-        } else {
-            this.bossManager.endBossFight();
-        }
+//        if (DEBUG_MODE) {
+//            this.bossManager.triggerBossFight(3);
+//        } else {
+//            this.bossManager.endBossFight();
+//        }
     }
 
     // constructor

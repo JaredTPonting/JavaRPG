@@ -55,6 +55,7 @@ public class PlayingState implements GameState {
 
     @Override
     public void update() {
+        Profiler.get().frameStart();
         double dt = deltaTimer.getDelta();
 
         if (player.isDead()) {
@@ -62,14 +63,44 @@ public class PlayingState implements GameState {
             return;
         }
 
+        Profiler.get().start("Player");
         player.update(dt);
+        Profiler.get().end("Player");
+
+        Profiler.get().start("Camera");
         camera.update(player, gameWorld.getGameWidth(), gameWorld.getGameHeight());
+        Profiler.get().end("Camera");
+
+        Profiler.get().start("Zones");
         lingeringZoneManager.update(dt);
+        Profiler.get().end("Zones");
+
+        Profiler.get().start("Enemies");
         spawner.update(player, dt);
+        Profiler.get().end("Enemies");
+
+        Profiler.get().start("Weapons");
         weaponManager.update(dt);
+        Profiler.get().end("Weapons");
+
+        Profiler.get().start("Loot");
         lootManager.update(dt);
+        Profiler.get().end("Loot");
+
+        Profiler.get().start("Chunks");
         chunkLoader.update();
+        Profiler.get().end("Chunks");
+
+        Profiler.get().start("UI");
         ui.update();
+        Profiler.get().end("UI");
+
+        // Update profiler entity counts
+        Profiler.get().setEntityCounts(
+            spawner.getEnemies().size(),
+            weaponManager.getProjectileCount(),
+            lootManager.getChests().size()
+        );
     }
 
     private void handleDeath() {
@@ -88,22 +119,49 @@ public class PlayingState implements GameState {
 
     @Override
     public void render(Graphics g) {
+        Profiler.get().start("Render");
+
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, gameWorld.getGameWidth(), gameWorld.getGameHeight());
+
+        Profiler.get().start("R:Chunks");
         chunkLoader.render(g, camera);
+        Profiler.get().end("R:Chunks");
+
+        Profiler.get().start("R:Zones");
         lingeringZoneManager.render(g, camera);
+        Profiler.get().end("R:Zones");
+
+        Profiler.get().start("R:Sort");
         depthObjects.clear();
         depthObjects.add(player);
         depthObjects.addAll(spawner.getEnemies());
         depthObjects.addAll(lootManager.getChests());
         depthObjects.sort(Comparator.comparingDouble(Renderable::getRenderY));
+        Profiler.get().end("R:Sort");
+
+        Profiler.get().start("R:Entities");
         for (Renderable r : depthObjects) {
             r.render(g, camera);
         }
+        Profiler.get().end("R:Entities");
+
+        Profiler.get().start("R:Weapons");
         weaponManager.render(g, camera);
+        Profiler.get().end("R:Weapons");
+
         spawner.renderDamageIndicators(g, camera);
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
         gameWorld.getCollisionGrid().draw(g, camera);
+
+        Profiler.get().end("Render");
+
+        // Render profiler overlay when debug mode is on
+        if (gameWorld.isDebugMode()) {
+            Profiler.get().render((Graphics2D) g, gameWorld.getGameWidth());
+        }
+
+        Profiler.get().frameEnd();
     }
 
     @Override
@@ -121,6 +179,7 @@ public class PlayingState implements GameState {
             case KeyEvent.VK_D -> player.setRight(true);
             case KeyEvent.VK_SPACE -> player.dash();
             case KeyEvent.VK_F3 -> gameWorld.toggleDebugMode();
+            case KeyEvent.VK_F4 -> Profiler.get().toggleLogging();
             case KeyEvent.VK_F5 -> toggleBossMode();
         }
     }

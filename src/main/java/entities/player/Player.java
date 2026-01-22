@@ -40,10 +40,13 @@ public class Player extends Entity {
     // Player Manager
     private final PlayerManager playerManager;
 
-    // Sprites & animation
+    // Sprites & animation (pre-scaled and pre-flipped)
     private final BufferedImage[] idleSprites;
+    private final BufferedImage[] idleSpritesFlipped;
     private final BufferedImage[] walkSprites;
+    private final BufferedImage[] walkSpritesFlipped;
     private final BufferedImage[] runSprites;
+    private final BufferedImage[] runSpritesFlipped;
     private int currentFrame = 0;
     private long lastFrameTime = 0;
     private static final int FRAME_DELAY_MS = 100;
@@ -88,25 +91,57 @@ public class Player extends Entity {
         this.playerManager = new PlayerManager();
         this.setHitBox(0.5, 0.5, 0.5);
 
-        idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle.png", 6);
-        walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk.png", 6);
-        runSprites = loadSprites("/sprites/chicken/cute_chicken_run.png", 2);
+        idleSprites = loadSprites("/sprites/chicken/cute_chicken_idle.png", 6, size);
+        idleSpritesFlipped = flipSprites(idleSprites);
+        walkSprites = loadSprites("/sprites/chicken/cute_chicken_walk.png", 6, size);
+        walkSpritesFlipped = flipSprites(walkSprites);
+        runSprites = loadSprites("/sprites/chicken/cute_chicken_run.png", 2, size);
+        runSpritesFlipped = flipSprites(runSprites);
     }
 
-    private BufferedImage[] loadSprites(String path, int frameCount) {
+    private BufferedImage[] loadSprites(String path, int frameCount, int targetSize) {
         BufferedImage sheet = SpriteLoader.load(path);
         BufferedImage[] sprites = new BufferedImage[frameCount];
+        int frameWidth = sheet.getWidth() / frameCount;
+        int frameHeight = sheet.getHeight();
+
         for (int i = 0; i < frameCount; i++) {
-            sprites[i] = sheet.getSubimage(i * 48, 0, 48, 48);
+            BufferedImage raw = sheet.getSubimage(i * frameWidth, 0, frameWidth, frameHeight);
+            // Pre-scale to target size
+            sprites[i] = scaleImage(raw, targetSize, targetSize);
         }
         return sprites;
     }
 
+    private BufferedImage scaleImage(BufferedImage src, int width, int height) {
+        BufferedImage scaled = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        java.awt.Graphics2D g2d = scaled.createGraphics();
+        g2d.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                             java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(src, 0, 0, width, height, null);
+        g2d.dispose();
+        return scaled;
+    }
+
+    private BufferedImage[] flipSprites(BufferedImage[] sprites) {
+        BufferedImage[] flipped = new BufferedImage[sprites.length];
+        for (int i = 0; i < sprites.length; i++) {
+            int w = sprites[i].getWidth();
+            int h = sprites[i].getHeight();
+            flipped[i] = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            java.awt.Graphics2D g2d = flipped[i].createGraphics();
+            g2d.drawImage(sprites[i], w, 0, -w, h, null);
+            g2d.dispose();
+        }
+        return flipped;
+    }
+
     private BufferedImage[] getCurrentSprites() {
+        // Note: facingLeft means we need the flipped sprites (original code used negative width when facingLeft)
         return switch (currentState) {
-            case WALK -> walkSprites;
-            case RUN -> runSprites;
-            default -> idleSprites;
+            case WALK -> facingLeft ? walkSpritesFlipped : walkSprites;
+            case RUN -> facingLeft ? runSpritesFlipped : runSprites;
+            default -> facingLeft ? idleSpritesFlipped : idleSprites;
         };
     }
 
@@ -232,12 +267,12 @@ public class Player extends Entity {
     // Render
     @Override
     public void render(Graphics g, Camera camera) {
+        // Sprites are pre-scaled and pre-flipped - no runtime transformation needed
         BufferedImage sprite = getCurrentSprites()[currentFrame];
-        if (facingLeft) {
-            g.drawImage(sprite, (int) (x + this.size - camera.getX()), (int) (y - camera.getY()), -this.size, this.size, null);
-        } else {
-            g.drawImage(sprite, (int) (x - camera.getX()), (int) (y - camera.getY()), this.size, this.size, null);
-        }
+        int drawX = (int) (x - camera.getX());
+        int drawY = (int) (y - camera.getY());
+        g.drawImage(sprite, drawX, drawY, null);
+
         if (gameWorld.isDebugMode()) {
             drawHitBox(g, camera);
         }

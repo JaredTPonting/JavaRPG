@@ -61,5 +61,9 @@ public abstract class Weapon {
         return this.getClass().getSimpleName();
     }
 
+    public int getProjectileCount() {
+        return activeProjectiles.size();
+    }
+
     protected abstract List<Projectile> createProjectiles();
 }

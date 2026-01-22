@@ -38,13 +38,13 @@ public class EnemyFactory {
         if (cfg == null) {
             throw new IllegalArgumentException("Unknown enemy selection");
         }
-        // Load animations
+        // Load animations with pre-scaling to target size
         Map<String, Animation> loadedAnimations = new HashMap<>();
         for (var entry : cfg.animations.entrySet()){
             String name = entry.getKey();
             AnimationInfo info = entry.getValue();
             BufferedImage sheet = SpriteLoader.load(info.sheet);
-            loadedAnimations.put(name, new Animation(sheet, info.frames, 100, info.loop));
+            loadedAnimations.put(name, new Animation(sheet, info.frames, 100, info.loop, cfg.size));
         }
         Enemy e = new Enemy(gameWorld, x, y, cfg.attackSpeed, cfg.size, loadedAnimations, 0.1, 0.1);
         e.hp = cfg.hp;
