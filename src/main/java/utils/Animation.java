@@ -44,6 +44,25 @@ public class Animation {
         }
     }
 
+    /**
+     * Copy constructor - shares frame arrays with source (no memory duplication)
+     * but has independent playback state. Used for animation caching.
+     */
+    public Animation(Animation source) {
+        this.frames = source.frames;           // Share frame array (no copy)
+        this.framesFlipped = source.framesFlipped; // Share flipped array (no copy)
+        this.frameTime = source.frameTime;
+        this.loop = source.loop;
+        this.currentFrame = 0;
+        this.lastTime = System.currentTimeMillis();
+        this.finished = false;
+    }
+
+    /** Creates a copy with shared frame data but independent playback state */
+    public Animation copy() {
+        return new Animation(this);
+    }
+
     /** Scale image to target dimensions */
     private BufferedImage scaleImage(BufferedImage src, int width, int height) {
         BufferedImage scaled = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
