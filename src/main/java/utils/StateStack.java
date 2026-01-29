@@ -53,6 +53,9 @@ public class StateStack {
         // If the stack is empty (no main menu), push it
         if (states.isEmpty()) {
             push(new MenuState(gameWorld));
+        } else if (states.peek() instanceof MenuState menuState) {
+            // Reset timing so chicken animation doesn't jump
+            menuState.resetTiming();
         }
     }
 

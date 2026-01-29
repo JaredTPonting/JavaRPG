@@ -4,6 +4,20 @@ import loot.ItemManager;
 
 public class PlayerStats {
 
+    // Set to true for testing - gives high HP/stamina so you don't die while testing
+    public static final boolean DEV_MODE = true;
+
+    // Stat caps (asymptotic - you approach but never reach these)
+    private static final double SPEED_CAP = 600.0;
+    private static final double MAX_HEALTH_CAP = 1000.0;
+    private static final double HEALTH_REGEN_CAP = 20.0;
+    private static final double MAX_STAMINA_CAP = 500.0;
+    private static final double STAMINA_REGEN_CAP = 30.0;
+    private static final double DAMAGE_CAP = 500.0;
+    private static final double MAGIC_DAMAGE_CAP = 500.0;
+
+    // Growth rate - fraction of remaining distance gained per level (0.1 = 10%)
+    private static final double GROWTH_RATE = 0.1;
 
     private boolean dead = false;
 
@@ -29,42 +43,60 @@ public class PlayerStats {
 
     private ItemManager items;
 
-
     private long lastRegenTime;
 
     public PlayerStats(ItemManager items) {
         this.lastRegenTime = System.currentTimeMillis();
+        this.items = items;
+
+        // Base starting stats
         this.speed = 200.0;
-        this.maxHealth = 100000.0;
-        this.currentHealth = maxHealth;
-        this.healthRegen = 0.5;
-        this.maxStamina = 10000.0;
-        this.currentStamina = maxStamina;
-        this.staminaRegen = 5.0;
         this.damage = 50;
         this.magicDamage = 50;
-        this.items = items;
+        this.healthRegen = 0.5;
+        this.staminaRegen = 5.0;
+
+        if (DEV_MODE) {
+            // High stats for testing
+            this.maxHealth = 100000.0;
+            this.maxStamina = 10000.0;
+        } else {
+            // Normal starting stats for actual gameplay
+            this.maxHealth = 100.0;
+            this.maxStamina = 100.0;
+        }
+
+        this.currentHealth = maxHealth;
+        this.currentStamina = maxStamina;
+    }
+
+    /**
+     * Calculates asymptotic gain: approaches cap but never reaches it.
+     * Each level gives a fraction of the remaining distance to the cap.
+     */
+    private double calculateAsymptoticGain(double current, double cap) {
+        return (cap - current) * GROWTH_RATE;
     }
 
     public boolean isDead() {
         return dead;
     }
 
-    public double  getSpeed() {
+    public double getSpeed() {
         return speed;
     }
     public void increaseSpeed() {
         this.speedLevel += 1;
-        this.speed += 50;
+        this.speed += calculateAsymptoticGain(speed, SPEED_CAP);
     }
 
     public void increaseDamage() {
         this.damageLevel += 1;
-        this.damage += 10;
+        this.damage += calculateAsymptoticGain(damage, DAMAGE_CAP);
     }
     public void increaseMagicDamage() {
         this.magicDamageLevel += 1;
-        this.magicDamage += 10;
+        this.magicDamage += calculateAsymptoticGain(magicDamage, MAGIC_DAMAGE_CAP);
     }
 
     public double getMaxHealth() {
@@ -72,7 +104,9 @@ public class PlayerStats {
     }
     public void increaseMaxHealth() {
         this.healthLevel += 1;
-        this.maxHealth += 50;
+        double gain = calculateAsymptoticGain(maxHealth, MAX_HEALTH_CAP);
+        this.maxHealth += gain;
+        this.currentHealth += gain; // Also increase current health so you don't lose HP ratio
     }
     public double getCurrentHealth() {
         return currentHealth;
@@ -88,8 +122,7 @@ public class PlayerStats {
     }
     public void increaseHealthRegen() {
         this.healthRegenLevel += 1;
-        this.healthRegen = (0.5) + (9.5 * (this.healthRegen/(this.healthRegen + 6)));
-        this.healthRegen = Math.round(this.healthRegen * 100.0) / 100.0;
+        this.healthRegen += calculateAsymptoticGain(healthRegen, HEALTH_REGEN_CAP);
     }
 
     public double getMaxStamina() {
@@ -98,7 +131,9 @@ public class PlayerStats {
     public void exhaustStamina(double staminaUsed) { this.currentStamina -= staminaUsed; }
     public void increaseEndurance() {
         this.enduranceLevel += 1;
-        this.maxStamina += 50;
+        double gain = calculateAsymptoticGain(maxStamina, MAX_STAMINA_CAP);
+        this.maxStamina += gain;
+        this.currentStamina += gain; // Also increase current stamina
     }
 
     public double getCurrentStamina() {
@@ -109,7 +144,7 @@ public class PlayerStats {
     }
     public void increaseStaminaRegen() {
         this.staminaRegenLevel += 1;
-        this.staminaRegen = (5) + (9.5 * (this.staminaRegen/(this.staminaRegen + 6)));
+        this.staminaRegen += calculateAsymptoticGain(staminaRegen, STAMINA_REGEN_CAP);
     }
 
     public double getDamage() {

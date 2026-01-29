@@ -92,7 +92,7 @@ public class PlayingState implements GameState {
         Profiler.get().end("Chunks");
 
         Profiler.get().start("UI");
-        ui.update();
+        ui.update(dt);
         Profiler.get().end("UI");
 
         // Update profiler entity counts
@@ -101,6 +101,13 @@ public class PlayingState implements GameState {
             weaponManager.getProjectileCount(),
             lootManager.getChests().size()
         );
+
+        // Auto-show level up screen when player gains enough XP
+        if (player.getPlayerManager().shouldShowLevelUp()) {
+            player.getPlayerManager().markLevelUpNotified();
+            deltaTimer.pause();
+            gameWorld.getStateStack().push(new LevelUpState(gameWorld));
+        }
     }
 
     private void handleDeath() {
@@ -152,12 +159,12 @@ public class PlayingState implements GameState {
 
         spawner.renderDamageIndicators(g, camera);
         ui.render((Graphics2D) g, gameWorld.getGameWidth(), gameWorld.getGameHeight());
-        gameWorld.getCollisionGrid().draw(g, camera);
 
         Profiler.get().end("Render");
 
-        // Render profiler overlay when debug mode is on
+        // Render debug overlays when debug mode is on
         if (gameWorld.isDebugMode()) {
+            gameWorld.getCollisionGrid().draw(g, camera);
             Profiler.get().render((Graphics2D) g, gameWorld.getGameWidth());
         }
 

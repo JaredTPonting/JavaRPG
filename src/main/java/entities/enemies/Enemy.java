@@ -310,6 +310,8 @@ public class Enemy extends Entity {
 
     public void startDeath() {
         triggeredDeath = true;
+        // Award XP immediately when enemy is killed, not after death animation
+        target.getPlayerManager().gainXP(this.XP);
         if (this.isBoss) {
             dropChest();
         }

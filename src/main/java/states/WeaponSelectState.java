@@ -23,6 +23,8 @@ public class WeaponSelectState implements GameState {
     public WeaponSelectState(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         this.weaponManager = gameWorld.getWeaponManager();
+        // Pause timer during weapon selection
+        gameWorld.getDeltaTimer().pause();
         initButtons();
     }
 
@@ -39,6 +41,7 @@ public class WeaponSelectState implements GameState {
     private void selectWeapon(Weapon weapon) {
         weaponManager.addWeapon(weapon);
         gameWorld.getEnemySpawner().setActive(true);  // Start spawning now
+        gameWorld.getDeltaTimer().resume();  // Start the game timer
         gameWorld.getStateStack().push(new PlayingState(gameWorld));
     }
 

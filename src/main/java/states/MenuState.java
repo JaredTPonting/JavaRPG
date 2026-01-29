@@ -77,10 +77,17 @@ public class MenuState implements GameState {
         return result;
     }
 
+    /** Call this when returning to menu to reset animation timing */
+    public void resetTiming() {
+        lastUpdateTime = System.currentTimeMillis();
+    }
+
     @Override
     public void update() {
         long now = System.currentTimeMillis();
         double dt = (now - lastUpdateTime) / 1000.0;
+        // Clamp dt to avoid huge jumps if menu was inactive
+        dt = Math.min(dt, 0.1);
         lastUpdateTime = now;
 
         int width = gameWorld.getGameWidth();

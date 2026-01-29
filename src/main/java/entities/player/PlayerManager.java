@@ -45,11 +45,15 @@ public class PlayerManager {
     }
 
     public boolean checkLevelUp() {
-        if (this.playerLevel.canLevelUp()) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.playerLevel.canLevelUp();
+    }
+
+    public boolean shouldShowLevelUp() {
+        return this.playerLevel.shouldShowLevelUp();
+    }
+
+    public void markLevelUpNotified() {
+        this.playerLevel.markLevelUpNotified();
     }
 
     public void levelUpHealth() {

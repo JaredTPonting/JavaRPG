@@ -92,15 +92,12 @@ public class EnemySpawner {
             e.update(dt);
         }
 
-        // Remove dead entities.enemies & give XP
+        // Remove dead enemies (XP is awarded immediately in Enemy.startDeath())
         enemies.removeIf(enemy -> {
             if (enemy.isDead() || enemy.despawned()) {
                 // Remove from collision grid before removing from list
                 if (enemy.getCurrentGridCell() != null) {
                     gameWorld.getCollisionGrid().remove(enemy, enemy.getCurrentGridCell());
-                }
-                if (enemy.isDead()) {
-                    playerManager.gainXP(enemy.getXP());
                 }
                 return true;
             }
