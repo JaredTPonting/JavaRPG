@@ -16,6 +16,9 @@ public class FireBall extends Projectile {
     private final int frameWidth;
     private final int height;
     private Entity target;
+    private double lastTargetX;
+    private double lastTargetY;
+    private boolean trackingLocked = false;
 
     // statics
     private static BufferedImage SPRITE_SHEET;
@@ -42,11 +45,29 @@ public class FireBall extends Projectile {
         this.height = SPRITE_SHEET.getHeight();
         this.hitBox = new Rectangle((int) (x + frameWidth * 0.4), (int) (y*0.5), (int) (frameWidth * 0.6), (int) (height * 0.5));
 
+        this.lastTargetX = target.getX();
+        this.lastTargetY = target.getY();
     }
 
     private void updateDxDY() {
-        double newDx = this.x - target.getX();
-        double newDy = this.y - target.getY();
+        if (trackingLocked) return;
+
+        double targetX = target.getX();
+        double targetY = target.getY();
+
+        // Detect teleport - if target moved more than possible in one frame, lock direction
+        double movedDistSq = (targetX - lastTargetX) * (targetX - lastTargetX)
+                           + (targetY - lastTargetY) * (targetY - lastTargetY);
+        if (movedDistSq > 200 * 200) {
+            trackingLocked = true;
+            return;
+        }
+
+        lastTargetX = targetX;
+        lastTargetY = targetY;
+
+        double newDx = this.x - targetX;
+        double newDy = this.y - targetY;
 
         Point2D.Double dxDy = vectorManipulation.normalise(newDx, newDy);
         this.dx = dxDy.getX();
